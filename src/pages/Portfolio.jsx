@@ -59,13 +59,13 @@ const Portfolio = () => {
                 {/* 1. Hero Section */}
                 <section className="mb-24 text-center">
                     <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-3xl mx-auto">
-                        <span className="text-brand-accent font-bold tracking-widest uppercase mb-4 block text-sm">Portfolio</span>
+
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
                             우리의 실력은 <br className="md:hidden" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">결과물로 증명됩니다.</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">결과물로 증명됩니다</span>
                         </h1>
                         <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
-                            KBLs 멤버들이 치열하게 고민하고 만들어낸<br className="hidden md:block" />산출물과 그 발자취를 확인해 보세요.
+                            KBLs 멤버들이 치열하게 고민하고 만들어낸<br className="hidden md:block" />산출물과 그 발자취를 확인해 보세요
                         </p>
                     </motion.div>
                 </section>

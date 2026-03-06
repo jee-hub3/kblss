@@ -61,13 +61,13 @@ const News = () => {
                 {/* 1. Hero Section */}
                 <section className="mb-20 text-center">
                     <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-3xl mx-auto">
-                        <span className="text-brand-accent font-bold tracking-widest uppercase mb-4 block text-sm">Log & Magazine</span>
+
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
                             KBLs의 생생한 발자취와<br className="md:hidden" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-purple-600"> 인사이트를 전합니다.</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-purple-600"> 인사이트를 전합니다</span>
                         </h1>
                         <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
-                            치열했던 프로젝트 회고부터 스터디 노트, <br className="hidden md:block" />랩실의 일상까지 KBLs의 모든 기록을 확인하세요.
+                            치열했던 프로젝트 회고부터 스터디 노트, <br className="hidden md:block" />랩실의 일상까지 KBLs의 모든 기록을 확인하세요
                         </p>
                     </motion.div>
                 </section>
@@ -80,7 +80,7 @@ const News = () => {
                             <div className={`lg:w-1/2 min-h-[300px] lg:min-h-[500px] bg-gradient-to-br ${featuredPost.imageGrad} relative overflow-hidden`}>
                                 <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <span className="text-white/40 font-bold text-4xl tracking-widest uppercase">KBLs Highlight</span>
+
                                 </div>
                             </div>
                             <div className="lg:w-1/2 p-10 lg:p-16 flex flex-col justify-center">

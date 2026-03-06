@@ -33,8 +33,7 @@ const Home = () => {
                         transition={{ duration: 0.6, ease: "easeOut" }}
                         className="mb-10 inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50 shadow-sm"
                     >
-                        <span className="text-xl">📢</span>
-                        <span className="text-sm font-semibold text-brand-800">2026년 KBLs 신입 회원 모집중</span>
+                        <span className="text-sm font-semibold text-brand-800">2026년 KBLs 신규 회원 모집중</span>
                     </motion.div>
 
                     {/* Centered large typography — slightly smaller than original 8xl */}
@@ -44,8 +43,12 @@ const Home = () => {
                         animate="visible"
                         className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight text-slate-900 mb-8 leading-[1.1]"
                     >
-                        <motion.span variants={fadeInUp} className="block">아이디어를 실행으로,</motion.span>
-                        <motion.span variants={fadeInUp} className="block text-brand-accent">사람을 연결로.</motion.span>
+                        <motion.span variants={fadeInUp} className="block">
+                            아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">실행</span><span className="absolute bottom-1 left-0 w-full h-3 bg-indigo-100 -z-0 transform -rotate-2"></span></span>으로,
+                        </motion.span>
+                        <motion.span variants={fadeInUp} className="block mt-2">
+                            사람을 <span className="relative inline-block"><span className="relative z-10 font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">연결</span><span className="absolute bottom-1 left-0 w-full h-3 bg-purple-100 -z-0 transform rotate-1"></span></span>로
+                        </motion.span>
                         <motion.span variants={fadeInUp} className="block mt-4 text-3xl md:text-4xl text-slate-700 font-semibold tracking-normal">
                             우리가 함께 성장을 증명하는 곳.
                         </motion.span>
@@ -58,7 +61,7 @@ const Home = () => {
                         className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed"
                     >
                         세상에는 수많은 문제들이 있습니다.<br className="hidden md:block" />
-                        중요한 것은, 행동하고 실천하며 해결책을 만들어가는 것입니다.
+                        중요한 것은, 행동하고 실천하며 해결책을 만들어가는 것입니다
                     </motion.p>
                 </div>
             </section>
@@ -75,10 +78,12 @@ const Home = () => {
                         variants={fadeInUp}
                         className="max-w-4xl mx-auto text-center"
                     >
-                        <h2 className="text-brand-accent font-bold tracking-widest uppercase mb-4 text-sm">Our Identity</h2>
-                        <h3 className="text-4xl md:text-5xl font-bold mb-10 text-slate-900">Key Bridge Leaders</h3>
+
+                        <h3 className="text-4xl md:text-5xl font-bold mb-10 text-slate-900">
+                            <span className="font-extrabold text-brand-800 tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-800 tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-800 tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
+                        </h3>
                         <p className="text-2xl md:text-3xl text-slate-800 font-medium leading-relaxed tracking-tight">
-                            KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 연구실 입니다. <br className="hidden md:block" /><span className="text-slate-500">단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.</span>
+                            KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 연구실 입니다 <br className="hidden md:block" /><span className="text-slate-500">단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다</span>
                         </p>
                     </motion.div>
                 </div>
@@ -99,19 +104,19 @@ const Home = () => {
                             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                             className="relative z-10 lg:pr-16"
                         >
-                            <p className="text-brand-accent font-bold tracking-widest uppercase text-xs mb-6">Our Philosophy</p>
+
                             <h2
                                 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-[1.2] tracking-tight"
                                 style={{ fontFamily: "'Pretendard Variable', Pretendard, sans-serif" }}
                             >
                                 사람을 연결하고,<br />
-                                <span className="text-brand-accent">함께 성장합니다.</span>
+                                <span className="text-brand-accent">함께 성장합니다</span>
                             </h2>
                             <p
                                 className="mt-8 text-lg md:text-xl text-slate-500 leading-relaxed max-w-lg"
                                 style={{ fontFamily: "'Pretendard Variable', Pretendard, sans-serif" }}
                             >
-                                개인의 아이디어가 팀의 실행력을 만나면, 세상을 바꿀 수 있는 힘이 됩니다. KBLs는 그 연결의 다리(Bridge)를 놓습니다.
+                                개인의 아이디어가 팀의 실행력을 만나면, 세상을 바꿀 수 있는 힘이 됩니다. KBLs는 그 연결의 다리(Bridge)를 놓습니다
                             </p>
                             <div className="mt-10 flex items-center gap-3">
                                 <div className="h-px w-16 bg-slate-300" />
@@ -170,7 +175,7 @@ const Home = () => {
                         <div className="max-w-2xl">
                             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">What We Do</h2>
                             <p className="text-xl text-slate-600 leading-relaxed">
-                                이론에서 멈추지 않습니다.<br />KBLs에서는 이런 실전 경험들이 당신의 일상이 됩니다.
+                                이론에서 멈추지 않습니다<br />KBLs에서는 이런 실전 경험들이 당신의 일상이 됩니다
                             </p>
                         </div>
                         <Link to="/activities" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-blue-800 transition-colors group">
@@ -224,7 +229,7 @@ const Home = () => {
                         className="text-center mb-20"
                     >
                         <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
-                        <p className="text-xl text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 압도적인 몰입.</p>
+                        <p className="text-xl text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 압도적인 몰입</p>
                     </motion.div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
@@ -268,7 +273,7 @@ const Home = () => {
                         <div className="max-w-2xl">
                             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">Featured Portfolio</h2>
                             <p className="text-xl text-slate-600 leading-relaxed">
-                                치열한 고민 끝에 탄생한 산출물, <br />당신의 다음 포트폴리오가 될 수 있습니다.
+                                치열한 고민 끝에 탄생한 산출물, <br />당신의 다음 포트폴리오가 될 수 있습니다
                             </p>
                         </div>
                         <Link to="/portfolio" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-blue-800 transition-colors group">
@@ -277,24 +282,28 @@ const Home = () => {
                     </motion.div>
 
                     <div className="grid md:grid-cols-3 gap-10">
-                        {[1, 2, 3].map((item, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.6, delay: i * 0.15 }}
-                                className="group cursor-pointer"
-                            >
-                                <div className="aspect-video bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl overflow-hidden mb-6 relative group-hover:scale-[1.02] transition-transform duration-500">
-                                    <div className="w-full h-full flex items-center justify-center text-slate-400 font-medium text-lg">
-                                        Project Image {item}
+                        {[1, 2, 3].map((item, i) => {
+                            const pfLinks = ["#eco-link", "#congestion", "#k-campus"];
+                            return (
+                                <motion.a
+                                    href={pfLinks[i]} target="_blank" rel="noopener noreferrer"
+                                    key={i}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ duration: 0.6, delay: i * 0.15 }}
+                                    className="group cursor-pointer"
+                                >
+                                    <div className="aspect-video bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl overflow-hidden mb-6 relative group-hover:scale-[1.02] transition-transform duration-500">
+                                        <div className="w-full h-full flex items-center justify-center text-slate-400 font-medium text-lg">
+                                            Project Image {item}
+                                        </div>
                                     </div>
-                                </div>
-                                <h4 className="text-2xl font-bold mb-2 text-slate-900 group-hover:text-brand-accent transition-colors">우수 기획서 프로젝트 {item}</h4>
-                                <p className="text-slate-500 text-lg">UX/UI 기획 & 데이터 분석</p>
-                            </motion.div>
-                        ))}
+                                    <h4 className="text-2xl font-bold mb-2 text-slate-900 group-hover:text-brand-accent transition-colors">우수 기획서 프로젝트 {item}</h4>
+                                    <p className="text-slate-500 text-lg">UX/UI 기획 & 데이터 분석</p>
+                                </motion.a>
+                            );
+                        })}
                     </div>
 
                     <Link to="/portfolio" className="md:hidden mt-8 w-full inline-flex justify-center items-center text-brand-accent font-semibold group">
@@ -316,7 +325,7 @@ const Home = () => {
                         className="mb-16"
                     >
                         <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">Who We Are Looking For</h2>
-                        <p className="text-xl text-slate-600">완벽하지 않아도 좋습니다. KBLs는 이런 열정을 가진 분을 기다립니다.</p>
+                        <p className="text-xl text-slate-600">완벽하지 않아도 좋습니다. KBLs는 이런 열정을 가진 분을 기다립니다</p>
                     </motion.div>
 
                     <div className="flex flex-wrap justify-center gap-6 mb-16">
@@ -367,7 +376,7 @@ const Home = () => {
                         className="max-w-3xl mx-auto"
                     >
                         <h2 className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight">
-                            스스로 문제를 정의하고<br />해결하고 싶다면,<br />KBLs와 함께하세요.
+                            스스로 문제를 정의하고<br />해결하고 싶다면,<br />KBLs와 함께하세요
                         </h2>
                         <Link to="/apply" className="inline-block bg-white text-brand-accent hover:bg-slate-50 px-10 py-5 rounded-full text-xl font-bold transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
                             KBLs 합류하기

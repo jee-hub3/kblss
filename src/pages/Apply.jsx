@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Building2, Coffee, GraduationCap, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 const Apply = () => {
     const [activeTab, setActiveTab] = useState("info"); // "info" or "form"

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import GNB from './GNB';
+import Footer from './Footer';
 
 const Layout = () => {
     return (
@@ -9,11 +10,7 @@ const Layout = () => {
             <main className="flex-1">
                 <Outlet />
             </main>
-            <footer className="bg-slate-900 text-slate-400 py-12 text-center text-sm">
-                <div className="container mx-auto px-6">
-                    <p>© 2026 Key Bridge Leaders. All rights reserved.</p>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 };

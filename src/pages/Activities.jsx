@@ -74,7 +74,7 @@ const ProcessNode = ({ step, title, idx, total }) => (
         transition={{ duration: 0.5, delay: idx * 0.3 + 0.5 }}
         className="relative z-10 flex flex-col items-center bg-white px-6 py-4 rounded-full border-2 border-brand-100 shadow-md min-w-[200px]"
     >
-        <div className="text-brand-accent font-bold text-sm mb-1 uppercase tracking-widest">Step 0{step}</div>
+
         <div className="text-slate-800 font-bold whitespace-nowrap text-lg">{title}</div>
     </motion.div>
 );
@@ -101,20 +101,19 @@ const Activities = () => {
                     className="max-w-4xl text-left"
                 >
                     <motion.div variants={fadeInUp} className="inline-block mb-6 relative">
-                        <span className="relative z-10 text-brand-accent font-bold tracking-widest uppercase text-sm bg-brand-50 px-4 py-2 rounded-full">Activities</span>
+
                     </motion.div>
                     <motion.h1
                         variants={fadeInUp}
                         className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-[1.15] mb-8"
                     >
-                        단순한 스터디가 아닙니다.<br className="hidden md:block" />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500">KBLs만의 일하는 방식</span>을 배웁니다.
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500">KBLs만의 일하는 방식</span>을 배웁니다
                     </motion.h1>
                     <motion.p
                         variants={fadeInUp}
                         className="text-xl md:text-2xl text-slate-600 leading-relaxed font-medium max-w-3xl"
                     >
-                        치열하게 고민하고, 투명하게 공유하며, 확실한 결과물로 증명하는 <br className="hidden md:block" />KBLs의 성장 문화를 소개합니다.
+                        치열하게 고민하고, 투명하게 공유하며, 확실한 결과물로 증명하는 <br className="hidden md:block" />KBLs의 성장 문화를 소개합니다
                     </motion.p>
                 </motion.div>
             </section>
@@ -138,19 +137,19 @@ const Activities = () => {
                             delay={0.1}
                             icon={Share2}
                             title="투명한 공유"
-                            desc="모든 회의록, 진행 상황, 트러블슈팅은 노션(Notion)에 투명하게 기록되고 공유됩니다."
+                            desc="모든 회의록, 진행 상황, 트러블슈팅은 노션(Notion)에 투명하게 기록되고 공유됩니다"
                         />
                         <DnaCard
                             delay={0.3}
                             icon={Users}
                             title="시스템 기반 협업"
-                            desc="개인의 의지에만 의존하지 않습니다. 임원-팀장-팀원으로 이어지는 명확한 역할 분담이 무임승차를 방지합니다."
+                            desc="개인의 의지에만 의존하지 않습니다. 임원-팀장-팀원으로 이어지는 명확한 역할 분담이 무임승차를 방지합니다"
                         />
                         <DnaCard
                             delay={0.5}
                             icon={CheckCircle}
                             title="결과물 증명"
-                            desc="배움에서 멈추지 않고 기획서, MVP, 자격증 등 눈에 보이는 실질적인 산출물을 반드시 도출합니다."
+                            desc="배움에서 멈추지 않고 기획서, MVP, 자격증 등 눈에 보이는 실질적인 산출물을 반드시 도출합니다"
                         />
                     </div>
                 </div>
@@ -166,10 +165,10 @@ const Activities = () => {
                         variants={fadeInUp}
                         className="lg:w-1/3"
                     >
-                        <span className="text-brand-accent font-bold uppercase tracking-widest text-sm mb-4 block">Culture in Action 01</span>
+
                         <h2 className="text-4xl font-extrabold text-slate-900 mb-6 leading-tight">한계를 넘는 실전 경험,<br />체계적인 공모전 완주</h2>
                         <p className="text-lg text-slate-600 leading-relaxed">
-                            KBLs의 공모전은 팀 빌딩부터 다릅니다. 전체 현황을 점검하는 랩실 임원과 실무를 이끄는 팀장의 이중 관리 시스템을 통해 중도 포기 리스크를 차단합니다.
+                            KBLs의 공모전은 팀 빌딩부터 다릅니다. 전체 현황을 점검하는 랩실 임원과 실무를 이끄는 팀장의 이중 관리 시스템을 통해 중도 포기 리스크를 차단합니다
                         </p>
                     </motion.div>
 
@@ -201,10 +200,10 @@ const Activities = () => {
                         variants={fadeInUp}
                         className="mb-20 text-center"
                     >
-                        <span className="text-brand-400 font-bold uppercase tracking-widest text-sm mb-4 block">Culture in Action 02</span>
+
                         <h2 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">주도적 문제 해결,<br />서비스 기획 및 해커톤</h2>
                         <p className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                            누군가 던져준 과제가 아닌, 세상의 문제를 스스로 발굴합니다. 실제 데이터를 분석하여 근거를 찾고, 아이디어를 최소 기능 제품(MVP)으로 구현하여 실무 기획력을 기릅니다.
+                            누군가 던져준 과제가 아닌, 세상의 문제를 스스로 발굴합니다. 실제 데이터를 분석하여 근거를 찾고, 아이디어를 최소 기능 제품(MVP)으로 구현하여 실무 기획력을 기릅니다
                         </p>
                     </motion.div>
 
@@ -262,10 +261,10 @@ const Activities = () => {
                     variants={fadeInUp}
                     className="text-center mb-16"
                 >
-                    <span className="text-brand-accent font-bold uppercase tracking-widest text-sm mb-4 block">Culture in Action 03</span>
+
                     <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">성장의 뼈대를 세우는<br />체계적인 지식 공유</h2>
                     <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                        단발성 겉핥기식 스터디를 지양합니다. 학기 초 수요 조사를 통해 정규 커리큘럼을 세우고, 스터디 리더의 주도하에 '결과물 도출'을 목표로 밀도 있게 진행됩니다.
+                        단발성 겉핥기식 스터디를 지양합니다. 학기 초 수요 조사를 통해 정규 커리큘럼을 세우고, 스터디 리더의 주도하에 '결과물 도출'을 목표로 밀도 있게 진행됩니다
                     </p>
                 </motion.div>
 
@@ -305,7 +304,7 @@ const Activities = () => {
                                 </div>
                                 <h3 className="text-3xl font-extrabold text-slate-900 mb-4">{studyTabs[activeTab].title} 스터디</h3>
                                 <p className="text-xl text-slate-600 mb-8 leading-relaxed font-medium">
-                                    {studyTabs[activeTab].desc}
+                                    {studyTabs[activeTab].desc.replace(/\.$/, '')}
                                 </p>
                                 <div className="flex flex-wrap gap-3">
                                     {studyTabs[activeTab].keys.map((key, i) => (
