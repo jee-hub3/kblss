@@ -124,7 +124,18 @@ const Apply = () => {
                                     <div className="space-y-4">
                                         {[
                                             { title: "활동 의무", content: "학기당 공모전/스터디 1회 필수, 화요일 정기 모임" },
-                                            { title: "경고 규정", content: "무단결석 등 기여도 부족 시 경고" }
+                                            {
+                                                title: "경고 규정", content: (
+                                                    <div className="space-y-4">
+                                                        <p className="font-bold text-slate-800">다음의 경우 사전 면담을 거쳐 경고 1회를 부여</p>
+                                                        <ul className="list-inside list-disc pl-2 space-y-2 text-slate-600">
+                                                            <li>공모전 또는 스터디에 반복적으로 참여하지 않는 경우</li>
+                                                            <li>사전 협의 없는 중도 이탈/이유 없는 무단 결석이 2회 이상 발생</li>
+                                                        </ul>
+                                                        <p className="pt-2 text-sm text-slate-500">상세 내용이 궁금하시면 문의 부탁드립니다.</p>
+                                                    </div>
+                                                )
+                                            }
                                         ].map((rule, i) => (
                                             <div key={i} className="border border-slate-200 rounded-2xl bg-white overflow-hidden transition-all">
                                                 <button

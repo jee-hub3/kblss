@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Rocket, Search, Users, Sparkles, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 /* ── Animation Variants ── */
 const fadeInUp = {
@@ -92,30 +92,26 @@ const roadmapSteps = [
 ];
 
 const FitVisionTab = ({ onBack }) => {
+    const navigate = useNavigate();
+
+    const handleBack = () => {
+        navigate('/#fit-section');
+        setTimeout(() => {
+            const el = document.getElementById('fit-section');
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
+    };
+
     return (
-        <div className="w-full bg-slate-50 text-slate-900 relative overflow-hidden rounded-t-[3rem]">
-            {/* ── Ambient background glows (light) ── */}
-            <div className="absolute inset-0 pointer-events-none z-0">
-                <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-300/20 blur-[140px]" />
-                <div className="absolute bottom-[-20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-violet-300/15 blur-[140px]" />
-                <div className="absolute top-[40%] right-[20%] w-[25vw] h-[25vw] rounded-full bg-cyan-300/10 blur-[120px]" />
-            </div>
-
-            {/* ── Subtle grid overlay ── */}
-            <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.03]"
-                style={{
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
-                                      linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px)`,
-                    backgroundSize: '60px 60px',
-                }}
-            />
-
+        <div className="w-full bg-white text-slate-900 relative overflow-hidden rounded-t-[3rem]">
             {/* Back Button */}
             <button
-                onClick={onBack}
-                className="absolute top-8 left-6 z-50 group inline-flex items-center justify-center p-3 rounded-xl bg-white/80 backdrop-blur-xl border border-slate-200 shadow-sm hover:bg-white hover:border-slate-300 transition-all duration-300"
+                onClick={handleBack}
+                className="absolute top-8 left-6 z-50 group inline-flex items-center justify-center p-2 transition-all duration-300"
             >
-                <ArrowLeft className="w-6 h-6 text-slate-600 group-hover:text-slate-900" />
+                <ArrowLeft className="w-8 h-8 text-slate-800 group-hover:text-brand-accent transition-colors" />
             </button>
 
             {/* 2. Intro / Hero */}
@@ -127,11 +123,11 @@ const FitVisionTab = ({ onBack }) => {
                             custom={1}
                             className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.15] mb-8"
                         >
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600">
+                            <span className="text-slate-900">
                                 KBLs가 추구하는
                             </span>
                             <br />
-                            <span className="text-slate-900">핵심 가치와 성장 비전</span>
+                            <span className="text-brand-accent">핵심 가치와 성장 비전</span>
                         </motion.h1>
                         <motion.p
                             variants={fadeInUp}
@@ -158,20 +154,34 @@ const FitVisionTab = ({ onBack }) => {
                         </motion.p>
                     </motion.div>
 
-                    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={staggerContainer} className="grid md:grid-cols-3 gap-8 lg:gap-10">
+                    <div className="flex flex-col gap-24 lg:gap-32">
                         {coreValues.map((v, i) => (
-                            <motion.div key={i} variants={fadeInUp} custom={i} initial="rest" whileHover="hover">
-                                <motion.div variants={cardHover} className="relative h-full p-10 lg:p-12 rounded-3xl bg-white border border-slate-200/80 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:border-slate-300/80 transition-all duration-500">
-                                    <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${v.gradient} shadow-lg mb-8`}>
-                                        <v.icon className="w-8 h-8 text-white" />
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: '-100px' }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                className={`flex flex-col md:flex-row items-center gap-12 lg:gap-16 ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
+                            >
+                                <div className="flex-1 w-full lg:pr-8">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <v.icon className={`w-6 h-6 text-brand-accent`} />
+                                        <span className="text-sm font-extrabold tracking-widest uppercase text-slate-400">{v.title}</span>
                                     </div>
-                                    <div className="text-xs font-bold tracking-widest uppercase text-slate-400 mb-3">{v.title}</div>
-                                    <h4 className="text-xl lg:text-2xl font-bold text-slate-900 mb-5 leading-snug">{v.headline}</h4>
-                                    <p className="text-slate-500 leading-relaxed text-base">{v.desc}</p>
-                                </motion.div>
+                                    <h4 className="text-3xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 mb-6 leading-tight tracking-tight break-keep">{v.headline}</h4>
+                                    <p className="text-lg md:text-xl text-slate-500 leading-relaxed max-w-lg break-keep">{v.desc}</p>
+                                </div>
+                                <div className="w-full md:w-1/2 flex justify-center">
+                                    <div className="w-full aspect-[4/3] rounded-[2rem] bg-slate-50 flex flex-col items-center justify-center border border-slate-100 shadow-sm relative overflow-hidden group">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                        <v.icon className="w-16 h-16 text-slate-200 mb-4 group-hover:scale-110 group-hover:text-brand-100 transition-all duration-500" />
+                                        <span className="text-slate-400 font-bold text-lg">{v.title} Image Placeholder</span>
+                                    </div>
+                                </div>
                             </motion.div>
                         ))}
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
@@ -187,23 +197,23 @@ const FitVisionTab = ({ onBack }) => {
                     {/* Desktop: Horizontal stepper */}
                     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={staggerContainer} className="hidden md:block">
                         <div className="relative">
-                            <div className="absolute top-10 left-[calc(12.5%)] right-[calc(12.5%)] h-[2px] bg-gradient-to-r from-emerald-500/40 via-indigo-500/40 to-pink-500/40" />
+                            <div className="absolute top-12 left-[calc(12.5%)] right-[calc(12.5%)] h-[1px] bg-slate-200" />
 
                             <div className="grid grid-cols-4 gap-6">
                                 {roadmapSteps.map((step, i) => (
                                     <motion.div key={i} variants={fadeInUp} custom={i} className="flex flex-col items-center text-center">
                                         {/* Number Node */}
-                                        <div className={`relative z-10 w-20 h-20 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center shadow-xl ring-4 ${step.ring} ring-offset-2 ring-offset-slate-50 mb-6 text-white font-black text-4xl`}>
+                                        <div className={`relative z-10 w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center border-4 border-white mb-8 text-slate-900 font-extrabold text-5xl tracking-tighter shadow-sm`}>
                                             {step.number}
                                         </div>
 
-                                        {/* Card below */}
-                                        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 w-full shadow-md hover:shadow-lg hover:border-slate-300/80 transition-all duration-300">
-                                            <span className={`text-sm font-extrabold tracking-wider bg-gradient-to-r ${step.color} text-transparent bg-clip-text`}>
+                                        {/* Content block instead of card */}
+                                        <div className="w-full px-4">
+                                            <span className={`text-sm font-extrabold tracking-widest text-slate-400 block mb-2`}>
                                                 {step.year}
                                             </span>
-                                            <h4 className="text-lg font-bold text-slate-900 mt-2 mb-3">{step.phase}</h4>
-                                            <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
+                                            <h4 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">{step.phase}</h4>
+                                            <p className="text-base text-slate-500 leading-relaxed font-medium break-keep">{step.desc}</p>
                                         </div>
                                     </motion.div>
                                 ))}
@@ -212,24 +222,22 @@ const FitVisionTab = ({ onBack }) => {
                     </motion.div>
 
                     {/* Mobile: Vertical timeline */}
-                    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={staggerContainer} className="md:hidden relative">
-                        <div className="absolute left-6 top-0 bottom-0 w-[2px] bg-gradient-to-b from-emerald-500/30 via-indigo-500/30 to-pink-500/30" />
-
-                        <div className="space-y-12">
+                    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={staggerContainer} className="md:hidden relative border-l border-slate-200 ml-6">
+                        <div className="space-y-16 py-8">
                             {roadmapSteps.map((step, i) => (
-                                <motion.div key={i} variants={fadeInUp} custom={i} className="relative flex items-start gap-5 pl-2">
+                                <motion.div key={i} variants={fadeInUp} custom={i} className="relative flex flex-col gap-2 pl-12">
                                     {/* Number Node */}
-                                    <div className={`relative z-10 flex-shrink-0 w-12 h-12 mt-1 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg ring-2 ${step.ring} ring-offset-2 ring-offset-slate-50 text-white font-black text-2xl`}>
+                                    <div className={`absolute -left-8 top-0 w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center border-4 border-white shadow-sm text-slate-900 font-extrabold text-3xl tracking-tighter`}>
                                         {step.number}
                                     </div>
 
                                     {/* Content */}
-                                    <div className="bg-white border border-slate-200/80 rounded-2xl p-6 flex-1 shadow-md">
-                                        <span className={`text-xs font-extrabold tracking-wider bg-gradient-to-r ${step.color} text-transparent bg-clip-text`}>
+                                    <div className="pt-2">
+                                        <span className={`text-xs font-extrabold tracking-widest text-slate-400 block mb-1`}>
                                             {step.year}
                                         </span>
-                                        <h4 className="text-xl font-bold text-slate-900 mt-1 mb-2">{step.phase}</h4>
-                                        <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
+                                        <h4 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">{step.phase}</h4>
+                                        <p className="text-base text-slate-500 leading-relaxed font-medium break-keep">{step.desc}</p>
                                     </div>
                                 </motion.div>
                             ))}

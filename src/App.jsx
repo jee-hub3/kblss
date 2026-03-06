@@ -8,6 +8,7 @@ import Activities from './pages/Activities'
 import Portfolio from './pages/Portfolio'
 import News from './pages/News'
 import Apply from './pages/Apply'
+import FAQ from './pages/FAQ'
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
                     <Route path="portfolio" element={<Portfolio />} />
                     <Route path="news" element={<News />} />
                     <Route path="apply" element={<Apply />} />
+                    <Route path="faq" element={<FAQ />} />
                 </Route>
             </Routes>
         </BrowserRouter>

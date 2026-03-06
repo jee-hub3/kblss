@@ -58,37 +58,21 @@ const News = () => {
         <div className="w-full bg-slate-50 min-h-screen pt-32 pb-32">
             <div className="container mx-auto px-6 max-w-7xl">
 
-                {/* 1. Hero Section */}
-                <section className="mb-20 text-center">
-                    <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-3xl mx-auto">
-
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
-                            KBLs의 생생한 발자취와<br className="md:hidden" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-purple-600"> 인사이트를 전합니다</span>
-                        </h1>
-                        <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
-                            치열했던 프로젝트 회고부터 스터디 노트, <br className="hidden md:block" />랩실의 일상까지 KBLs의 모든 기록을 확인하세요
-                        </p>
-                    </motion.div>
-                </section>
-
-                {/* 2. Featured Post */}
+                {/* 1. Featured Post (Moved to Top) */}
                 {activeFilter === "전체보기" && (
-                    <section className="mb-24">
+                    <section className="mb-20">
                         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}
-                            className="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100 flex flex-col lg:flex-row group">
-                            <div className={`lg:w-1/2 min-h-[300px] lg:min-h-[500px] bg-gradient-to-br ${featuredPost.imageGrad} relative overflow-hidden`}>
+                            className="bg-white rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-sm border border-slate-100 flex flex-col lg:flex-row group hover:shadow-xl hover:border-brand-accent/30 transition-all duration-500">
+                            <div className={`lg:w-1/2 min-h-[350px] lg:min-h-[500px] bg-gradient-to-br ${featuredPost.imageGrad} relative overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-700`}>
                                 <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
-                                <div className="absolute inset-0 flex items-center justify-center">
-
-                                </div>
+                                <span className="text-white/80 font-bold text-xl tracking-widest drop-shadow-md">FEATURED STORY</span>
                             </div>
-                            <div className="lg:w-1/2 p-10 lg:p-16 flex flex-col justify-center">
+                            <div className="lg:w-1/2 p-10 lg:p-16 flex flex-col justify-center bg-white z-10 relative">
                                 <div className="flex items-center gap-3 mb-6">
                                     <span className="px-4 py-1.5 bg-brand-50 text-brand-accent font-bold text-sm rounded-full tracking-wide">{featuredPost.category}</span>
                                 </div>
-                                <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-6 leading-snug group-hover:text-brand-accent transition-colors duration-300">{featuredPost.title}</h2>
-                                <p className="text-lg text-slate-600 leading-relaxed mb-10 overflow-hidden line-clamp-3">{featuredPost.summary}</p>
+                                <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-6 leading-[1.3] break-keep group-hover:text-brand-accent transition-colors duration-300">{featuredPost.title}</h2>
+                                <p className="text-lg text-slate-600 leading-relaxed mb-10 overflow-hidden line-clamp-3 break-keep font-medium">{featuredPost.summary}</p>
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-slate-100 mt-auto">
                                     <div className="flex items-center gap-6">
                                         <div className="flex items-center text-slate-500 text-sm font-medium"><User className="w-4 h-4 mr-2 text-slate-400" />{featuredPost.author}</div>
@@ -102,6 +86,18 @@ const News = () => {
                         </motion.div>
                     </section>
                 )}
+
+                {/* 2. Text Bridge Section (Formerly Hero) */}
+                <section className="mb-24 py-12 border-y border-slate-200/60 bg-slate-50/50">
+                    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp} className="max-w-4xl mx-auto text-center px-4">
+                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-[1.4] mb-6 break-keep">
+                            KBLs의 생생한 발자취와 <span className="text-brand-accent">인사이트를 전합니다</span>
+                        </h2>
+                        <p className="text-lg md:text-xl text-slate-500 leading-relaxed font-medium break-keep">
+                            치열했던 프로젝트 회고부터 스터디 노트, 랩실의 일상까지 KBLs의 모든 기록을 확인하세요
+                        </p>
+                    </motion.div>
+                </section>
 
                 {/* 3. Category Filter & Content Grid */}
                 <section>

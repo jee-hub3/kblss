@@ -36,21 +36,21 @@ const Home = () => {
                         <span className="text-sm font-semibold text-brand-800">2026년 KBLs 신규 회원 모집중</span>
                     </motion.div>
 
-                    {/* Centered large typography — slightly smaller than original 8xl */}
+                    {/* Centered large typography — Elegant solid colors, reduced size */}
                     <motion.h1
                         variants={staggerContainer}
                         initial="hidden"
                         animate="visible"
-                        className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight text-slate-900 mb-8 leading-[1.1]"
+                        className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 mb-8 leading-snug"
                     >
                         <motion.span variants={fadeInUp} className="block">
-                            아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">실행</span><span className="absolute bottom-1 left-0 w-full h-3 bg-indigo-100 -z-0 transform -rotate-2"></span></span>으로,
+                            아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent border-b-4 border-brand-accent/30 pb-1">실행</span></span>으로
                         </motion.span>
                         <motion.span variants={fadeInUp} className="block mt-2">
-                            사람을 <span className="relative inline-block"><span className="relative z-10 font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">연결</span><span className="absolute bottom-1 left-0 w-full h-3 bg-purple-100 -z-0 transform rotate-1"></span></span>로
+                            사람을 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent border-b-4 border-brand-accent/30 pb-1">연결</span></span>로
                         </motion.span>
-                        <motion.span variants={fadeInUp} className="block mt-4 text-3xl md:text-4xl text-slate-700 font-semibold tracking-normal">
-                            우리가 함께 성장을 증명하는 곳.
+                        <motion.span variants={fadeInUp} className="block mt-6 text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">
+                            우리가 함께 성장을 증명하는 곳
                         </motion.span>
                     </motion.h1>
 
@@ -80,7 +80,7 @@ const Home = () => {
                     >
 
                         <h3 className="text-4xl md:text-5xl font-bold mb-10 text-slate-900">
-                            <span className="font-extrabold text-brand-800 tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-800 tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-800 tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
+                            <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
                         </h3>
                         <p className="text-2xl md:text-3xl text-slate-800 font-medium leading-relaxed tracking-tight">
                             KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 연구실 입니다 <br className="hidden md:block" /><span className="text-slate-500">단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다</span>
@@ -315,7 +315,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 6. Who We Are Looking For
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-white to-slate-50">
+            <section id="fit-section" className="py-32 bg-gradient-to-b from-white to-slate-50">
                 <div className="container mx-auto px-6 text-center">
                     <motion.div
                         initial="hidden"
@@ -352,9 +352,14 @@ const Home = () => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
+                        className="mt-8"
                     >
-                        <Link to="/fit-vision" className="inline-flex items-center text-lg text-slate-600 hover:text-brand-accent font-semibold transition-colors group">
-                            내가 KBLs가 찾는 인재일까? 핏(Fit) 확인하기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        <Link
+                            to="/organization?tab=vision"
+                            className="inline-flex items-center text-xl text-slate-500 hover:text-brand-accent font-bold transition-all group"
+                        >
+                            내가 KBLs가 찾는 인재일까? <span className="text-brand-accent ml-2 border-b-2 border-brand-accent/30 pb-0.5">핏(Fit) 확인하기</span>
+                            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </motion.div>
                 </div>
@@ -363,10 +368,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 7. Bottom CTA
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-slate-50 via-brand-accent to-brand-accent text-white relative overflow-hidden">
-                <div className="absolute top-0 right-[-10%] w-[50%] pt-[50%] bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
-                <div className="absolute bottom-[-10%] left-[-10%] w-[50%] pt-[50%] bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
-
+            <section className="py-32 bg-brand-accent text-white relative overflow-hidden">
                 <div className="container mx-auto px-6 relative z-10 text-center">
                     <motion.div
                         initial="hidden"
