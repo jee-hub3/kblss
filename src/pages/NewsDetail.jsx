@@ -20,12 +20,15 @@ const NewsDetail = () => {
         const fetchBlocks = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`/notion-api/v1/blocks/${id}/children`, {
-                    method: 'GET',
+                const response = await fetch('/api/notion', {
+                    method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-                        'Notion-Version': '2022-06-28'
-                    }
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        endpoint: `blocks/${id}/children`,
+                        method: 'GET'
+                    })
                 });
 
                 if (!response.ok) {

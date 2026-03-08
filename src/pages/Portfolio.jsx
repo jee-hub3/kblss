@@ -46,13 +46,15 @@ const Portfolio = () => {
     const fetchPortfolios = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_PORTFOLIO_DB_ID}/query`, {
+            const response = await fetch('/api/notion', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-                    'Notion-Version': '2022-06-28',
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({
+                    endpoint: `databases/${import.meta.env.VITE_NOTION_PORTFOLIO_DB_ID}/query`,
+                    method: 'POST'
+                })
             });
 
             if (!response.ok) {
@@ -110,13 +112,15 @@ const Portfolio = () => {
     const fetchHistory = async () => {
         setIsLoadingHistory(true);
         try {
-            const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_HISTORY_DB_ID}/query`, {
+            const response = await fetch('/api/notion', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-                    'Notion-Version': '2022-06-28',
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({
+                    endpoint: `databases/${import.meta.env.VITE_NOTION_HISTORY_DB_ID}/query`,
+                    method: 'POST'
+                })
             });
 
             if (!response.ok) return;
