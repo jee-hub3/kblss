@@ -1,0 +1,12 @@
+{
+    "rewrites": [
+        {
+            "source": "/notion-api/(.*)",
+            "destination": "/api/notion"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ]
+}
