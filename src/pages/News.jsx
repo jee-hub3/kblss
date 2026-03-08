@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Clock, User, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowRight, Clock, User, ArrowUpRight, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -16,29 +16,86 @@ const staggerContainer = {
     }
 };
 
-const categories = ["전체보기", "🏆 Project Review", "📚 Study Note", "☕ Life", "📢 News"];
-
-const featuredPost = {
-    category: "🏆 Project Review",
-    title: "[대상 수상] OO 데이터 분석 해커톤 회고 및 모델링 의사결정 과정",
-    summary: "치열했던 무박 2일의 기록. 우리 팀이 데이터 전처리부터 최종 모델링까지 어떤 기준으로 의사결정을 내렸고, 위기를 어떻게 극복했는지 그 생생한 과정을 공유합니다.",
-    author: "김철수",
-    date: "2026.03.01",
-    imageGrad: "from-slate-800 to-slate-600",
-    link: "#"
-};
-
-const newsLog = [
-    { id: 1, category: "📚 Study Note", title: "[SQLD 스터디] 1주차 핵심 개념 정리 및 기출 풀이", summary: "이번 학기 신설된 SQLD 자격증 스터디의 첫 주차 요약본입니다. SELECT 문과 JOIN의 기본 개념을 짚어보았습니다.", author: "박지민", date: "2026.03.04", imageGrad: "from-blue-200 to-indigo-300", link: "#" },
-    { id: 2, category: "☕ Life", title: "25학년도 하반기 KBLs 종강 총회 스케치", summary: "한 학기 동안 수고한 모든 랩실 부원들과 함께한 종강 총회! 우수 활동자 시상식부터 즐거웠던 회식 자리까지.", author: "이영희", date: "2025.12.20", imageGrad: "from-amber-200 to-orange-300", link: "#" },
-    { id: 3, category: "📢 News", title: "26학년도 상반기 신규 부원 리크루팅 시작", summary: "데이터에 진심인 분들을 찾습니다. 이번 상반기 KBLs가 제공하는 역대급 혜택과 모집 일정을 확인하세요.", author: "김회장", date: "2026.02.15", imageGrad: "from-emerald-200 to-teal-300", link: "#" },
-    { id: 4, category: "🏆 Project Review", title: "[우수상] 서울시 창업 해커톤: 시니어 여가 매칭 서비스 MVP", summary: "시니어 분들을 위한 서비스를 기획하며 겪었던 시행착오와 사용자 테스트(UT) 과정에서의 인사이트 정리.", author: "최유진", date: "2025.11.10", imageGrad: "from-rose-200 to-pink-300", link: "#" },
-    { id: 5, category: "📚 Study Note", title: "[데이터 분석] 이커머스 코호트 분석 기초 가이드", summary: "사용자 리텐션을 측정하는 가장 확실한 방법, 코호트 분석(Cohort Analysis)의 원리와 파이썬 구현 코드 공유.", author: "정태양", date: "2026.01.05", imageGrad: "from-slate-200 to-slate-300", link: "#" },
-];
+const defaultCategories = ["전체보기"];
 
 const ITEMS_PER_PAGE = 6;
 
 const News = () => {
+    const navigate = useNavigate();
+    const [newsData, setNewsData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchNews = async () => {
+            setIsLoading(true);
+            try {
+                const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_NEWS_DB_ID}/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
+                        'Notion-Version': '2022-06-28',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error("Failed to fetch Notion news data", response.status, response.statusText);
+                    return;
+                }
+
+                const data = await response.json();
+
+                const formattedData = data.results.map((item, index) => {
+                    const props = item.properties;
+
+                    const gradients = [
+                        "from-teal-400 to-emerald-600",
+                        "from-blue-500 to-indigo-600",
+                        "from-violet-500 to-purple-700",
+                        "from-rose-400 to-red-600",
+                        "from-amber-400 to-orange-600",
+                        "from-cyan-500 to-blue-600"
+                    ];
+
+                    const dateProp = props['작성일']?.date;
+                    let dateStr = '';
+                    if (dateProp) {
+                        dateStr = dateProp.start ? dateProp.start.replace(/-/g, '.') : '';
+                    }
+
+                    return {
+                        id: item.id,
+                        title: props['이름']?.title?.[0]?.plain_text || '제목 없음',
+                        tag: props['태그']?.select?.name || '소식',
+                        category: props['태그']?.select?.name || '소식', // For existing category filter logic
+                        summary: props['요약']?.rich_text?.[0]?.plain_text || '',
+                        author: props['작성자']?.rich_text?.[0]?.plain_text || 'KBLs',
+                        thumbnail: props['썸네일']?.url || null,
+                        date: dateStr,
+                        isFeatured: props['메인 지정']?.checkbox || false,
+                        imageGrad: gradients[index % gradients.length],
+                        link: "#"
+                    };
+                });
+
+                setNewsData(formattedData);
+
+            } catch (error) {
+                console.error("Error fetching news from Notion:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchNews();
+    }, []);
+
+    // 2. 동적 카테고리 추출 로직
+    const dynamicCategories = React.useMemo(() => {
+        const uniqueCats = Array.from(new Set(newsData.map(post => post.category)));
+        return [...defaultCategories, ...uniqueCats];
+    }, [newsData]);
+
     const [activeFilter, setActiveFilter] = useState("전체보기");
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -48,125 +105,195 @@ const News = () => {
     };
 
     const filteredNews = activeFilter === "전체보기"
-        ? newsLog
-        : newsLog.filter(post => post.category === activeFilter);
+        ? newsData
+        : newsData.filter(post => post.category === activeFilter);
 
     const totalPages = Math.max(1, Math.ceil(filteredNews.length / ITEMS_PER_PAGE));
     const paginatedNews = filteredNews.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+    const featuredPosts = newsData.filter(post => post.isFeatured);
+    const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
+
+    useEffect(() => {
+        if (featuredPosts.length <= 1 || isPaused) return;
+
+        const timer = setInterval(() => {
+            setCurrentFeaturedIndex((prev) => (prev + 1) % featuredPosts.length);
+        }, 3000);
+
+        return () => clearInterval(timer);
+    }, [featuredPosts.length, isPaused]);
+
+    const featuredPostData = featuredPosts.length > 0 ? featuredPosts[currentFeaturedIndex] : null;
 
     return (
         <div className="w-full bg-slate-50 min-h-screen pt-32 pb-32">
             <div className="container mx-auto px-6 max-w-7xl">
 
-                {/* 1. Featured Post (Moved to Top) */}
-                {activeFilter === "전체보기" && (
-                    <section className="mb-20">
-                        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}
-                            className="bg-white rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-sm border border-slate-100 flex flex-col lg:flex-row group hover:shadow-xl hover:border-brand-accent/30 transition-all duration-500">
-                            <div className={`lg:w-1/2 min-h-[350px] lg:min-h-[500px] bg-gradient-to-br ${featuredPost.imageGrad} relative overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-700`}>
-                                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
-                                <span className="text-white/80 font-bold text-xl tracking-widest drop-shadow-md">FEATURED STORY</span>
-                            </div>
-                            <div className="lg:w-1/2 p-10 lg:p-16 flex flex-col justify-center bg-white z-10 relative">
-                                <div className="flex items-center gap-3 mb-6">
-                                    <span className="px-4 py-1.5 bg-brand-50 text-brand-accent font-bold text-sm rounded-full tracking-wide">{featuredPost.category}</span>
-                                </div>
-                                <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-6 leading-[1.3] break-keep group-hover:text-brand-accent transition-colors duration-300">{featuredPost.title}</h2>
-                                <p className="text-lg text-slate-600 leading-relaxed mb-10 overflow-hidden line-clamp-3 break-keep font-medium">{featuredPost.summary}</p>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-slate-100 mt-auto">
-                                    <div className="flex items-center gap-6">
-                                        <div className="flex items-center text-slate-500 text-sm font-medium"><User className="w-4 h-4 mr-2 text-slate-400" />{featuredPost.author}</div>
-                                        <div className="flex items-center text-slate-500 text-sm font-medium"><Clock className="w-4 h-4 mr-2 text-slate-400" />{featuredPost.date}</div>
-                                    </div>
-                                    <a href={featuredPost.link} className="inline-flex items-center justify-center font-bold text-brand-accent hover:text-brand-700 transition-colors group/btn">
-                                        본문 읽기 <ArrowRight className="w-5 h-5 ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                                    </a>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </section>
-                )}
-
-                {/* 2. Text Bridge Section (Formerly Hero) */}
-                <section className="mb-24 py-12 border-y border-slate-200/60 bg-slate-50/50">
-                    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp} className="max-w-4xl mx-auto text-center px-4">
-                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-[1.4] mb-6 break-keep">
-                            KBLs의 생생한 발자취와 <span className="text-brand-accent">인사이트를 전합니다</span>
-                        </h2>
-                        <p className="text-lg md:text-xl text-slate-500 leading-relaxed font-medium break-keep">
-                            치열했던 프로젝트 회고부터 스터디 노트, 랩실의 일상까지 KBLs의 모든 기록을 확인하세요
-                        </p>
-                    </motion.div>
-                </section>
-
-                {/* 3. Category Filter & Content Grid */}
-                <section>
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
-                        <h3 className="text-2xl font-bold text-slate-900">
-                            {activeFilter === "전체보기" ? "Latest KBLs Log" : `${activeFilter} 탭의 글`}
-                        </h3>
-                        <div className="flex flex-wrap justify-center gap-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
-                            {categories.map((cat, idx) => (
-                                <button key={idx} onClick={() => handleFilterChange(cat)}
-                                    className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeFilter === cat ? 'bg-slate-900 text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
-                                    {cat}
-                                </button>
-                            ))}
-                        </div>
+                {isLoading ? (
+                    <div className="w-full py-32 flex flex-col items-center justify-center">
+                        <Loader2 className="w-12 h-12 text-brand-accent animate-spin mb-4" />
+                        <p className="text-slate-500 font-medium tracking-wide">소식을 불러오는 중입니다...</p>
                     </div>
-
-                    <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <AnimatePresence mode="popLayout">
-                            {paginatedNews.map((post) => (
-                                <motion.a href={post.link} key={post.id} layout
-                                    initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                                    transition={{ duration: 0.4, ease: "easeOut" }}
-                                    className="group bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
-                                    <div className={`w-full aspect-video bg-gradient-to-br ${post.imageGrad} relative overflow-hidden flex items-center justify-center`}>
-                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 absolute inset-0 flex items-center justify-center">
-                                            <span className="text-white font-bold tracking-wider flex items-center">READ MORE <ArrowUpRight className="w-5 h-5 ml-1" /></span>
-                                        </div>
+                ) : (
+                    <>
+                        {/* 1. Featured Post (Moved to Top) */}
+                        {activeFilter === "전체보기" && featuredPosts.length > 0 && (
+                            <section className="mb-24">
+                                <div
+                                    onMouseEnter={() => setIsPaused(true)}
+                                    onMouseLeave={() => setIsPaused(false)}
+                                    className="relative overflow-hidden w-full pb-14"
+                                >
+                                    <div
+                                        className="flex transition-transform duration-500 ease-in-out"
+                                        style={{ transform: `translateX(-${currentFeaturedIndex * 100}%)` }}
+                                    >
+                                        {featuredPosts.map((post) => (
+                                            <div key={post.id} className="w-full flex-shrink-0 px-2">
+                                                <div
+                                                    onClick={() => navigate(`/news/${post.id}`, { state: { post } })}
+                                                    className="h-full bg-white rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-sm border border-slate-100 flex flex-col lg:flex-row group hover:shadow-xl hover:border-brand-accent/30 transition-all duration-500 cursor-pointer">
+                                                    <div className={`lg:w-1/2 min-h-[350px] lg:min-h-[500px] ${post.thumbnail ? 'bg-slate-100' : `bg-gradient-to-br ${post.imageGrad}`} relative overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-700`}>
+                                                        {post.thumbnail ? (
+                                                            <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <span className="text-white/80 font-bold text-xl tracking-widest drop-shadow-md">FEATURED STORY</span>
+                                                        )}
+                                                        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
+                                                    </div>
+                                                    <div className="lg:w-1/2 p-10 lg:p-16 flex flex-col justify-center bg-white z-10 relative">
+                                                        <div className="flex items-center gap-3 mb-6">
+                                                            <span className="px-4 py-1.5 bg-brand-50 text-brand-accent font-bold text-sm rounded-full tracking-wide">{post.tag}</span>
+                                                        </div>
+                                                        <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-6 leading-[1.3] break-keep group-hover:text-brand-accent transition-colors duration-300">{post.title}</h2>
+                                                        <p className="text-lg text-slate-600 leading-relaxed mb-10 overflow-hidden line-clamp-3 break-keep font-medium">{post.summary}</p>
+                                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-slate-100 mt-auto">
+                                                            <div className="flex items-center gap-6">
+                                                                <div className="flex items-center text-slate-500 text-sm font-medium"><User className="w-4 h-4 mr-2 text-slate-400" />{post.author}</div>
+                                                                <div className="flex items-center text-slate-500 text-sm font-medium"><Clock className="w-4 h-4 mr-2 text-slate-400" />{post.date}</div>
+                                                            </div>
+                                                            <div className="inline-flex items-center justify-center font-bold text-brand-accent hover:text-brand-700 transition-colors group/btn">
+                                                                본문 읽기 <ArrowRight className="w-5 h-5 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div className="p-8 flex-1 flex flex-col relative bg-white">
-                                        <span className="text-xs font-extrabold text-brand-accent mb-4 tracking-wider">{post.category}</span>
-                                        <h4 className="text-xl font-bold text-slate-900 mb-3 leading-snug line-clamp-2 min-h-[3rem] group-hover:text-brand-accent transition-colors">{post.title}</h4>
-                                        <p className="text-slate-600 text-sm leading-relaxed mb-8 line-clamp-3 flex-1">{post.summary}</p>
-                                        <div className="flex items-center justify-between pt-5 border-t border-slate-100 mt-auto text-xs text-slate-500 font-medium">
-                                            <span className="flex items-center"><User className="w-3.5 h-3.5 mr-1.5" /> {post.author}</span>
-                                            <span className="flex items-center"><Clock className="w-3.5 h-3.5 mr-1.5" /> {post.date}</span>
+
+                                    {/* Indicators */}
+                                    {featuredPosts.length > 1 && (
+                                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                                            {featuredPosts.map((_, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setCurrentFeaturedIndex(idx);
+                                                    }}
+                                                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === currentFeaturedIndex ? 'bg-brand-accent w-8' : 'bg-gray-300 hover:bg-gray-400'}`}
+                                                    aria-label={`Go to slide ${idx + 1}`}
+                                                />
+                                            ))}
                                         </div>
-                                    </div>
-                                </motion.a>
-                            ))}
-                        </AnimatePresence>
-                    </motion.div>
+                                    )}
+                                </div>
+                            </section>
+                        )}
 
-                    {filteredNews.length === 0 && (
-                        <div className="w-full py-20 text-center text-slate-500 bg-white rounded-[2rem] border border-slate-100">
-                            <p className="text-lg font-medium">해당 카테고리의 글이 없습니다.</p>
-                        </div>
-                    )}
+                        {/* 2. Text Bridge Section (Formerly Hero) */}
+                        <section className="mb-24 py-12 border-y border-slate-200/60 bg-slate-50/50">
+                            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp} className="max-w-4xl mx-auto text-center px-4">
+                                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-[1.4] mb-6 break-keep">
+                                    KBLs의 생생한 <span className="text-brand-accent">발자취</span>와 <span className="text-brand-accent">인사이트</span>를 전합니다
+                                </h2>
+                                <p className="text-lg md:text-xl text-slate-500 leading-relaxed font-medium break-keep">
+                                    치열했던 프로젝트 회고부터 스터디 노트, 랩실의 일상까지 KBLs의 모든 기록을 확인하세요
+                                </p>
+                            </motion.div>
+                        </section>
 
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                        <div className="flex items-center justify-center gap-2 mt-16">
-                            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
-                                className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
-                                <ChevronLeft className="w-4 h-4" />
-                            </button>
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                <button key={page} onClick={() => setCurrentPage(page)}
-                                    className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
-                                    {page}
-                                </button>
-                            ))}
-                            <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
-                                className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
-                                <ChevronRight className="w-4 h-4" />
-                            </button>
-                        </div>
-                    )}
-                </section>
+                        {/* 3. Category Filter & Content Grid */}
+                        <section>
+                            <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+                                <h3 className="text-2xl font-bold text-slate-900">
+                                    {activeFilter === "전체보기" ? "Latest KBLs Log" : `${activeFilter} 탭의 글`}
+                                </h3>
+                                <div className="flex flex-wrap justify-center gap-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+                                    {dynamicCategories.map((cat, idx) => (
+                                        <button key={idx} onClick={() => handleFilterChange(cat)}
+                                            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeFilter === cat ? 'bg-slate-900 text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
+                                            {cat}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                <AnimatePresence mode="popLayout">
+                                    {paginatedNews.map((post) => (
+                                        <motion.div key={post.id} layout
+                                            onClick={() => navigate(`/news/${post.id}`, { state: { post } })}
+                                            initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                                            transition={{ duration: 0.4, ease: "easeOut" }}
+                                            className="cursor-pointer group flex flex-col bg-transparent">
+
+                                            <div className={`w-full aspect-video ${post.thumbnail ? 'bg-slate-100' : `bg-gradient-to-br ${post.imageGrad}`} rounded-2xl relative overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-lg`}>
+                                                {post.thumbnail && (
+                                                    <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                                )}
+                                                <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 absolute inset-0 flex items-center justify-center">
+                                                    <span className="text-white font-bold tracking-wider flex items-center">READ MORE <ArrowUpRight className="w-5 h-5 ml-1" /></span>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-col items-start px-1 mt-4">
+                                                <span className="inline-block bg-gray-100 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full">
+                                                    {post.tag}
+                                                </span>
+                                                <h4 className="mt-2 text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-brand-accent transition-colors">
+                                                    {post.title}
+                                                </h4>
+                                                <p className="mt-1 text-sm text-gray-500 line-clamp-2">
+                                                    {post.summary}
+                                                </p>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </motion.div>
+
+                            {filteredNews.length === 0 && (
+                                <div className="w-full py-20 text-center text-slate-500 bg-white rounded-[2rem] border border-slate-100">
+                                    <p className="text-lg font-medium">해당 탭의 글이 없습니다.</p>
+                                </div>
+                            )}
+
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div className="flex items-center justify-center gap-2 mt-16">
+                                    <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
+                                        className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                        <ChevronLeft className="w-4 h-4" />
+                                    </button>
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                        <button key={page} onClick={() => setCurrentPage(page)}
+                                            className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
+                                            {page}
+                                        </button>
+                                    ))}
+                                    <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
+                                        className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                        <ChevronRight className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            )}
+                        </section>
+                    </>
+                )}
             </div>
         </div>
     );

@@ -7,8 +7,10 @@ import Organization from './pages/Organization'
 import Activities from './pages/Activities'
 import Portfolio from './pages/Portfolio'
 import News from './pages/News'
-import Apply from './pages/Apply'
+import Recruit from './pages/Recruit'
 import FAQ from './pages/FAQ'
+import PortfolioDetail from './pages/PortfolioDetail'
+import NewsDetail from './pages/NewsDetail'
 
 
 function App() {
@@ -22,8 +24,10 @@ function App() {
                     <Route path="organization" element={<Organization />} />
                     <Route path="activities" element={<Activities />} />
                     <Route path="portfolio" element={<Portfolio />} />
+                    <Route path="portfolio/:id" element={<PortfolioDetail />} />
                     <Route path="news" element={<News />} />
-                    <Route path="apply" element={<Apply />} />
+                    <Route path="news/:id" element={<NewsDetail />} />
+                    <Route path="apply" element={<Recruit />} />
                     <Route path="faq" element={<FAQ />} />
                 </Route>
             </Routes>

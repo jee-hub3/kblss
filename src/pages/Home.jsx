@@ -1,8 +1,8 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
 import CountUp from 'react-countup';
-import { ArrowRight, Trophy, Users, Lightbulb, Rocket } from 'lucide-react';
+import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, Image as ImageIcon } from 'lucide-react';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
@@ -18,6 +18,128 @@ const staggerContainer = {
 };
 
 const Home = () => {
+    const navigate = useNavigate();
+
+    // 1. KBLs in Numbers API 연동
+    const [kblsNumbersData, setKblsNumbersData] = useState([]);
+
+    useEffect(() => {
+        const fetchMetrics = async () => {
+            try {
+                const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_METRICS_DB_ID}/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
+                        'Notion-Version': '2022-06-28',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+
+                const formattedData = data.results.map((item) => {
+                    const props = item.properties;
+                    const title = props['이름']?.title?.[0]?.plain_text || '';
+                    const valueStr = props['수치']?.rich_text?.[0]?.plain_text || '0';
+                    const order = props['순서']?.number || 0;
+
+                    const numMatch = valueStr.match(/\d+/);
+                    const num = numMatch ? parseInt(numMatch[0]) : 0;
+                    const suffix = valueStr.replace(/\d+/g, '');
+
+                    return {
+                        id: item.id,
+                        title,
+                        value: valueStr,
+                        num,
+                        suffix,
+                        order
+                    };
+                });
+
+                formattedData.sort((a, b) => a.order - b.order);
+                setKblsNumbersData(formattedData);
+
+            } catch (error) {
+                console.error("Error fetching metrics from Notion:", error);
+            }
+        };
+
+        fetchMetrics();
+    }, []);
+
+    // 2. Featured Portfolio Data State
+    const [featuredProjects, setFeaturedProjects] = useState([]);
+    const [isLoadingPortfolios, setIsLoadingPortfolios] = useState(true);
+
+    useEffect(() => {
+        const fetchTopPortfolios = async () => {
+            setIsLoadingPortfolios(true);
+            try {
+                const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_PORTFOLIO_DB_ID}/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
+                        'Notion-Version': '2022-06-28',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+
+                const formattedData = data.results.map((item, index) => {
+                    const props = item.properties;
+                    // Fallback gradients
+                    const gradients = [
+                        "from-teal-400 to-emerald-600",
+                        "from-blue-500 to-indigo-600",
+                        "from-violet-500 to-purple-700",
+                        "from-rose-400 to-red-600"
+                    ];
+
+                    const dateProp = props['기간']?.date;
+                    let dateStr = '';
+                    if (dateProp) {
+                        const start = dateProp.start ? dateProp.start.replace(/-/g, '.') : '';
+                        const end = dateProp.end ? dateProp.end.replace(/-/g, '.') : '';
+                        dateStr = end ? `${start} ~ ${end}` : start;
+                    }
+
+                    return {
+                        id: item.id,
+                        title: props['이름']?.title?.[0]?.plain_text || '제목 없음',
+                        category: props['카테고리']?.select?.name || '기타',
+                        summary: props['요약']?.rich_text?.[0]?.plain_text || '',
+                        imageUrl: props['썸네일']?.files?.[0]?.file?.url || props['썸네일']?.files?.[0]?.external?.url || null,
+                        tags: props['주요 사용 도구/작업']?.multi_select?.map(t => t.name) || [],
+                        date: dateStr,
+                        participants: props['참여']?.rich_text?.map(rt => rt.plain_text).join('') || '',
+                        achievement: props['성과']?.rich_text?.map(rt => rt.plain_text).join('') || '',
+                        isFeatured: props['메인 노출']?.checkbox || false, // Assuming checkbox property exists
+                        imageGrad: gradients[index % gradients.length]
+                    };
+                });
+
+                // Filter by 'isFeatured' or just take top 3 if none featured
+                const featured = formattedData.filter(p => p.isFeatured);
+                const finalProjects = featured.length > 0 ? featured.slice(0, 3) : formattedData.slice(0, 3);
+
+                setFeaturedProjects(finalProjects);
+
+            } catch (error) {
+                console.error("Error fetching portfolios for homepage:", error);
+            } finally {
+                setIsLoadingPortfolios(false);
+            }
+        };
+
+        fetchTopPortfolios();
+    }, []);
+
     return (
         <div className="w-full">
             {/* ═══════════════════════════════════════════
@@ -233,25 +355,20 @@ const Home = () => {
                     </motion.div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
-                        {[
-                            { num: 15, suffix: "건+", label: "누적 공모전 수상" },
-                            { num: 24, suffix: "개+", label: "완성된 MVP 및 기획서" },
-                            { num: 95, suffix: "%", label: "공모전 및 스터디 완주율" },
-                            { num: 40, suffix: "명+", label: "함께 성장한 동문 네트워크" }
-                        ].map((stat, i) => (
+                        {kblsNumbersData.map((stat) => (
                             <motion.div
-                                key={i}
+                                key={stat.id}
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 whileInView={{ opacity: 1, scale: 1 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: i * 0.1 }}
+                                transition={{ duration: 0.5, delay: stat.order * 0.1 }}
                                 className="text-center"
                             >
                                 <div className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500 mb-4 inline-flex items-center">
                                     <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce />
                                     <span>{stat.suffix}</span>
                                 </div>
-                                <div className="text-lg text-slate-500 font-medium">{stat.label}</div>
+                                <div className="text-lg text-slate-500 font-medium">{stat.title}</div>
                             </motion.div>
                         ))}
                     </div>
@@ -281,30 +398,53 @@ const Home = () => {
                         </Link>
                     </motion.div>
 
-                    <div className="grid md:grid-cols-3 gap-10">
-                        {[1, 2, 3].map((item, i) => {
-                            const pfLinks = ["#eco-link", "#congestion", "#k-campus"];
-                            return (
-                                <motion.a
-                                    href={pfLinks[i]} target="_blank" rel="noopener noreferrer"
-                                    key={i}
+                    {isLoadingPortfolios ? (
+                        <div className="w-full py-20 flex justify-center">
+                            <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
+                        </div>
+                    ) : (
+                        <div className="grid md:grid-cols-3 gap-6 lg:gap-10">
+                            {featuredProjects.map((project, i) => (
+                                <motion.div
+                                    key={project.id}
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true, margin: "-50px" }}
                                     transition={{ duration: 0.6, delay: i * 0.15 }}
-                                    className="group cursor-pointer"
+                                    onClick={() => navigate(`/portfolio/${project.id}`, { state: { project } })}
+                                    className="cursor-pointer group block"
                                 >
-                                    <div className="aspect-video bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl overflow-hidden mb-6 relative group-hover:scale-[1.02] transition-transform duration-500">
-                                        <div className="w-full h-full flex items-center justify-center text-slate-400 font-medium text-lg">
-                                            Project Image {item}
-                                        </div>
+                                    {/* Thumbnail container */}
+                                    <div className={`w-full aspect-video rounded-2xl overflow-hidden mb-4 relative flex items-center justify-center bg-slate-100`}>
+                                        {project.imageUrl ? (
+                                            <img
+                                                src={project.imageUrl}
+                                                alt={project.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                                            />
+                                        ) : (
+                                            <div className={`w-full h-full flex flex-col items-center justify-center bg-gradient-to-br ${project.imageGrad} text-white/50 group-hover:scale-105 transition-transform duration-700 ease-out`}>
+                                                <ImageIcon className="w-8 h-8 mb-2" />
+                                                <span className="text-sm font-bold">이미지가 없습니다</span>
+                                            </div>
+                                        )}
+                                        {/* Optional subtle overlay */}
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
                                     </div>
-                                    <h4 className="text-2xl font-bold mb-2 text-slate-900 group-hover:text-brand-accent transition-colors">우수 기획서 프로젝트 {item}</h4>
-                                    <p className="text-slate-500 text-lg">UX/UI 기획 & 데이터 분석</p>
-                                </motion.a>
-                            );
-                        })}
-                    </div>
+
+                                    {/* Minimalist details */}
+                                    <div className="px-2">
+                                        <h4 className="text-xl font-bold text-slate-900 group-hover:text-brand-accent transition-colors line-clamp-1">
+                                            {project.title}
+                                        </h4>
+                                        <p className="text-sm text-slate-500 mt-1 font-medium">
+                                            {project.category}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    )}
 
                     <Link to="/portfolio" className="md:hidden mt-8 w-full inline-flex justify-center items-center text-brand-accent font-semibold group">
                         전체 포트폴리오 확인하기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
