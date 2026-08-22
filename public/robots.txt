@@ -1,0 +1,5 @@
+# 전체 크롤러 허용
+User-agent: *
+Allow: /
+
+Sitemap: https://kblss.vercel.app/sitemap.xml

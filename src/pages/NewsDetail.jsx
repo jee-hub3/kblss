@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams, Navigate } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { fetchBlockChildren } from '../lib/notion';
+import Seo from '../components/Seo';
 
 const NewsDetail = () => {
     const location = useLocation();
@@ -101,6 +102,12 @@ const NewsDetail = () => {
 
     return (
         <div className="min-h-screen bg-white relative">
+            <Seo
+                type="article"
+                path={`/news/${id}`}
+                title={`${post.title} | KBLs`}
+                description={post.summary || `KBLs 소식 — ${post.title}`}
+            />
 
             {/* 뒤로 가기 버튼: 텍스트나 박스 없이 깔끔한 <- 화살표 아이콘만 고정 배치 */}
             <button
