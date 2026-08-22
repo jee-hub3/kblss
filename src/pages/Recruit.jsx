@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Loader2 } from 'lucide-react';
+import { trackEvent } from '../lib/analytics';
 
 const Recruit = () => {
     const [activeTab, setActiveTab] = useState("info"); // "info" or "form"
+
+    // 탭 버튼과 안내 탭의 CTA 두 경로로 진입하므로,
+    // onClick마다 심지 않고 활성 탭 변화를 한 곳에서 감지한다.
+    useEffect(() => {
+        if (activeTab === "form") {
+            trackEvent('apply_form_tab_view');
+        }
+    }, [activeTab]);
     const [openAccordion, setOpenAccordion] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
@@ -54,6 +63,7 @@ const Recruit = () => {
             const data = await response.json();
 
             if (response.ok) {
+                trackEvent('apply_submit_success');
                 alert('지원이 성공적으로 완료되었습니다! KBLs에 지원해주셔서 감사합니다.');
                 setFormData({
                     name: '', studentId: '', grade: '', major: '', phone: '',

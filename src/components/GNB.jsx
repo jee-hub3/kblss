@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { trackEvent } from '../lib/analytics';
 
 const navLinks = [
     { name: 'Organization', path: '/organization' },
@@ -72,7 +73,7 @@ const GNB = () => {
 
                     {/* Right: Desktop CTA + Mobile Hamburger */}
                     <div className="flex-1 flex justify-end items-center gap-3">
-                        <Link to="/apply" className="hidden md:inline-block bg-brand-accent hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        <Link to="/apply" onClick={() => trackEvent('apply_cta_click', { location: 'gnb_desktop' })} className="hidden md:inline-block bg-brand-accent hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                             지원하기
                         </Link>
 
@@ -140,7 +141,10 @@ const GNB = () => {
                             >
                                 <Link
                                     to="/apply"
-                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    onClick={() => {
+                                        trackEvent('apply_cta_click', { location: 'gnb_mobile' });
+                                        setIsMobileMenuOpen(false);
+                                    }}
                                     className="block w-full text-center bg-brand-accent hover:bg-blue-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all shadow-lg"
                                 >
                                     KBLs 지원하기
