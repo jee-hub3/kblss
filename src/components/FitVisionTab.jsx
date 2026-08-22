@@ -149,9 +149,9 @@ const FitVisionTab = ({ onBack }) => {
             <section className="relative z-10 py-24 lg:py-32 px-6">
                 <div className="max-w-7xl mx-auto">
                     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={staggerContainer} className="text-center mb-20 lg:mb-28">
-                        <motion.h3 variants={fadeInUp} custom={1} className="text-2xl md:text-4xl font-bold text-slate-900">
+                        <motion.h2 variants={fadeInUp} custom={1} className="text-2xl md:text-4xl font-bold text-slate-900">
                             상세 핵심 가치
-                        </motion.h3>
+                        </motion.h2>
                         <motion.p variants={fadeInUp} custom={2} className="mt-5 text-base text-slate-500 max-w-xl mx-auto">
                             KBLs의 모든 활동을 관통하는 세 가지 DNA
                         </motion.p>
@@ -170,9 +170,9 @@ const FitVisionTab = ({ onBack }) => {
                                 <div className="flex-1 w-full lg:pr-8">
                                     <div className="flex items-center gap-3 mb-4">
                                         <v.icon className={`w-6 h-6 text-brand-accent`} />
-                                        <span className="text-sm font-extrabold tracking-widest uppercase text-slate-400">{v.title}</span>
+                                        <span className="text-sm font-extrabold tracking-widest uppercase text-slate-500">{v.title}</span>
                                     </div>
-                                    <h4 className="text-2xl md:text-4xl lg:text-4xl font-extrabold text-slate-900 mb-6 leading-tight tracking-tight break-keep">{v.headline}</h4>
+                                    <h3 className="text-2xl md:text-4xl lg:text-4xl font-extrabold text-slate-900 mb-6 leading-tight tracking-tight break-keep">{v.headline}</h3>
                                     <p className="text-base md:text-lg text-slate-500 leading-relaxed max-w-lg break-keep">{v.desc}</p>
                                 </div>
                                 <div className="w-full md:w-1/2 flex justify-center">
@@ -190,9 +190,9 @@ const FitVisionTab = ({ onBack }) => {
             <section className="relative z-10 py-24 lg:py-32 px-6">
                 <div className="max-w-6xl mx-auto">
                     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={staggerContainer} className="text-center mb-20">
-                        <motion.h3 variants={fadeInUp} custom={1} className="text-2xl md:text-4xl font-bold text-slate-900">
+                        <motion.h2 variants={fadeInUp} custom={1} className="text-2xl md:text-4xl font-bold text-slate-900">
                             성장 궤도
-                        </motion.h3>
+                        </motion.h2>
                     </motion.div>
 
                     {/* Desktop: Horizontal stepper */}
@@ -213,7 +213,7 @@ const FitVisionTab = ({ onBack }) => {
                                             <span className={`text-sm font-extrabold tracking-widest text-slate-400 block mb-2`}>
                                                 {step.year}
                                             </span>
-                                            <h4 className="text-xl font-black text-slate-900 mb-3 tracking-tight">{step.phase}</h4>
+                                            <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight">{step.phase}</h3>
                                             <p className="text-sm text-slate-500 leading-relaxed font-medium break-keep">{step.desc}</p>
                                         </div>
                                     </motion.div>
@@ -237,7 +237,7 @@ const FitVisionTab = ({ onBack }) => {
                                         <span className={`text-xs font-extrabold tracking-widest text-slate-400 block mb-1`}>
                                             {step.year}
                                         </span>
-                                        <h4 className="text-xl font-black text-slate-900 mb-2 tracking-tight">{step.phase}</h4>
+                                        <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">{step.phase}</h3>
                                         <p className="text-sm text-slate-500 leading-relaxed font-medium break-keep">{step.desc}</p>
                                     </div>
                                 </motion.div>
