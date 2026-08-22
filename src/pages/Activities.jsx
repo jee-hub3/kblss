@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Share2, Users, CheckCircle, Search, LineChart, LayoutTemplate, Rocket, Check, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Seo from '../components/Seo';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
@@ -90,6 +91,11 @@ const Activities = () => {
 
     return (
         <div className="w-full bg-white pt-32 pb-32">
+            <Seo
+                path="/activities"
+                title="Activities | KBLs"
+                description="투명한 공유, 시스템 기반 협업, 결과물 증명. KBLs의 3대 문화와 공모전·스터디 운영 방식을 소개합니다."
+            />
 
             {/* 1. Hero Section */}
             <section className="container mx-auto px-6 mb-32 relative">

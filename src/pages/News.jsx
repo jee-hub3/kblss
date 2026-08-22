@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Seo from '../components/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Clock, User, ArrowUpRight, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -118,6 +119,11 @@ const News = () => {
 
     return (
         <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32">
+            <Seo
+                path="/news"
+                title="News | KBLs"
+                description="공모전 수상, 스터디 결과, 활동 회고까지. KBLs 랩실의 최신 소식을 전합니다."
+            />
             <div className="container mx-auto px-6 max-w-7xl">
 
                 {isLoading ? (

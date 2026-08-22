@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams, Navigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Loader2, Calendar, Users, Wrench, Trophy } from 'lucide-react';
 import { fetchBlockChildren } from '../lib/notion';
+import Seo from '../components/Seo';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -111,6 +112,12 @@ const PortfolioDetail = () => {
 
     return (
         <div className="min-h-screen bg-white relative">
+            <Seo
+                type="article"
+                path={`/portfolio/${id}`}
+                title={`${project.title} | KBLs`}
+                description={project.summary || `KBLs 포트폴리오 — ${project.title}`}
+            />
 
             {/* Detached Boxless Back Button (Icon Only) */}
             <button

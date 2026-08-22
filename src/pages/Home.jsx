@@ -5,6 +5,7 @@ import CountUp from 'react-countup';
 import FlexibleImage from '../components/FlexibleImage';
 import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, Image as ImageIcon } from 'lucide-react';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
+import Seo from '../components/Seo';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
@@ -126,6 +127,11 @@ const Home = () => {
 
     return (
         <div className="w-full">
+            <Seo
+                path="/"
+                title="KBLs — Key Bridge Leaders"
+                description="실행과 협업으로 성장하는 실무형 인재들의 랩실. 공모전·프로젝트·스터디로 증명합니다."
+            />
             {/* ═══════════════════════════════════════════
                 1. Hero Section — 최초 중앙 정렬 테마로 복구
             ═══════════════════════════════════════════ */}

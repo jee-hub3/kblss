@@ -5,7 +5,38 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/kbls-logo.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KBLs - Key Bridge Leaders</title>
+
+  <!--
+    기본 메타값. JS를 실행하지 않는 크롤러가 보는 것이 여기까지다.
+    React 19에서는 react-helmet-async가 자체 DOM 조작 대신 React의 네이티브
+    메타데이터 호이스팅을 쓰기 때문에, 여기 있는 정적 태그를 알아서 회수하지 못한다.
+    그래서 data-rh="true"를 표식으로 달아두고 src/components/Seo.jsx가 마운트될 때
+    한 번 걷어낸다. 이 표식을 지우면 og:title 등이 두 벌씩 남고, 크롤러는 보통
+    먼저 나온 태그(= 이 기본값)를 읽으므로 페이지별 값이 무시된다.
+  -->
+  <title data-rh="true">KBLs — Key Bridge Leaders</title>
+  <meta data-rh="true" name="description"
+    content="실행과 협업으로 성장하는 실무형 인재들의 랩실. 공모전·프로젝트·스터디로 증명합니다." />
+  <link data-rh="true" rel="canonical" href="https://kblss.vercel.app/" />
+
+  <meta data-rh="true" property="og:type" content="website" />
+  <meta data-rh="true" property="og:site_name" content="KBLs" />
+  <meta data-rh="true" property="og:locale" content="ko_KR" />
+  <meta data-rh="true" property="og:title" content="KBLs — Key Bridge Leaders" />
+  <meta data-rh="true" property="og:description"
+    content="실행과 협업으로 성장하는 실무형 인재들의 랩실. 공모전·프로젝트·스터디로 증명합니다." />
+  <meta data-rh="true" property="og:url" content="https://kblss.vercel.app/" />
+  <meta data-rh="true" property="og:image" content="https://kblss.vercel.app/og-image.png" />
+  <meta data-rh="true" property="og:image:width" content="1200" />
+  <meta data-rh="true" property="og:image:height" content="630" />
+  <meta data-rh="true" property="og:image:alt" content="KBLs — Key Bridge Leaders" />
+
+  <meta data-rh="true" name="twitter:card" content="summary_large_image" />
+  <meta data-rh="true" name="twitter:title" content="KBLs — Key Bridge Leaders" />
+  <meta data-rh="true" name="twitter:description"
+    content="실행과 협업으로 성장하는 실무형 인재들의 랩실. 공모전·프로젝트·스터디로 증명합니다." />
+  <meta data-rh="true" name="twitter:image" content="https://kblss.vercel.app/og-image.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Seo from '../components/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
@@ -84,6 +85,11 @@ const Recruit = () => {
 
     return (
         <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32 flex flex-col items-center">
+            <Seo
+                path="/apply"
+                title="지원하기 | KBLs"
+                description="KBLs 신규 기수 모집 안내입니다. 지원 자격과 전형 일정을 확인하고 지원서를 작성해 보세요."
+            />
             <div className="w-full max-w-3xl px-6">
 
                 {/* 1. Header (공통 상단 - Left Aligned) */}

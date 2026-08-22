@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight, User } from 'lucide-react';
 import FitVisionTab from '../components/FitVisionTab';
+import Seo from '../components/Seo';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -99,6 +100,11 @@ const Organization = () => {
 
     return (
         <div className="w-full bg-slate-50/50 pt-24 md:pt-32 pb-0 overflow-hidden">
+            <Seo
+                path="/organization"
+                title="Organization | KBLs"
+                description="지도교수부터 랩실장, 공모전·스터디·일정 담당까지. KBLs를 움직이는 조직 구성과 각 역할을 소개합니다."
+            />
             {/* Tabs Controller */}
             <div className="flex justify-center mb-10 pt-4 relative z-20">
                 <div className="flex space-x-8">
