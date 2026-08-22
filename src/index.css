@@ -70,3 +70,20 @@
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
+
+/* OS '동작 줄이기' 설정 시 CSS 애니메이션·트랜지션 무력화.
+   framer-motion은 App의 MotionConfig(reducedMotion="user")가 담당하고,
+   이 블록은 Tailwind transition-*, --animate-fade-up, --animate-blob 등
+   순수 CSS 기반 움직임을 커버한다. 0.01ms로 즉시 종료시키므로
+   forwards 키프레임은 최종 상태(opacity 1)로 바로 도달해 콘텐츠가 가려지지 않는다. */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

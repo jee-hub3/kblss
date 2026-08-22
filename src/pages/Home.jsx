@@ -20,6 +20,11 @@ const staggerContainer = {
     }
 };
 
+// OS '동작 줄이기' 설정 여부. react-countup은 MotionConfig(reducedMotion)의
+// 영향을 받지 않으므로 카운트업 애니메이션을 직접 분기한다.
+const prefersReducedMotion = typeof window !== 'undefined'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 const Home = () => {
     const navigate = useNavigate();
 
@@ -392,7 +397,9 @@ const Home = () => {
                                     className="text-center"
                                 >
                                     <div className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500 mb-4 inline-flex items-center">
-                                        <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce />
+                                        {prefersReducedMotion
+                                            ? <span>{stat.num}</span>
+                                            : <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce />}
                                         <span>{stat.suffix}</span>
                                     </div>
                                     <div className="text-base text-slate-500 font-medium">{stat.title}</div>
