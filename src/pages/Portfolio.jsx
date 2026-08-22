@@ -172,7 +172,7 @@ const Portfolio = () => {
     };
 
     return (
-        <div className="w-full bg-slate-50 min-h-screen pt-32 pb-32">
+        <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32">
             <div className="container mx-auto px-6">
 
                 {/* 1. Hero Section */}
@@ -258,7 +258,7 @@ const Portfolio = () => {
                             <div className="flex flex-wrap justify-center gap-2 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
                                 {dynamicCategories.map((cat, idx) => (
                                     <button key={idx} onClick={() => handleFilterChange(cat)}
-                                        className={`px-5 py-2 rounded-xl text-sm font-bold transition-all ${activeFilter === cat ? 'bg-brand-accent text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
+                                        className={`min-h-11 px-5 py-2 rounded-xl text-sm font-bold transition-all ${activeFilter === cat ? 'bg-brand-accent text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
                                         {cat}
                                     </button>
                                 ))}
@@ -300,8 +300,10 @@ const Portfolio = () => {
                                                 </div>
                                             )}
 
-                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 flex items-center justify-center transition-all duration-300">
-                                                <div className="opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 flex items-center font-bold text-white bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+                                            {/* 터치 기기에는 hover가 없으므로 모바일에서는 항상 노출하고,
+                                                md 이상에서만 hover로 드러나게 한다 */}
+                                            <div className="absolute inset-0 bg-black/20 md:bg-black/0 md:group-hover:bg-black/20 flex items-center justify-center transition-all duration-300">
+                                                <div className="opacity-100 translate-y-0 md:opacity-0 md:translate-y-4 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-300 flex items-center font-bold text-white bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
                                                     자세히 보기 <Plus className="w-4 h-4 ml-2" />
                                                 </div>
                                             </div>
@@ -336,17 +338,17 @@ const Portfolio = () => {
                     {totalPages > 1 && (
                         <div className="flex items-center justify-center gap-2 mt-16">
                             <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
-                                className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                                 <ChevronLeft className="w-4 h-4" />
                             </button>
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                                 <button key={page} onClick={() => setCurrentPage(page)}
-                                    className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
+                                    className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
                                     {page}
                                 </button>
                             ))}
                             <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
-                                className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                                 <ChevronRight className="w-4 h-4" />
                             </button>
                         </div>

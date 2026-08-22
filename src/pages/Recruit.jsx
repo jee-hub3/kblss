@@ -73,7 +73,7 @@ const Recruit = () => {
     };
 
     return (
-        <div className="w-full bg-slate-50 min-h-screen pt-32 pb-32 flex flex-col items-center">
+        <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32 flex flex-col items-center">
             <div className="w-full max-w-3xl px-6">
 
                 {/* 1. Header (공통 상단 - Left Aligned) */}

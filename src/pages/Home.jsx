@@ -129,7 +129,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 1. Hero Section — 최초 중앙 정렬 테마로 복구
             ═══════════════════════════════════════════ */}
-            <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
+            <section className="relative min-h-[100dvh] flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
                 {/* Animated Mesh Gradient Blobs */}
                 <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
                     <motion.div
@@ -344,7 +344,7 @@ const Home = () => {
                         ))}
                     </div>
 
-                    <Link to="/activities" className="md:hidden mt-12 w-full inline-flex justify-center items-center text-brand-accent font-semibold group">
+                    <Link to="/activities" className="md:hidden mt-12 w-full min-h-11 py-3 inline-flex justify-center items-center text-brand-accent font-semibold group">
                         우리의 활동 방식 자세히 보기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
@@ -473,7 +473,7 @@ const Home = () => {
                         </div>
                     )}
 
-                    <Link to="/portfolio" className="md:hidden mt-8 w-full inline-flex justify-center items-center text-brand-accent font-semibold group">
+                    <Link to="/portfolio" className="md:hidden mt-8 w-full min-h-11 py-3 inline-flex justify-center items-center text-brand-accent font-semibold group">
                         전체 포트폴리오 확인하기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
