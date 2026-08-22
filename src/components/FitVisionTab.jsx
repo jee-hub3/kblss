@@ -177,7 +177,7 @@ const FitVisionTab = ({ onBack }) => {
                                 </div>
                                 <div className="w-full md:w-1/2 flex justify-center">
                                     <div className="w-full aspect-[4/3] rounded-[2rem] overflow-hidden relative group">
-                                        <FlexibleImage baseSrc={['/image/value-action', '/image/value-problem', '/image/value-teamwork'][i]} alt={v.title} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                                        <FlexibleImage baseSrc={['/image/value-action', '/image/value-problem', '/image/value-teamwork'][i]} alt={v.title} width={1280} height={698} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
                                     </div>
                                 </div>
                             </motion.div>
