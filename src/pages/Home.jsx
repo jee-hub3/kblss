@@ -303,7 +303,7 @@ const Home = () => {
                             <div className="relative">
                                 {/* Tall background panel */}
                                 <div className="w-full aspect-[4/5] rounded-[2rem] overflow-hidden">
-                                    <FlexibleImage baseSrc="/image/team" alt="KBLs 팀 단체 사진" className="w-full h-full object-cover" />
+                                    <FlexibleImage baseSrc="/image/team" alt="KBLs 팀 단체 사진" width={1200} height={800} className="w-full h-full object-cover" />
                                 </div>
 
                                 {/* Floating overlap panel — bottom-left offset */}
@@ -314,7 +314,7 @@ const Home = () => {
                                     transition={{ duration: 0.6, delay: 0.4 }}
                                     className="absolute -bottom-8 -left-6 lg:-left-16 w-[60%] aspect-[3/2] rounded-2xl border-4 border-white shadow-xl overflow-hidden"
                                 >
-                                    <FlexibleImage baseSrc="/image/workshop" alt="KBLs 워크샵 및 회의" className="w-full h-full object-cover rounded-3xl shadow-xl border-4 border-white" />
+                                    <FlexibleImage baseSrc="/image/workshop" alt="KBLs 워크샵 및 회의" width={800} height={533} className="w-full h-full object-cover rounded-3xl shadow-xl border-4 border-white" />
                                 </motion.div>
 
                             </div>
