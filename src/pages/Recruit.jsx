@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Seo from '../components/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
 
 const Recruit = () => {
-    const [activeTab, setActiveTab] = useState("info"); // "info" or "form"
+    // 탭 상태는 URL 쿼리(?tab=form)가 단일 기준이다. /apply?tab=form 딥링크로
+    // 지원서 탭을 바로 열 수 있고, 그 외 값과 파라미터 없음은 info로 폴백한다.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const activeTab = searchParams.get('tab') === 'form' ? 'form' : 'info'; // "info" or "form"
+
+    // 기존 호출부(탭 버튼, 안내 탭 CTA, 제출 후 복귀)를 그대로 쓰기 위해
+    // 같은 이름의 세터를 유지한다. replace로 히스토리 오염을 막는다.
+    const setActiveTab = (tab) => {
+        setSearchParams(tab === 'form' ? { tab: 'form' } : {}, { replace: true });
+    };
 
     // 탭 버튼과 안내 탭의 CTA 두 경로로 진입하므로,
     // onClick마다 심지 않고 활성 탭 변화를 한 곳에서 감지한다.
+    // activeTab이 URL에서 파생된 문자열이라 ?tab=form 직접 진입 시에도 1회 발생하고,
+    // 같은 탭 내 리렌더(다른 쿼리 변경 등)로는 재발화하지 않는다.
     useEffect(() => {
         if (activeTab === "form") {
             trackEvent('apply_form_tab_view');
