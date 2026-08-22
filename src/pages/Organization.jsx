@@ -98,13 +98,13 @@ const Organization = () => {
     );
 
     return (
-        <div className="w-full bg-slate-50/50 pt-32 pb-0 overflow-hidden">
+        <div className="w-full bg-slate-50/50 pt-24 md:pt-32 pb-0 overflow-hidden">
             {/* Tabs Controller */}
             <div className="flex justify-center mb-10 pt-4 relative z-20">
                 <div className="flex space-x-8">
                     <button
                         onClick={() => setActiveTab('구성')}
-                        className={`pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '구성' ? "text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
+                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '구성' ? "text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
                     >
                         구성
                         {activeTab === '구성' && (
@@ -116,7 +116,7 @@ const Organization = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('인재상')}
-                        className={`pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '인재상' ? "text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
+                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '인재상' ? "text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
                     >
                         인재상
                         {activeTab === '인재상' && (

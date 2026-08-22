@@ -54,7 +54,7 @@ const FAQ = () => {
     };
 
     return (
-        <div className="w-full bg-slate-50 min-h-screen pt-32 pb-32">
+        <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32">
             <div className="container mx-auto px-6 max-w-4xl">
                 {/* Hero Section */}
                 <section className="mb-20 text-center">

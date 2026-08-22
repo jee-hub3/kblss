@@ -79,7 +79,7 @@ const GNB = () => {
                         {/* Hamburger button — mobile only */}
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
+                            className="md:hidden relative w-11 h-11 flex items-center justify-center rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
                             aria-label="메뉴 열기/닫기"
                         >
                             <AnimatePresence mode="wait" initial={false}>

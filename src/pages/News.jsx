@@ -117,7 +117,7 @@ const News = () => {
     const featuredPostData = featuredPosts.length > 0 ? featuredPosts[currentFeaturedIndex] : null;
 
     return (
-        <div className="w-full bg-slate-50 min-h-screen pt-32 pb-32">
+        <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32">
             <div className="container mx-auto px-6 max-w-7xl">
 
                 {isLoading ? (
@@ -180,17 +180,20 @@ const News = () => {
 
                                     {/* Indicators */}
                                     {featuredPosts.length > 1 && (
-                                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center">
                                             {featuredPosts.map((_, idx) => (
+                                                // 점 자체는 작게 두되 버튼의 터치 영역은 44px를 확보한다
                                                 <button
                                                     key={idx}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         setCurrentFeaturedIndex(idx);
                                                     }}
-                                                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === currentFeaturedIndex ? 'bg-brand-accent w-8' : 'bg-gray-300 hover:bg-gray-400'}`}
+                                                    className="group/dot flex h-11 w-11 items-center justify-center"
                                                     aria-label={`Go to slide ${idx + 1}`}
-                                                />
+                                                >
+                                                    <span className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentFeaturedIndex ? 'bg-brand-accent w-8' : 'w-2.5 bg-gray-300 group-hover/dot:bg-gray-400'}`} />
+                                                </button>
                                             ))}
                                         </div>
                                     )}
@@ -219,7 +222,7 @@ const News = () => {
                                 <div className="flex flex-wrap justify-center gap-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
                                     {dynamicCategories.map((cat, idx) => (
                                         <button key={idx} onClick={() => handleFilterChange(cat)}
-                                            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeFilter === cat ? 'bg-slate-900 text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
+                                            className={`min-h-11 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeFilter === cat ? 'bg-slate-900 text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
                                             {cat}
                                         </button>
                                     ))}
@@ -239,7 +242,8 @@ const News = () => {
                                                 {post.thumbnail && (
                                                     <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                                 )}
-                                                <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 absolute inset-0 flex items-center justify-center">
+                                                {/* 터치 기기에는 hover가 없으므로 모바일에서는 항상 노출한다 */}
+                                                <div className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-black/40 absolute inset-0 flex items-center justify-center">
                                                     <span className="text-white font-bold tracking-wider flex items-center">READ MORE <ArrowUpRight className="w-5 h-5 ml-1" /></span>
                                                 </div>
                                             </div>
@@ -270,17 +274,17 @@ const News = () => {
                             {totalPages > 1 && (
                                 <div className="flex items-center justify-center gap-2 mt-16">
                                     <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
-                                        className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                        className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                                         <ChevronLeft className="w-4 h-4" />
                                     </button>
                                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                                         <button key={page} onClick={() => setCurrentPage(page)}
-                                            className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
+                                            className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
                                             {page}
                                         </button>
                                     ))}
                                     <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
-                                        className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                        className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>
