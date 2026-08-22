@@ -162,36 +162,30 @@ const Home = () => {
                 1. Hero Section — 최초 중앙 정렬 테마로 복구
             ═══════════════════════════════════════════ */}
             <section className="relative min-h-[100dvh] flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
-                {/* Animated Mesh Gradient Blobs */}
+                {/* Animated Mesh Gradient Blobs.
+                    framer-motion(JS 구동) 대신 CSS 키프레임으로 컴포지터에서만 돌린다
+                    (키프레임 좌표·주기·easing은 index.css에 동일하게 이식).
+                    무한 rAF 구동이 메인스레드 TBT에 얹히는 것을 막기 위한 조치로,
+                    reduced-motion 분기도 index.css의 @media 가드가 담당한다. */}
                 <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                    <motion.div
-                        className="absolute w-[600px] h-[600px] rounded-full opacity-20 bg-blue-400 blur-[120px]"
-                        animate={{ x: [0, 80, -40, 0], y: [0, -60, 40, 0], scale: [1, 1.15, 0.95, 1] }}
-                        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-1 absolute w-[600px] h-[600px] rounded-full opacity-20 bg-blue-400 blur-[120px]"
                         style={{ top: '-10%', left: '10%' }}
                     />
-                    <motion.div
-                        className="absolute w-[500px] h-[500px] rounded-full opacity-15 bg-teal-400 blur-[120px]"
-                        animate={{ x: [0, -60, 50, 0], y: [0, 50, -30, 0], scale: [1, 0.9, 1.1, 1] }}
-                        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-2 absolute w-[500px] h-[500px] rounded-full opacity-15 bg-teal-400 blur-[120px]"
                         style={{ top: '20%', right: '5%' }}
                     />
-                    <motion.div
-                        className="absolute w-[450px] h-[450px] rounded-full opacity-15 bg-emerald-300 blur-[100px]"
-                        animate={{ x: [0, 40, -60, 0], y: [0, -40, 60, 0], scale: [1, 1.1, 0.9, 1] }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-3 absolute w-[450px] h-[450px] rounded-full opacity-15 bg-emerald-300 blur-[100px]"
                         style={{ bottom: '5%', left: '25%' }}
                     />
-                    <motion.div
-                        className="absolute w-[550px] h-[550px] rounded-full opacity-10 bg-indigo-400 blur-[130px]"
-                        animate={{ x: [0, -50, 30, 0], y: [0, 70, -50, 0], scale: [1, 1.05, 0.95, 1] }}
-                        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-4 absolute w-[550px] h-[550px] rounded-full opacity-10 bg-indigo-400 blur-[130px]"
                         style={{ top: '40%', left: '50%' }}
                     />
-                    <motion.div
-                        className="absolute w-[400px] h-[400px] rounded-full opacity-10 bg-cyan-300 blur-[100px]"
-                        animate={{ x: [0, 60, -30, 0], y: [0, -50, 40, 0], scale: [1, 0.95, 1.1, 1] }}
-                        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-5 absolute w-[400px] h-[400px] rounded-full opacity-10 bg-cyan-300 blur-[100px]"
                         style={{ top: '10%', right: '30%' }}
                     />
                 </div>
