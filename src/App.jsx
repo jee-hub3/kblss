@@ -1,7 +1,9 @@
 import React, { lazy } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import Layout from './components/Layout'
 import ScrollToTop from './components/ScrollToTop'
+import AnalyticsTracker from './components/AnalyticsTracker'
 import Home from './pages/Home'
 
 // 진입 페이지인 Home만 초기 번들에 포함하고,
@@ -21,6 +23,8 @@ function App() {
     return (
         <BrowserRouter>
             <ScrollToTop />
+            <AnalyticsTracker />
+            <Analytics />
             <Routes>
 
                 <Route path="/" element={<Layout />}>
