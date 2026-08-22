@@ -37,3 +37,9 @@ notion_keys.txt
 history_debug.json
 history_props.json
 notion_history.json
+
+# Claude Code
+.claude/
+
+# Local dev scripts
+test-org.mjs
