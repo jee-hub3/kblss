@@ -47,13 +47,20 @@ const Home = () => {
                     const num = numMatch ? parseInt(numMatch[0]) : 0;
                     const suffix = valueStr.replace(/\d+/g, '');
 
+                    // '산출 기준'·'기준일'은 나중에 추가된 속성이라 없을 수 있다.
+                    // 옵셔널 체이닝으로 읽고 없으면 빈 값 → 렌더 단계에서 생략한다.
+                    const basis = props['산출 기준']?.rich_text?.map(rt => rt.plain_text).join('') || '';
+                    const asOf = props['기준일']?.date?.start || '';
+
                     return {
                         id: item.id,
                         title,
                         value: valueStr,
                         num,
                         suffix,
-                        order
+                        order,
+                        basis,
+                        asOf
                     };
                 });
 
@@ -68,6 +75,16 @@ const Home = () => {
 
         fetchMetrics();
     }, []);
+
+    // 지표들의 기준일 중 가장 최근 것을 "YYYY.MM"으로 만든다.
+    // ISO 날짜(YYYY-MM-DD)는 사전순 = 시간순이라 문자열 비교로 충분하다.
+    const latestAsOf = (() => {
+        const dates = kblsNumbersData.map(s => s.asOf).filter(Boolean);
+        if (dates.length === 0) return '';
+        const latest = dates.reduce((a, b) => (a > b ? a : b));
+        const [year, month] = latest.split('-');
+        return month ? `${year}.${month}` : year;
+    })();
 
     // 2. Featured Portfolio Data State
     const [featuredProjects, setFeaturedProjects] = useState([]);
@@ -403,9 +420,17 @@ const Home = () => {
                                         <span>{stat.suffix}</span>
                                     </div>
                                     <div className="text-base text-slate-500 font-medium">{stat.title}</div>
+                                    {stat.basis && (
+                                        <div className="text-xs text-slate-400 mt-1.5 break-keep">{stat.basis}</div>
+                                    )}
                                 </motion.div>
                             ))}
                         </div>
+                    )}
+
+                    {/* 가장 최근 기준일 1회 표시. 기준일이 하나도 없으면 생략한다. */}
+                    {!metricsError && latestAsOf && (
+                        <p className="text-xs text-slate-400 text-center mt-12">기준: {latestAsOf}</p>
                     )}
                 </div>
             </section>
