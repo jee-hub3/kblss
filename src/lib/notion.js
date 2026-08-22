@@ -4,16 +4,15 @@
  * 모든 요청은 /notion-api 프록시를 거친다.
  * (개발: vite.config.js의 server.proxy, 배포: api/notion.js)
  *
- * 응답 형식이나 인증 방식이 바뀌면 이 파일만 고치면 된다.
+ * 인증 토큰은 클라이언트가 갖지 않는다. 프록시가 서버 환경변수
+ * NOTION_API_KEY를 읽어 Authorization 헤더를 붙인다.
+ * Notion-Version도 프록시가 관리한다.
  */
 
-const NOTION_VERSION = '2022-06-28';
-
 async function request(path, method = 'GET') {
-    const headers = {
-        'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-        'Notion-Version': NOTION_VERSION,
-    };
+    // 인증 헤더는 여기서 붙이지 않는다.
+    // 브라우저 번들에 토큰이 들어가지 않도록 프록시가 서버 측에서 주입한다.
+    const headers = {};
     if (method === 'POST') headers['Content-Type'] = 'application/json';
 
     const response = await fetch(`/notion-api/v1${path}`, { method, headers });
