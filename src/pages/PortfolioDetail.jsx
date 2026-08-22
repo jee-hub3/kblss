@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate, useParams, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Loader2, Calendar, Users, Wrench, Trophy } from 'lucide-react';
 import { fetchBlockChildren } from '../lib/notion';
+import DataNotice from '../components/DataNotice';
 import Seo from '../components/Seo';
 
 const fadeInUp = {
@@ -22,26 +23,28 @@ const PortfolioDetail = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState(false);
 
+    // '다시 시도'에서 재호출하므로 useEffect 밖으로 뺀다.
+    const fetchBlocks = useCallback(async () => {
+        setIsLoading(true);
+        setLoadError(false);
+        try {
+            setBlocks(await fetchBlockChildren(id));
+        } catch (error) {
+            console.error("Error fetching Notion blocks:", error);
+            setLoadError(true);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [id]);
+
     useEffect(() => {
         // Scroll to top on mount
         window.scrollTo(0, 0);
 
         if (!project) return;
 
-        const fetchBlocks = async () => {
-            setIsLoading(true);
-            try {
-                setBlocks(await fetchBlockChildren(id));
-            } catch (error) {
-                console.error("Error fetching Notion blocks:", error);
-                setLoadError(true);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchBlocks();
-    }, [id, project]);
+    }, [id, project, fetchBlocks]);
 
     // Fallback if accessed directly without state
     if (!project) {
@@ -198,14 +201,17 @@ const PortfolioDetail = () => {
                                 <p className="font-bold text-slate-500 tracking-wide text-lg">노션 서버에서 상세 데이터를 불러오고 있습니다...</p>
                             </div>
                         ) : loadError ? (
-                            <div className="text-center text-slate-500 py-32 font-medium bg-slate-50 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center">
-                                <span className="text-xl font-bold mb-3">상세 데이터를 불러올 수 없습니다</span>
-                                <span className="text-base">일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.</span>
-                            </div>
+                            <DataNotice
+                                title="상세 데이터를 불러올 수 없습니다"
+                                description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+                                onRetry={fetchBlocks}
+                                className="bg-slate-50 rounded-[2rem] border border-slate-100"
+                            />
                         ) : blocks.length === 0 ? (
-                            <div className="text-center text-slate-500 py-32 font-medium bg-slate-50 rounded-[2rem] border border-slate-100">
-                                작성된 상세 내용이 없습니다.
-                            </div>
+                            <DataNotice
+                                title="작성된 상세 내용이 없습니다"
+                                className="bg-slate-50 rounded-[2rem] border border-slate-100"
+                            />
                         ) : (
                             <div className="notion-renderer text-lg">
                                 <ul className="list-none p-0 m-0 space-y-1">

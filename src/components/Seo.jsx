@@ -23,8 +23,9 @@ const clearStaticPlaceholders = () => {
  * @param {string} path        루트 기준 경로("/portfolio"). canonical과 og:url을 만든다.
  * @param {string} [image]     OG 이미지 경로. 생략하면 기본 이미지.
  * @param {string} [type]      og:type. 상세 페이지는 "article"을 넘긴다.
+ * @param {boolean} [noindex]  true면 robots noindex를 출력한다. 404 등 색인 제외 페이지용.
  */
-const Seo = ({ title, description, path = '/', image = DEFAULT_OG_IMAGE, type = 'website' }) => {
+const Seo = ({ title, description, path = '/', image = DEFAULT_OG_IMAGE, type = 'website', noindex = false }) => {
     const url = absoluteUrl(path)
     const imageUrl = absoluteUrl(image)
 
@@ -34,6 +35,7 @@ const Seo = ({ title, description, path = '/', image = DEFAULT_OG_IMAGE, type = 
         <Helmet prioritizeSeoTags>
             <title>{title}</title>
             <meta name="description" content={description} />
+            {noindex && <meta name="robots" content="noindex" />}
             <link rel="canonical" href={url} />
 
             {/* Open Graph — 카카오톡·슬랙·페이스북 공유 미리보기 */}

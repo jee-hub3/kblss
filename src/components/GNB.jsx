@@ -50,9 +50,13 @@ const GNB = () => {
                     <div className="flex-1">
                         <Link to="/" className="inline-flex items-center group" onClick={() => setIsMobileMenuOpen(false)}>
                             <span className="text-xl md:text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-accent via-blue-500 to-teal-500">
-                                <span className="font-extrabold">K</span><span className="font-medium">ey </span>
-                                <span className="font-extrabold">B</span><span className="font-medium">ridge </span>
-                                <span className="font-extrabold">L</span><span className="font-medium">eader</span><span className="font-extrabold">s</span>
+                                {/* 모바일은 상시 노출 CTA가 추가돼 공간이 좁으므로 로고를 축약한다 */}
+                                <span className="md:hidden font-extrabold">KBLs</span>
+                                <span className="hidden md:inline">
+                                    <span className="font-extrabold">K</span><span className="font-medium">ey </span>
+                                    <span className="font-extrabold">B</span><span className="font-medium">ridge </span>
+                                    <span className="font-extrabold">L</span><span className="font-medium">eader</span><span className="font-extrabold">s</span>
+                                </span>
                             </span>
                             <img src="/kbls-logo.svg" alt="KBLs" className="w-6 h-6 ml-2" />
                         </Link>
@@ -74,6 +78,17 @@ const GNB = () => {
                     {/* Right: Desktop CTA + Mobile Hamburger */}
                     <div className="flex-1 flex justify-end items-center gap-3">
                         <Link to="/apply" onClick={() => trackEvent('apply_cta_click', { location: 'gnb_desktop' })} className="hidden md:inline-block bg-brand-accent hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            지원하기
+                        </Link>
+
+                        {/* 모바일 상시 노출 CTA — 햄버거를 열지 않아도 보이는 컴팩트 버튼.
+                            location을 gnb_mobile_inline으로 구분해 데스크톱(gnb_desktop),
+                            오버레이 내부(gnb_mobile)와 진입점별 성과를 나눠 본다. */}
+                        <Link
+                            to="/apply"
+                            onClick={() => trackEvent('apply_cta_click', { location: 'gnb_mobile_inline' })}
+                            className="md:hidden inline-flex items-center justify-center min-h-11 bg-brand-accent hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-all shadow-md"
+                        >
                             지원하기
                         </Link>
 

@@ -1,5 +1,6 @@
 import React, { lazy } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { MotionConfig } from 'framer-motion'
 import { Analytics } from '@vercel/analytics/react'
 import Layout from './components/Layout'
 import ScrollToTop from './components/ScrollToTop'
@@ -17,29 +18,36 @@ const News = lazy(() => import('./pages/News'))
 const NewsDetail = lazy(() => import('./pages/NewsDetail'))
 const Recruit = lazy(() => import('./pages/Recruit'))
 const FAQ = lazy(() => import('./pages/FAQ'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 
 function App() {
     return (
-        <BrowserRouter>
-            <ScrollToTop />
-            <AnalyticsTracker />
-            <Analytics />
-            <Routes>
+        // reducedMotion="user": OS의 '동작 줄이기' 설정을 따라
+        // framer-motion의 transform/layout 애니메이션을 전역에서 비활성화한다.
+        // (opacity 등은 유지되므로 whileInView 콘텐츠가 안 보이는 상태로 남지 않는다)
+        <MotionConfig reducedMotion="user">
+            <BrowserRouter>
+                <ScrollToTop />
+                <AnalyticsTracker />
+                <Analytics />
+                <Routes>
 
-                <Route path="/" element={<Layout />}>
-                    <Route index element={<Home />} />
-                    <Route path="organization" element={<Organization />} />
-                    <Route path="activities" element={<Activities />} />
-                    <Route path="portfolio" element={<Portfolio />} />
-                    <Route path="portfolio/:id" element={<PortfolioDetail />} />
-                    <Route path="news" element={<News />} />
-                    <Route path="news/:id" element={<NewsDetail />} />
-                    <Route path="apply" element={<Recruit />} />
-                    <Route path="faq" element={<FAQ />} />
-                </Route>
-            </Routes>
-        </BrowserRouter>
+                    <Route path="/" element={<Layout />}>
+                        <Route index element={<Home />} />
+                        <Route path="organization" element={<Organization />} />
+                        <Route path="activities" element={<Activities />} />
+                        <Route path="portfolio" element={<Portfolio />} />
+                        <Route path="portfolio/:id" element={<PortfolioDetail />} />
+                        <Route path="news" element={<News />} />
+                        <Route path="news/:id" element={<NewsDetail />} />
+                        <Route path="apply" element={<Recruit />} />
+                        <Route path="faq" element={<FAQ />} />
+                        <Route path="*" element={<NotFound />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </MotionConfig>
     )
 }
 

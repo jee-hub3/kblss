@@ -13,7 +13,7 @@
   --color-brand-900: #102a43;
   --color-brand-accent: #2563eb;
 
-  --font-sans: 'Pretendard Variable', 'Pretendard', sans-serif;
+  --font-sans: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
 
   --animate-fade-up: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-blob: blob 7s infinite;
@@ -52,7 +52,10 @@
 @layer base {
   body {
     @apply antialiased text-slate-900 bg-slate-50 overflow-x-hidden break-keep;
-    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+    /* 이모지 계열은 sans-serif 뒤에 남겨둔다. 폰트 폴백은 글리프 단위로 동작해
+       본문 서체에 없는 이모지를 계속 렌더링해 준다. */
+    font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif,
+      'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   }
 }
 
@@ -69,4 +72,21 @@
     radial-gradient(at 0% 0%, hsla(343, 100%, 76%, 0.15) 0px, transparent 50%);
   background-size: 100% 100%;
   background-repeat: no-repeat;
+}
+
+/* OS '동작 줄이기' 설정 시 CSS 애니메이션·트랜지션 무력화.
+   framer-motion은 App의 MotionConfig(reducedMotion="user")가 담당하고,
+   이 블록은 Tailwind transition-*, --animate-fade-up, --animate-blob 등
+   순수 CSS 기반 움직임을 커버한다. 0.01ms로 즉시 종료시키므로
+   forwards 키프레임은 최종 상태(opacity 1)로 바로 도달해 콘텐츠가 가려지지 않는다. */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
