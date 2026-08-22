@@ -1,0 +1,17 @@
+# 저장소에는 항상 LF로 저장, 체크아웃 시 OS 기본값 사용
+* text=auto
+
+# 바이너리 — 줄바꿈 변환 금지
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.ico  binary
+
+# 텍스트 확정
+*.svg  text
+*.json text
+*.jsx  text
+*.js   text
+*.css  text
+*.html text
