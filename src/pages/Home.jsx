@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import CountUp from 'react-countup';
 import FlexibleImage from '../components/FlexibleImage';
 import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, Image as ImageIcon } from 'lucide-react';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
+import DataNotice from '../components/DataNotice';
 import Seo from '../components/Seo';
 
 const fadeInUp = {
@@ -30,51 +31,55 @@ const Home = () => {
 
     // 1. KBLs in Numbers API 연동
     const [kblsNumbersData, setKblsNumbersData] = useState([]);
+    const [isLoadingMetrics, setIsLoadingMetrics] = useState(true);
     const [metricsError, setMetricsError] = useState(false);
 
-    useEffect(() => {
-        const fetchMetrics = async () => {
-            try {
-                const results = await queryDatabase(NOTION_DB.metrics);
+    // '다시 시도'에서 재호출하므로 useEffect 밖으로 뺀다.
+    const fetchMetrics = useCallback(async () => {
+        setIsLoadingMetrics(true);
+        setMetricsError(false);
+        try {
+            const results = await queryDatabase(NOTION_DB.metrics);
 
-                const formattedData = results.map((item) => {
-                    const props = item.properties;
-                    const title = props['이름']?.title?.[0]?.plain_text || '';
-                    const valueStr = props['수치']?.rich_text?.[0]?.plain_text || '0';
-                    const order = props['순서']?.number || 0;
+            const formattedData = results.map((item) => {
+                const props = item.properties;
+                const title = props['이름']?.title?.[0]?.plain_text || '';
+                const valueStr = props['수치']?.rich_text?.[0]?.plain_text || '0';
+                const order = props['순서']?.number || 0;
 
-                    const numMatch = valueStr.match(/\d+/);
-                    const num = numMatch ? parseInt(numMatch[0]) : 0;
-                    const suffix = valueStr.replace(/\d+/g, '');
+                const numMatch = valueStr.match(/\d+/);
+                const num = numMatch ? parseInt(numMatch[0]) : 0;
+                const suffix = valueStr.replace(/\d+/g, '');
 
-                    // '산출 기준'·'기준일'은 나중에 추가된 속성이라 없을 수 있다.
-                    // 옵셔널 체이닝으로 읽고 없으면 빈 값 → 렌더 단계에서 생략한다.
-                    const basis = props['산출 기준']?.rich_text?.map(rt => rt.plain_text).join('') || '';
-                    const asOf = props['기준일']?.date?.start || '';
+                // '산출 기준'·'기준일'은 나중에 추가된 속성이라 없을 수 있다.
+                // 옵셔널 체이닝으로 읽고 없으면 빈 값 → 렌더 단계에서 생략한다.
+                const basis = props['산출 기준']?.rich_text?.map(rt => rt.plain_text).join('') || '';
+                const asOf = props['기준일']?.date?.start || '';
 
-                    return {
-                        id: item.id,
-                        title,
-                        value: valueStr,
-                        num,
-                        suffix,
-                        order,
-                        basis,
-                        asOf
-                    };
-                });
+                return {
+                    id: item.id,
+                    title,
+                    value: valueStr,
+                    num,
+                    suffix,
+                    order,
+                    basis,
+                    asOf
+                };
+            });
 
-                formattedData.sort((a, b) => a.order - b.order);
-                setKblsNumbersData(formattedData);
+            formattedData.sort((a, b) => a.order - b.order);
+            setKblsNumbersData(formattedData);
 
-            } catch (error) {
-                console.error("Error fetching metrics from Notion:", error);
-                setMetricsError(true);
-            }
-        };
-
-        fetchMetrics();
+        } catch (error) {
+            console.error("Error fetching metrics from Notion:", error);
+            setMetricsError(true);
+        } finally {
+            setIsLoadingMetrics(false);
+        }
     }, []);
+
+    useEffect(() => { fetchMetrics(); }, [fetchMetrics]);
 
     // 지표들의 기준일 중 가장 최근 것을 "YYYY.MM"으로 만든다.
     // ISO 날짜(YYYY-MM-DD)는 사전순 = 시간순이라 문자열 비교로 충분하다.
@@ -91,61 +96,60 @@ const Home = () => {
     const [isLoadingPortfolios, setIsLoadingPortfolios] = useState(true);
     const [portfolioError, setPortfolioError] = useState(false);
 
-    useEffect(() => {
-        const fetchTopPortfolios = async () => {
-            setIsLoadingPortfolios(true);
-            try {
-                const results = await queryDatabase(NOTION_DB.portfolio);
+    const fetchTopPortfolios = useCallback(async () => {
+        setIsLoadingPortfolios(true);
+        setPortfolioError(false);
+        try {
+            const results = await queryDatabase(NOTION_DB.portfolio);
 
-                const formattedData = results.map((item, index) => {
-                    const props = item.properties;
-                    // Fallback gradients
-                    const gradients = [
-                        "from-teal-400 to-emerald-600",
-                        "from-blue-500 to-indigo-600",
-                        "from-violet-500 to-purple-700",
-                        "from-rose-400 to-red-600"
-                    ];
+            const formattedData = results.map((item, index) => {
+                const props = item.properties;
+                // Fallback gradients
+                const gradients = [
+                    "from-teal-400 to-emerald-600",
+                    "from-blue-500 to-indigo-600",
+                    "from-violet-500 to-purple-700",
+                    "from-rose-400 to-red-600"
+                ];
 
-                    const dateProp = props['기간']?.date;
-                    let dateStr = '';
-                    if (dateProp) {
-                        const start = dateProp.start ? dateProp.start.replace(/-/g, '.') : '';
-                        const end = dateProp.end ? dateProp.end.replace(/-/g, '.') : '';
-                        dateStr = end ? `${start} ~ ${end}` : start;
-                    }
+                const dateProp = props['기간']?.date;
+                let dateStr = '';
+                if (dateProp) {
+                    const start = dateProp.start ? dateProp.start.replace(/-/g, '.') : '';
+                    const end = dateProp.end ? dateProp.end.replace(/-/g, '.') : '';
+                    dateStr = end ? `${start} ~ ${end}` : start;
+                }
 
-                    return {
-                        id: item.id,
-                        title: props['이름']?.title?.[0]?.plain_text || '제목 없음',
-                        category: props['카테고리']?.select?.name || '기타',
-                        summary: props['요약']?.rich_text?.[0]?.plain_text || '',
-                        imageUrl: props['썸네일']?.files?.[0]?.file?.url || props['썸네일']?.files?.[0]?.external?.url || null,
-                        tags: props['주요 사용 도구/작업']?.multi_select?.map(t => t.name) || [],
-                        date: dateStr,
-                        participants: props['참여']?.rich_text?.map(rt => rt.plain_text).join('') || '',
-                        achievement: props['성과']?.rich_text?.map(rt => rt.plain_text).join('') || '',
-                        isFeatured: props['메인 노출']?.checkbox || false, // Assuming checkbox property exists
-                        imageGrad: gradients[index % gradients.length]
-                    };
-                });
+                return {
+                    id: item.id,
+                    title: props['이름']?.title?.[0]?.plain_text || '제목 없음',
+                    category: props['카테고리']?.select?.name || '기타',
+                    summary: props['요약']?.rich_text?.[0]?.plain_text || '',
+                    imageUrl: props['썸네일']?.files?.[0]?.file?.url || props['썸네일']?.files?.[0]?.external?.url || null,
+                    tags: props['주요 사용 도구/작업']?.multi_select?.map(t => t.name) || [],
+                    date: dateStr,
+                    participants: props['참여']?.rich_text?.map(rt => rt.plain_text).join('') || '',
+                    achievement: props['성과']?.rich_text?.map(rt => rt.plain_text).join('') || '',
+                    isFeatured: props['메인 노출']?.checkbox || false, // Assuming checkbox property exists
+                    imageGrad: gradients[index % gradients.length]
+                };
+            });
 
-                // Filter by 'isFeatured' or just take top 3 if none featured
-                const featured = formattedData.filter(p => p.isFeatured);
-                const finalProjects = featured.length > 0 ? featured.slice(0, 3) : formattedData.slice(0, 3);
+            // Filter by 'isFeatured' or just take top 3 if none featured
+            const featured = formattedData.filter(p => p.isFeatured);
+            const finalProjects = featured.length > 0 ? featured.slice(0, 3) : formattedData.slice(0, 3);
 
-                setFeaturedProjects(finalProjects);
+            setFeaturedProjects(finalProjects);
 
-            } catch (error) {
-                console.error("Error fetching portfolios for homepage:", error);
-                setPortfolioError(true);
-            } finally {
-                setIsLoadingPortfolios(false);
-            }
-        };
-
-        fetchTopPortfolios();
+        } catch (error) {
+            console.error("Error fetching portfolios for homepage:", error);
+            setPortfolioError(true);
+        } finally {
+            setIsLoadingPortfolios(false);
+        }
     }, []);
+
+    useEffect(() => { fetchTopPortfolios(); }, [fetchTopPortfolios]);
 
     return (
         <div className="w-full">
@@ -397,11 +401,18 @@ const Home = () => {
                         <p className="text-lg text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 몰입</p>
                     </motion.div>
 
-                    {metricsError ? (
-                        <div className="w-full py-10 flex flex-col items-center justify-center text-slate-500">
-                            <span className="text-xl font-medium">데이터를 불러올 수 없습니다</span>
-                            <span className="text-sm mt-2">잠시 후 다시 시도해 주세요</span>
+                    {isLoadingMetrics ? (
+                        <div className="w-full py-20 flex justify-center">
+                            <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
                         </div>
+                    ) : metricsError ? (
+                        <DataNotice
+                            title="데이터를 불러올 수 없습니다"
+                            description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+                            onRetry={fetchMetrics}
+                        />
+                    ) : kblsNumbersData.length === 0 ? (
+                        <DataNotice title="아직 등록된 지표가 없습니다" />
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
                             {kblsNumbersData.map((stat) => (
@@ -463,10 +474,17 @@ const Home = () => {
                             <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
                         </div>
                     ) : portfolioError ? (
-                        <div className="w-full py-20 flex flex-col items-center justify-center text-slate-500 bg-slate-50 rounded-[2rem] border border-slate-100">
-                            <span className="text-xl font-medium">데이터를 불러올 수 없습니다</span>
-                            <span className="text-sm mt-2">잠시 후 다시 시도해 주세요</span>
-                        </div>
+                        <DataNotice
+                            title="데이터를 불러올 수 없습니다"
+                            description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+                            onRetry={fetchTopPortfolios}
+                            className="bg-slate-50 rounded-[2rem] border border-slate-100"
+                        />
+                    ) : featuredProjects.length === 0 ? (
+                        <DataNotice
+                            title="아직 공개된 프로젝트가 없습니다"
+                            className="bg-slate-50 rounded-[2rem] border border-slate-100"
+                        />
                     ) : (
                         <div className="grid md:grid-cols-3 gap-6 lg:gap-10">
                             {featuredProjects.map((project, i) => (

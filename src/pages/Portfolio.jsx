@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Award, Medal, ExternalLink, Sparkles, Filter, ChevronLeft, ChevronRight, Loader2, Info, Image as ImageIcon, Plus, Flag, Star, Circle, Rocket, Pin } from 'lucide-react';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
+import DataNotice from '../components/DataNotice';
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
@@ -48,6 +49,7 @@ const Portfolio = () => {
     // Fetch Portfolios from Notion API
     const fetchPortfolios = async () => {
         setIsLoading(true);
+        setPortfolioError(false);
         try {
             const results = await queryDatabase(NOTION_DB.portfolio);
 
@@ -110,6 +112,7 @@ const Portfolio = () => {
 
     const fetchHistory = async () => {
         setIsLoadingHistory(true);
+        setHistoryError(false);
         try {
             const results = await queryDatabase(NOTION_DB.history);
 
@@ -208,15 +211,17 @@ const Portfolio = () => {
                                 <p className="text-slate-500 font-medium text-sm">연혁 및 수상 내역을 불러오는 중입니다...</p>
                             </div>
                         ) : historyError ? (
-                            <div className="py-20 flex flex-col items-center justify-center bg-white/50 rounded-2xl border border-slate-100">
-                                <Info className="w-10 h-10 text-slate-300 mb-3" />
-                                <p className="text-slate-500 font-medium">데이터를 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.</p>
-                            </div>
+                            <DataNotice
+                                title="데이터를 불러올 수 없습니다"
+                                description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+                                onRetry={fetchHistory}
+                                className="bg-white/50 rounded-2xl border border-slate-100"
+                            />
                         ) : historyData.length === 0 ? (
-                            <div className="py-20 flex flex-col items-center justify-center bg-white/50 rounded-2xl border border-slate-100">
-                                <Info className="w-10 h-10 text-slate-300 mb-3" />
-                                <p className="text-slate-500 font-medium">등록된 연혁이 없습니다.</p>
-                            </div>
+                            <DataNotice
+                                title="등록된 연혁이 없습니다"
+                                className="bg-white/50 rounded-2xl border border-slate-100"
+                            />
                         ) : (
                             <>
                                 <div className="max-h-[500px] overflow-y-auto pr-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] relative z-0">
@@ -278,15 +283,24 @@ const Portfolio = () => {
                             <p className="text-slate-500 font-medium">노션(Notion) 서버에서 데이터를 무사히 모셔오는 중입니다...</p>
                         </div>
                     ) : portfolioError ? (
-                        <div className="w-full py-20 text-center text-slate-500 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
-                            <Info className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                            <p className="text-lg font-medium tracking-tight">데이터를 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.</p>
-                        </div>
+                        <DataNotice
+                            title="데이터를 불러올 수 없습니다"
+                            description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+                            onRetry={fetchPortfolios}
+                            className="bg-white rounded-[2rem] border border-slate-100 shadow-sm"
+                        />
+                    ) : projectsData.length === 0 ? (
+                        /* 데이터 자체가 없는 경우와 필터로 걸러진 경우는 원인이 달라 문구를 나눈다 */
+                        <DataNotice
+                            title="아직 등록된 프로젝트가 없습니다"
+                            className="bg-white rounded-[2rem] border border-slate-100 shadow-sm"
+                        />
                     ) : filteredProjects.length === 0 ? (
-                        <div className="w-full py-20 text-center text-slate-500 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
-                            <Filter className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                            <p className="text-lg font-medium tracking-tight">해당 조건에 맞는 프로젝트가 없거나, 아직 등록되지 않았습니다.</p>
-                        </div>
+                        <DataNotice
+                            title="해당 조건에 맞는 프로젝트가 없습니다"
+                            description="다른 카테고리를 선택해 보세요."
+                            className="bg-white rounded-[2rem] border border-slate-100 shadow-sm"
+                        />
                     ) : (
                         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             <AnimatePresence mode="popLayout">

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Seo from '../components/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Clock, User, ArrowUpRight, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
+import DataNotice from '../components/DataNotice';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -28,57 +29,57 @@ const News = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [newsError, setNewsError] = useState(false);
 
-    useEffect(() => {
-        const fetchNews = async () => {
-            setIsLoading(true);
-            try {
-                const results = await queryDatabase(NOTION_DB.news);
+    // '다시 시도'에서 재호출하므로 useEffect 밖으로 뺀다.
+    const fetchNews = useCallback(async () => {
+        setIsLoading(true);
+        setNewsError(false);
+        try {
+            const results = await queryDatabase(NOTION_DB.news);
 
-                const formattedData = results.map((item, index) => {
-                    const props = item.properties;
+            const formattedData = results.map((item, index) => {
+                const props = item.properties;
 
-                    const gradients = [
-                        "from-teal-400 to-emerald-600",
-                        "from-blue-500 to-indigo-600",
-                        "from-violet-500 to-purple-700",
-                        "from-rose-400 to-red-600",
-                        "from-amber-400 to-orange-600",
-                        "from-cyan-500 to-blue-600"
-                    ];
+                const gradients = [
+                    "from-teal-400 to-emerald-600",
+                    "from-blue-500 to-indigo-600",
+                    "from-violet-500 to-purple-700",
+                    "from-rose-400 to-red-600",
+                    "from-amber-400 to-orange-600",
+                    "from-cyan-500 to-blue-600"
+                ];
 
-                    const dateProp = props['작성일']?.date;
-                    let dateStr = '';
-                    if (dateProp) {
-                        dateStr = dateProp.start ? dateProp.start.replace(/-/g, '.') : '';
-                    }
+                const dateProp = props['작성일']?.date;
+                let dateStr = '';
+                if (dateProp) {
+                    dateStr = dateProp.start ? dateProp.start.replace(/-/g, '.') : '';
+                }
 
-                    return {
-                        id: item.id,
-                        title: props['이름']?.title?.[0]?.plain_text || '제목 없음',
-                        tag: props['태그']?.select?.name || '소식',
-                        category: props['태그']?.select?.name || '소식', // For existing category filter logic
-                        summary: props['요약']?.rich_text?.[0]?.plain_text || '',
-                        author: props['작성자']?.rich_text?.[0]?.plain_text || 'KBLs',
-                        thumbnail: props['썸네일']?.files?.[0]?.file?.url || props['썸네일']?.files?.[0]?.external?.url || null,
-                        date: dateStr,
-                        isFeatured: props['메인 지정']?.checkbox || false,
-                        imageGrad: gradients[index % gradients.length],
-                        link: "#"
-                    };
-                });
+                return {
+                    id: item.id,
+                    title: props['이름']?.title?.[0]?.plain_text || '제목 없음',
+                    tag: props['태그']?.select?.name || '소식',
+                    category: props['태그']?.select?.name || '소식', // For existing category filter logic
+                    summary: props['요약']?.rich_text?.[0]?.plain_text || '',
+                    author: props['작성자']?.rich_text?.[0]?.plain_text || 'KBLs',
+                    thumbnail: props['썸네일']?.files?.[0]?.file?.url || props['썸네일']?.files?.[0]?.external?.url || null,
+                    date: dateStr,
+                    isFeatured: props['메인 지정']?.checkbox || false,
+                    imageGrad: gradients[index % gradients.length],
+                    link: "#"
+                };
+            });
 
-                setNewsData(formattedData);
+            setNewsData(formattedData);
 
-            } catch (error) {
-                console.error("Error fetching news from Notion:", error);
-                setNewsError(true);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchNews();
+        } catch (error) {
+            console.error("Error fetching news from Notion:", error);
+            setNewsError(true);
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
+
+    useEffect(() => { fetchNews(); }, [fetchNews]);
 
     // 2. 동적 카테고리 추출 로직
     const dynamicCategories = React.useMemo(() => {
@@ -132,10 +133,13 @@ const News = () => {
                         <p className="text-slate-500 font-medium tracking-wide">소식을 불러오는 중입니다...</p>
                     </div>
                 ) : newsError ? (
-                    <div className="w-full py-32 flex flex-col items-center justify-center text-slate-500">
-                        <span className="text-lg font-medium">데이터를 불러올 수 없습니다</span>
-                        <span className="text-sm mt-3">일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.</span>
-                    </div>
+                    <DataNotice
+                        title="데이터를 불러올 수 없습니다"
+                        description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+                        onRetry={fetchNews}
+                    />
+                ) : newsData.length === 0 ? (
+                    <DataNotice title="아직 등록된 소식이 없습니다" />
                 ) : (
                     <>
                         {/* 1. Featured Post (Moved to Top) */}
@@ -271,9 +275,12 @@ const News = () => {
                             </motion.div>
 
                             {filteredNews.length === 0 && (
-                                <div className="w-full py-20 text-center text-slate-500 bg-white rounded-[2rem] border border-slate-100">
-                                    <p className="text-base font-medium">해당 탭의 글이 없습니다.</p>
-                                </div>
+                                /* 데이터 0건은 위에서 이미 처리했으므로 여기는 필터 결과 0건이다 */
+                                <DataNotice
+                                    title="해당 탭의 글이 없습니다"
+                                    description="다른 탭을 선택해 보세요."
+                                    className="bg-white rounded-[2rem] border border-slate-100"
+                                />
                             )}
 
                             {/* Pagination */}
