@@ -2,7 +2,10 @@ import React from 'react';
 
 const KblsLoader = () => {
   return (
-    <div className="flex justify-center items-center h-64 w-full">
+    // min-h-svh: 폴백이 뷰포트를 채워 Footer를 접힘 아래로 밀어둔다.
+    // 라우트 청크가 마운트될 때 뷰포트 안 요소가 밀리지 않아 CLS 0이 유지된다.
+    // (h-64였을 때는 첫 페인트에 보이던 Footer가 본문 삽입으로 밀려 CLS 0.69 발생)
+    <div className="flex justify-center items-center min-h-svh w-full">
       <div className="flex items-end space-x-2 h-24">
         {/* 첫 번째 막대 (진한 파란색) */}
         <div className="w-4 h-12 bg-blue-700 rounded-full animate-equalizer" style={{ animationDelay: '0ms' }}></div>
