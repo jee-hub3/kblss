@@ -17,6 +17,7 @@ const News = lazy(() => import('./pages/News'))
 const NewsDetail = lazy(() => import('./pages/NewsDetail'))
 const Recruit = lazy(() => import('./pages/Recruit'))
 const FAQ = lazy(() => import('./pages/FAQ'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
                     <Route path="news/:id" element={<NewsDetail />} />
                     <Route path="apply" element={<Recruit />} />
                     <Route path="faq" element={<FAQ />} />
+                    <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>
         </BrowserRouter>
