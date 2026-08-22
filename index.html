@@ -37,13 +37,14 @@
     content="실행과 협업으로 성장하는 실무형 인재들의 랩실. 공모전·프로젝트·스터디로 증명합니다." />
   <meta data-rh="true" name="twitter:image" content="https://kblss.vercel.app/og-image.png" />
 
-  <!-- 본문 한글 서체. index.css의 폰트 스택이 Pretendard를 첫 순위로 지정하지만
-       폰트 파일이 없어 지금까지는 로컬에 설치한 사용자에게만 적용됐다.
-       dynamic-subset은 페이지에 실제로 쓰인 글자만 내려받아 초기 전송량이 작다.
-       CDN css가 @font-face에 font-display: swap을 포함한다. -->
+  <!-- 본문 한글 서체(Pretendard dynamic-subset).
+       CSS는 self-host(public/fonts/, jsdelivr v1.3.9 원본에서 폰트 URL만 절대경로로 치환),
+       woff2는 jsdelivr CDN에서 받는다. 서드파티 CSS 렌더 차단(~1.5s)을 같은 오리진의
+       소형 요청으로 바꾸고, 폰트 발견 시점을 앞당겨 React 첫 페인트 전에 로드를 끝낸다.
+       비차단(preload→onload) 방식은 폰트 스왑 리플로우로 CLS 0.69가 발생해 쓰지 않는다.
+       CLS 0 유지가 이 블로킹 링크의 존재 이유다. -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link rel="stylesheet" as="style" crossorigin
-    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+  <link rel="stylesheet" href="/fonts/pretendard-dynamic-subset.css" />
 </head>
 
 <body>
