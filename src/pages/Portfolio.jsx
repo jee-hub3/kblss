@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Award, Medal, ExternalLink, Sparkles, Filter, ChevronLeft, ChevronRight, Loader2, Info, Image as ImageIcon, Plus, Flag, Star, Circle, Rocket, Pin } from 'lucide-react';
+import { queryDatabase, NOTION_DB } from '../lib/notion';
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
@@ -47,23 +48,9 @@ const Portfolio = () => {
     const fetchPortfolios = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_PORTFOLIO_DB_ID}/query`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-                    'Notion-Version': '2022-06-28',
-                    'Content-Type': 'application/json'
-                }
-            });
+            const results = await queryDatabase(NOTION_DB.portfolio);
 
-            if (!response.ok) {
-                setPortfolioError(true);
-                return;
-            }
-
-            const data = await response.json();
-
-            const formattedData = data.results.map((item, index) => {
+            const formattedData = results.map((item, index) => {
                 const props = item.properties;
                 // Assign gradients cyclically for generic fallback backgrounds
                 const gradients = [
@@ -123,23 +110,9 @@ const Portfolio = () => {
     const fetchHistory = async () => {
         setIsLoadingHistory(true);
         try {
-            const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_HISTORY_DB_ID}/query`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-                    'Notion-Version': '2022-06-28',
-                    'Content-Type': 'application/json'
-                }
-            });
+            const results = await queryDatabase(NOTION_DB.history);
 
-            if (!response.ok) {
-                setHistoryError(true);
-                return;
-            }
-
-            const data = await response.json();
-
-            const formattedData = data.results.map((item) => {
+            const formattedData = results.map((item) => {
                 const props = item.properties;
                 if (!props) return null; // Safe guard
 

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import CountUp from 'react-countup';
 import FlexibleImage from '../components/FlexibleImage';
 import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, Image as ImageIcon } from 'lucide-react';
+import { queryDatabase, NOTION_DB } from '../lib/notion';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
@@ -28,23 +29,9 @@ const Home = () => {
     useEffect(() => {
         const fetchMetrics = async () => {
             try {
-                const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_METRICS_DB_ID}/query`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-                        'Notion-Version': '2022-06-28',
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const results = await queryDatabase(NOTION_DB.metrics);
 
-                if (!response.ok) {
-                    setMetricsError(true);
-                    return;
-                }
-
-                const data = await response.json();
-
-                const formattedData = data.results.map((item) => {
+                const formattedData = results.map((item) => {
                     const props = item.properties;
                     const title = props['이름']?.title?.[0]?.plain_text || '';
                     const valueStr = props['수치']?.rich_text?.[0]?.plain_text || '0';
@@ -85,23 +72,9 @@ const Home = () => {
         const fetchTopPortfolios = async () => {
             setIsLoadingPortfolios(true);
             try {
-                const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_PORTFOLIO_DB_ID}/query`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-                        'Notion-Version': '2022-06-28',
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const results = await queryDatabase(NOTION_DB.portfolio);
 
-                if (!response.ok) {
-                    setPortfolioError(true);
-                    return;
-                }
-
-                const data = await response.json();
-
-                const formattedData = data.results.map((item, index) => {
+                const formattedData = results.map((item, index) => {
                     const props = item.properties;
                     // Fallback gradients
                     const gradients = [

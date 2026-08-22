@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Clock, User, ArrowUpRight, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { queryDatabase, NOTION_DB } from '../lib/notion';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -30,23 +31,9 @@ const News = () => {
         const fetchNews = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`/notion-api/v1/databases/${import.meta.env.VITE_NOTION_NEWS_DB_ID}/query`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-                        'Notion-Version': '2022-06-28',
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const results = await queryDatabase(NOTION_DB.news);
 
-                if (!response.ok) {
-                    setNewsError(true);
-                    return;
-                }
-
-                const data = await response.json();
-
-                const formattedData = data.results.map((item, index) => {
+                const formattedData = results.map((item, index) => {
                     const props = item.properties;
 
                     const gradients = [
