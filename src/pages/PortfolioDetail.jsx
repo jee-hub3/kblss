@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Loader2, Calendar, Users, Wrench, Trophy } from 'lucide-react';
+import { fetchBlockChildren } from '../lib/notion';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -29,21 +30,7 @@ const PortfolioDetail = () => {
         const fetchBlocks = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`/notion-api/v1/blocks/${id}/children`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${import.meta.env.VITE_NOTION_API_KEY}`,
-                        'Notion-Version': '2022-06-28'
-                    }
-                });
-
-                if (!response.ok) {
-                    setLoadError(true);
-                    return;
-                }
-
-                const data = await response.json();
-                setBlocks(data.results);
+                setBlocks(await fetchBlockChildren(id));
             } catch (error) {
                 console.error("Error fetching Notion blocks:", error);
                 setLoadError(true);
