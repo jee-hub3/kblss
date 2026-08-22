@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { lazy } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
-import Organization from './pages/Organization'
-import Activities from './pages/Activities'
-import Portfolio from './pages/Portfolio'
-import News from './pages/News'
-import Recruit from './pages/Recruit'
-import FAQ from './pages/FAQ'
-import PortfolioDetail from './pages/PortfolioDetail'
-import NewsDetail from './pages/NewsDetail'
+
+// 진입 페이지인 Home만 초기 번들에 포함하고,
+// 나머지 페이지는 실제로 방문할 때 각자의 청크로 받아온다.
+// 청크를 받는 동안의 fallback은 Layout의 Suspense가 담당한다.
+const Organization = lazy(() => import('./pages/Organization'))
+const Activities = lazy(() => import('./pages/Activities'))
+const Portfolio = lazy(() => import('./pages/Portfolio'))
+const PortfolioDetail = lazy(() => import('./pages/PortfolioDetail'))
+const News = lazy(() => import('./pages/News'))
+const NewsDetail = lazy(() => import('./pages/NewsDetail'))
+const Recruit = lazy(() => import('./pages/Recruit'))
+const FAQ = lazy(() => import('./pages/FAQ'))
 
 
 function App() {
