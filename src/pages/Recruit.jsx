@@ -38,9 +38,13 @@ const Recruit = () => {
         interest: '',
         participation: '',
         futurePlan: '',
-        agreement: false
+        agreement: false,
+        privacyAgreement: false
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    // 개인정보 고지 블록 접힘 상태와 미동의 제출 시 인라인 안내
+    const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+    const [privacyError, setPrivacyError] = useState(false);
 
     const toggleAccordion = (idx) => {
         setOpenAccordion(openAccordion === idx ? null : idx);
@@ -64,6 +68,15 @@ const Recruit = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // 개인정보 수집·이용 미동의 시 제출 차단.
+        // 규정 확인 체크박스는 required(네이티브)로 막히지만, 이 항목은
+        // 인라인 안내를 보여주기 위해 자바스크립트에서 직접 검증한다.
+        if (!formData.privacyAgreement) {
+            setPrivacyError(true);
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -80,7 +93,8 @@ const Recruit = () => {
                 alert('지원이 성공적으로 완료되었습니다! KBLs에 지원해주셔서 감사합니다.');
                 setFormData({
                     name: '', studentId: '', grade: '', major: '', phone: '',
-                    tools: [], motivation: '', interest: '', experience: '', participation: '', futurePlan: '', agreement: false
+                    tools: [], motivation: '', interest: '', experience: '', participation: '', futurePlan: '',
+                    agreement: false, privacyAgreement: false
                 });
                 setActiveTab("info");
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -448,6 +462,66 @@ const Recruit = () => {
                                                     <p className="text-sm text-slate-600 font-medium leading-relaxed">
                                                         우리 랩실은 학기당 공모전 1회, 스터디 1회 참여가 필수이며 정기 모임(화요일 저녁)에 성실히 참여해야 합니다. 이를 확인하였으며 적극적으로 참여할 것을 동의합니다.
                                                     </p>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        {/* 개인정보 수집·이용 고지 및 동의 */}
+                                        <div className="pt-4 border-t border-slate-200 space-y-4">
+                                            {/* 접을 수 있는 고지 블록 */}
+                                            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsPrivacyOpen(!isPrivacyOpen)}
+                                                    className="w-full flex items-center justify-between p-5 text-left hover:bg-slate-50 transition-colors"
+                                                    aria-expanded={isPrivacyOpen}
+                                                >
+                                                    <span className="text-sm font-bold text-slate-800">개인정보 수집·이용 안내</span>
+                                                    <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${isPrivacyOpen ? 'rotate-180' : ''}`} />
+                                                </button>
+                                                <AnimatePresence initial={false}>
+                                                    {isPrivacyOpen && (
+                                                        <motion.div
+                                                            initial={{ height: 0, opacity: 0 }}
+                                                            animate={{ height: 'auto', opacity: 1 }}
+                                                            exit={{ height: 0, opacity: 0 }}
+                                                            transition={{ duration: 0.25 }}
+                                                            className="overflow-hidden"
+                                                        >
+                                                            <div className="px-5 pb-5 pt-1 text-sm text-slate-600 font-medium leading-relaxed space-y-2 border-t border-slate-100">
+                                                                <p className="pt-3"><span className="font-bold text-slate-800">수집 항목</span> — 이름, 학번, 학년, 학과, 전화번호, 지원서 기재 내용</p>
+                                                                <p><span className="font-bold text-slate-800">수집 목적</span> — KBLs 신입 부원 모집 심사 및 합격 안내 연락</p>
+                                                                <p><span className="font-bold text-slate-800">보유 기간</span> — 모집 절차 종료 후 6개월 이내 파기</p>
+                                                                <p className="text-slate-500">
+                                                                    귀하는 개인정보 수집·이용에 동의하지 않을 권리가 있습니다.
+                                                                    다만 동의하지 않을 경우 지원서 접수가 불가능합니다.
+                                                                </p>
+                                                            </div>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
+
+                                            {/* 필수 동의 체크박스 — 규정 확인과 별도 */}
+                                            <label className={`flex items-start space-x-3 cursor-pointer group bg-slate-50 p-5 rounded-2xl border transition-colors ${privacyError ? 'border-red-300' : 'border-slate-100 hover:border-slate-300'}`}>
+                                                <input
+                                                    type="checkbox" name="privacyAgreement"
+                                                    checked={formData.privacyAgreement}
+                                                    onChange={(e) => {
+                                                        setFormData(prev => ({ ...prev, privacyAgreement: e.target.checked }));
+                                                        if (e.target.checked) setPrivacyError(false);
+                                                    }}
+                                                    className="mt-1 w-5 h-5 text-brand-500 border-slate-300 rounded focus:ring-brand-500"
+                                                />
+                                                <div className="flex-1">
+                                                    <span className="block text-sm font-bold text-slate-800">
+                                                        개인정보 수집·이용에 동의합니다 <span className="text-brand-accent">*</span>
+                                                    </span>
+                                                    {privacyError && (
+                                                        <p className="text-sm text-red-500 font-medium mt-1" role="alert">
+                                                            개인정보 수집·이용에 동의해야 지원서를 제출할 수 있습니다.
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </label>
                                         </div>

@@ -6,11 +6,16 @@ export default async function handler(request, response) {
     try {
         const {
             name, studentId, grade, major, phone,
-            tools, motivation, interest, experience, participation, futurePlan, agreement
+            tools, motivation, interest, experience, participation, futurePlan, agreement, privacyAgreement
         } = request.body;
 
         if (!name || !studentId || !grade || !major || !phone || !motivation || !interest || !experience || !participation || !futurePlan || agreement === undefined) {
             return response.status(400).json({ error: '모든 필수 항목을 입력해주세요.' });
+        }
+
+        // 개인정보 수집·이용 동의는 필수. 클라이언트 검증을 우회한 요청도 여기서 차단한다.
+        if (privacyAgreement !== true) {
+            return response.status(400).json({ error: '개인정보 수집·이용에 동의해야 지원할 수 있습니다.' });
         }
 
         const NOTION_API_KEY = process.env.NOTION_API_KEY;
@@ -66,6 +71,9 @@ export default async function handler(request, response) {
                     },
                     "랩실 활동 참여 및 운영 규정 확인": {
                         checkbox: Boolean(agreement)
+                    },
+                    "개인정보 수집 동의": {
+                        checkbox: Boolean(privacyAgreement)
                     }
                 }
             })
