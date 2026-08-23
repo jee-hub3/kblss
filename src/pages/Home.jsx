@@ -218,10 +218,18 @@ const Home = () => {
                         </motion.span>
                     </motion.h1>
 
+                    {/* 이 문단이 홈의 LCP 요소다(로컬·프로덕션 측정 모두 동일).
+                        Chrome은 opacity:0 요소를 LCP 후보에서 제외하므로, 기존의
+                        opacity 페이드 + delay 0.6s가 LCP를 첫 페인트보다 약 1.1초
+                        뒤로 밀고 있었다. 그래서 여기서는 opacity를 건드리지 않고
+                        transform(y)만 움직인다 — 요소는 처음부터 불투명하게 칠해져
+                        LCP가 FCP 시점에 기록되고, 미세한 상승 모션은 그대로 남는다.
+                        delay도 뺐다(지연 자체가 LCP를 늦추므로). 히어로의 배지·제목과
+                        이후 스크롤 애니메이션은 의도한 연출이라 손대지 않는다. */}
                     <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.6 }}
+                        initial={{ y: 12 }}
+                        animate={{ y: 0 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
                         className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed"
                     >
                         세상에는 수많은 문제들이 있습니다.<br className="hidden md:block" />
