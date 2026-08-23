@@ -247,7 +247,7 @@ const Home = () => {
                             <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
                         </h2>
                         <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight">
-                            KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 연구실 입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
+                            KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 연구실입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
                         </p>
                     </motion.div>
                 </div>
@@ -310,7 +310,7 @@ const Home = () => {
                                     transition={{ duration: 0.6, delay: 0.4 }}
                                     className="absolute -bottom-8 -left-6 lg:-left-16 w-[60%] aspect-[3/2] rounded-2xl border-4 border-white shadow-xl overflow-hidden"
                                 >
-                                    <FlexibleImage baseSrc="/image/workshop" alt="KBLs 워크샵 및 회의" width={800} height={533} className="w-full h-full object-cover rounded-3xl shadow-xl border-4 border-white" />
+                                    <FlexibleImage baseSrc="/image/workshop" alt="KBLs 워크숍 및 회의" width={800} height={533} className="w-full h-full object-cover rounded-3xl shadow-xl border-4 border-white" />
                                 </motion.div>
 
                             </div>
