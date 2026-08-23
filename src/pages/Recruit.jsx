@@ -592,7 +592,7 @@ const Recruit = () => {
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[임원진]</span>
-                                        <span className="text-slate-800">김예진 회장 / 지근학 부회장</span>
+                                        <span className="text-slate-800">김예진 랩실장 / 지근학 부랩실장</span>
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[이메일]</span>
