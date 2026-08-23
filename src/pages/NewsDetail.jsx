@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation, useNavigate, useParams, Navigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
-import { fetchBlockChildren } from '../lib/notion';
+import { fetchBlockChildren, fetchPage, mapNewsPage } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
+import NotFound from './NotFound';
 import Seo from '../components/Seo';
 
 const NewsDetail = () => {
@@ -10,11 +11,38 @@ const NewsDetail = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    const post = location.state?.post;
+    // 목록에서 넘어온 경우엔 state에 데이터가 실려 있어 곧바로 렌더한다.
+    // 상세 URL을 공유받거나 새로고침한 경우엔 state가 없으므로 id로 직접 조회한다.
+    const passedPost = location.state?.post;
+
+    const [post, setPost] = useState(passedPost || null);
+    const [isLoadingPost, setIsLoadingPost] = useState(!passedPost);
+    // null | 'notfound'(없는 id) | 'error'(일시적 실패)
+    const [postError, setPostError] = useState(null);
 
     const [blocks, setBlocks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState(false);
+
+    const fetchPost = useCallback(async () => {
+        setIsLoadingPost(true);
+        setPostError(null);
+        try {
+            setPost(mapNewsPage(await fetchPage(id)));
+        } catch (error) {
+            // 400은 id 형식 자체가 잘못된 경우라 404와 같이 '없는 페이지'로 본다.
+            const notFound = error.status === 404 || error.status === 400;
+            if (!notFound) console.error('Error fetching Notion page:', error);
+            setPostError(notFound ? 'notfound' : 'error');
+        } finally {
+            setIsLoadingPost(false);
+        }
+    }, [id]);
+
+    useEffect(() => {
+        if (passedPost) return;
+        fetchPost();
+    }, [passedPost, fetchPost]);
 
     // '다시 시도'에서 재호출하므로 useEffect 밖으로 뺀다.
     const fetchBlocks = useCallback(async () => {
@@ -38,8 +66,33 @@ const NewsDetail = () => {
         fetchBlocks();
     }, [id, post, fetchBlocks]);
 
+    // 없는 id면 기존 404 페이지를 그대로 쓴다(noindex 유지).
+    if (postError === 'notfound') {
+        return <NotFound />;
+    }
+
+    if (isLoadingPost) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center pt-24">
+                <div className="flex flex-col items-center justify-center opacity-60 space-y-6">
+                    <Loader2 className="w-12 h-12 text-brand-accent animate-spin" />
+                    <p className="font-bold text-slate-500 tracking-wide text-lg">노션 서버에서 상세 데이터를 불러오고 있습니다...</p>
+                </div>
+            </div>
+        );
+    }
+
     if (!post) {
-        return <Navigate to="/news" replace />;
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center pt-24">
+                <DataNotice
+                    title="상세 데이터를 불러올 수 없습니다"
+                    description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+                    onRetry={fetchPost}
+                    className="bg-slate-50 rounded-[2rem] border border-slate-100"
+                />
+            </div>
+        );
     }
 
     const renderBlock = (block) => {

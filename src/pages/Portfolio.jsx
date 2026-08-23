@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Seo from '../components/Seo';
+import { ROUTE_META } from '../lib/routeMeta';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Award, Medal, ExternalLink, Sparkles, Filter, ChevronLeft, ChevronRight, Loader2, Info, Image as ImageIcon, Plus, Flag, Star, Circle, Rocket, Pin } from 'lucide-react';
@@ -177,11 +178,7 @@ const Portfolio = () => {
 
     return (
         <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32">
-            <Seo
-                path="/portfolio"
-                title="Portfolio | KBLs"
-                description="KBLs가 공모전과 프로젝트에서 쌓아온 수상 내역과 실제 산출물을 확인해 보세요."
-            />
+            <Seo {...ROUTE_META['/portfolio']} />
             <div className="container mx-auto px-6">
 
                 {/* 1. Hero Section */}

@@ -1,7 +1,10 @@
 // 사이트 전역 상수. og:url / canonical / sitemap의 기준이 되는 절대 도메인이다.
 // 커스텀 도메인으로 옮길 때는 VITE_SITE_URL을 설정하거나 아래 기본값을 바꾸고,
 // public/sitemap.xml과 public/robots.txt의 도메인도 함께 맞춰야 한다.
-export const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://kblss.vercel.app').replace(/\/$/, '')
+// import.meta.env는 Vite 번들 안에서만 존재한다. 빌드 후처리(generate-route-meta)가
+// 이 모듈을 순수 Node에서 import해 같은 SITE_URL을 쓰므로 ?.로 방어한다.
+// 그래야 정적으로 찍는 메타와 런타임 Seo가 만드는 메타가 어긋나지 않는다.
+export const SITE_URL = (import.meta.env?.VITE_SITE_URL || 'https://kblss.vercel.app').replace(/\/$/, '')
 
 export const SITE_NAME = 'KBLs'
 

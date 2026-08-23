@@ -3,6 +3,27 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
+
+// 빌드가 끝난 뒤 dist/<경로>/index.html을 찍어 SNS 스크레이퍼에 경로별 메타를 준다.
+// scripts/generateRouteMeta.js를 정적 import하지 않고 여기서 동적 import하는 이유:
+// 그 모듈이 src/lib/site.js(= import.meta.env 사용)를 import하는데, vite.config는
+// 로딩 시 esbuild로 번들되므로 정적 import 체인에 끌려들어가면 import.meta 변환이
+// 끼어들 수 있다. 실행 시점에 순수 Node ESM으로 불러오면 그 위험이 없다.
+function generateRouteMetaPlugin() {
+  let outDir
+  return {
+    name: 'generate-route-meta',
+    apply: 'build',
+    configResolved(config) {
+      outDir = resolve(config.root, config.build.outDir)
+    },
+    async closeBundle() {
+      const mod = await import(pathToFileURL(resolve(__dirname, 'scripts/generateRouteMeta.js')).href)
+      await mod.generateRouteMeta({ outDir })
+    },
+  }
+}
 
 // 빌드 시 폰트 CSS <link>를 <style> 인라인으로 치환한다.
 // 렌더 차단 요청이 하나 줄고, woff2 URL(절대경로) 발견 시점이 HTML 파싱 시점으로
@@ -32,6 +53,7 @@ export default defineConfig(({ mode }) => {
       react(),
       tailwindcss(),
       inlineFontCss(),
+      generateRouteMetaPlugin(),
     ],
     build: {
       rollupOptions: {
