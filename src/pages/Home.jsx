@@ -194,7 +194,7 @@ const Home = () => {
                         transition={{ duration: 0.6, ease: "easeOut" }}
                         className="mb-10 inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50 shadow-sm"
                     >
-                        <span className="text-sm font-semibold text-brand-800">2026년 KBLs 신규 회원 모집중</span>
+                        <span className="text-sm font-semibold text-brand-800">2026학년도 상반기 신입 회원 모집중</span>
                     </motion.div>
 
                     {/* Centered large typography — Elegant solid colors, reduced size */}

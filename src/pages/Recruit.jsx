@@ -148,7 +148,7 @@ const Recruit = () => {
                 {/* 1. Header (공통 상단 - Left Aligned) */}
                 <header className="mb-12 text-left">
                     <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug mb-4 break-keep">
-                        26학년도 상반기 KBLs 신입 회원 모집<br />
+                        2026학년도 상반기 KBLs 신입 회원 모집<br />
                         <span className="text-lg md:text-2xl text-slate-500 font-bold block mt-3">(학사 신입/재학생)</span>
                     </h1>
                     <p className="text-base text-slate-600 font-medium mt-6 break-keep">
@@ -321,7 +321,7 @@ const Recruit = () => {
                             >
                                 <div className="w-full bg-white rounded-[2rem] border border-slate-200 shadow-sm mb-12 p-8 md:p-12">
                                     <div className="mb-10 text-center">
-                                        <h2 className="text-xl font-bold text-slate-900 mb-3">2026 KBLs 상반기 지원서</h2>
+                                        <h2 className="text-xl font-bold text-slate-900 mb-3">2026학년도 상반기 KBLs 지원서</h2>
                                         <p className="text-slate-500 font-medium">아래 항목을 꼼꼼히 작성한 후 제출해주세요.</p>
                                     </div>
 
@@ -517,7 +517,7 @@ const Recruit = () => {
                                                         >
                                                             <div className="px-5 pb-5 pt-1 text-sm text-slate-600 font-medium leading-relaxed space-y-2 border-t border-slate-100">
                                                                 <p className="pt-3"><span className="font-bold text-slate-800">수집 항목</span> — 이름, 학번, 학년, 학과, 전화번호, 지원서 기재 내용</p>
-                                                                <p><span className="font-bold text-slate-800">수집 목적</span> — KBLs 신입 부원 모집 심사 및 합격 안내 연락</p>
+                                                                <p><span className="font-bold text-slate-800">수집 목적</span> — KBLs 신입 회원 모집 심사 및 합격 안내 연락</p>
                                                                 <p><span className="font-bold text-slate-800">보유 기간</span> — 모집 절차 종료 후 6개월 이내 파기</p>
                                                                 <p className="text-slate-500">
                                                                     귀하는 개인정보 수집·이용에 동의하지 않을 권리가 있습니다.
