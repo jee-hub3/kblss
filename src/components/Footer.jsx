@@ -14,7 +14,7 @@ const Footer = () => {
                             <span className="text-2xl font-black tracking-tighter text-white">KBLs</span>
                         </Link>
                         <p className="text-slate-400 leading-relaxed max-w-sm">
-                            단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 실전형 비즈니스 IT 연합입니다.
+                            단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 실전형 비즈니스 IT 랩실입니다.
                         </p>
                     </div>
 

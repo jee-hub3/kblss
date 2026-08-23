@@ -445,7 +445,7 @@ const Recruit = () => {
 
                                             <div className="space-y-3">
                                                 <label className="block text-sm font-bold text-slate-700">10. 랩실 활동 참여 <span className="text-brand-accent">*</span></label>
-                                                <p className="text-xs text-slate-500 mb-2">화요일 정기 모임 및 오프라인 연구실 활동 참여가 가능하신가요?</p>
+                                                <p className="text-xs text-slate-500 mb-2">화요일 정기 모임 및 오프라인 랩실 활동 참여가 가능하신가요?</p>
                                                 <div className="flex space-x-6">
                                                     {['예', '어려울 것 같다'].map((opt) => (
                                                         <label key={opt} className="flex items-center space-x-2 cursor-pointer">
