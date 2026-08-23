@@ -132,7 +132,7 @@ const NewsDetail = () => {
                 const src = value.type === 'external' ? value.external.url : value.file.url;
                 return (
                     <div key={id} className="my-12 rounded-[2rem] overflow-hidden bg-slate-50 border border-slate-100 shadow-sm flex justify-center w-full">
-                        <img src={src} alt="Notion Block" className="max-w-full h-auto object-contain rounded-xl" />
+                        <img src={src} alt={(value.caption || []).map((c) => c.plain_text).join('') } className="max-w-full h-auto object-contain rounded-xl" />
                     </div>
                 );
             case 'callout':
