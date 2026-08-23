@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import Seo from '../components/Seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Loader2 } from 'lucide-react';
@@ -495,6 +495,14 @@ const Recruit = () => {
                                                                 <p className="text-slate-500">
                                                                     귀하는 개인정보 수집·이용에 동의하지 않을 권리가 있습니다.
                                                                     다만 동의하지 않을 경우 지원서 접수가 불가능합니다.
+                                                                </p>
+                                                                <p className="pt-1">
+                                                                    <Link
+                                                                        to="/privacy"
+                                                                        className="text-brand-accent font-bold hover:underline"
+                                                                    >
+                                                                        자세한 내용은 개인정보처리방침을 확인해 주세요
+                                                                    </Link>
                                                                 </p>
                                                             </div>
                                                         </motion.div>

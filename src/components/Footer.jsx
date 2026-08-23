@@ -53,9 +53,10 @@ const Footer = () => {
 
                 <div className="flex flex-col md:flex-row justify-between items-center text-sm">
                     <p>&copy; {new Date().getFullYear()} KBLs (Key Bridge Leaders). All rights reserved.</p>
-                    <div className="mt-4 md:mt-0 space-x-6">
-                        <Link to="#" className="hover:text-white transition-colors">개인정보처리방침</Link>
-                        <Link to="#" className="hover:text-white transition-colors">이용약관</Link>
+                    {/* 이용약관은 계정·결제·사용자 게시물이 없어 규율할 대상이 없다.
+                        링크가 하나뿐이라 space-x-6(항목 사이 간격)은 의미가 없어 걷어낸다. */}
+                    <div className="mt-4 md:mt-0">
+                        <Link to="/privacy" className="hover:text-white transition-colors">개인정보처리방침</Link>
                     </div>
                 </div>
             </div>
