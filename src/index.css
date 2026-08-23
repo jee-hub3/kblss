@@ -12,6 +12,10 @@
   --color-brand-800: #243b53;
   --color-brand-900: #102a43;
   --color-brand-accent: #2563eb;
+  /* 어두운 배경(slate-900) 위 전용 밝은 톤. #2563eb는 slate-900 위에서 3.5:1로
+     WCAG AA(4.5:1) 미달이라, 같은 blue 계열에서 4.85:1이 나오는 톤을 쓴다.
+     밝은 배경에서는 계속 brand-accent를 쓸 것. */
+  --color-brand-accent-on-dark: #3b82f6;
 
   --font-sans: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
 
@@ -72,6 +76,53 @@
     radial-gradient(at 0% 0%, hsla(343, 100%, 76%, 0.15) 0px, transparent 50%);
   background-size: 100% 100%;
   background-repeat: no-repeat;
+}
+
+/* Home 히어로 blob. framer-motion의 무한 rAF 루프 대신 CSS 키프레임으로
+   컴포지터에서만 돌린다(transform 전용 + will-change로 레이어 승격).
+   좌표·주기·easing은 기존 framer 설정을 그대로 이식했다.
+   easeInOut ↔ ease-in-out, 키프레임 배열 ↔ 균등 분할(0/33/67/100%).
+   reduced-motion은 아래 @media 블록이 일괄 무력화한다. */
+.hero-blob {
+  will-change: transform;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.hero-blob-1 { animation-name: hero-blob-1; animation-duration: 18s; }
+.hero-blob-2 { animation-name: hero-blob-2; animation-duration: 22s; }
+.hero-blob-3 { animation-name: hero-blob-3; animation-duration: 20s; }
+.hero-blob-4 { animation-name: hero-blob-4; animation-duration: 25s; }
+.hero-blob-5 { animation-name: hero-blob-5; animation-duration: 16s; }
+
+@keyframes hero-blob-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(80px, -60px) scale(1.15); }
+  67% { transform: translate(-40px, 40px) scale(0.95); }
+}
+
+@keyframes hero-blob-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-60px, 50px) scale(0.9); }
+  67% { transform: translate(50px, -30px) scale(1.1); }
+}
+
+@keyframes hero-blob-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -40px) scale(1.1); }
+  67% { transform: translate(-60px, 60px) scale(0.9); }
+}
+
+@keyframes hero-blob-4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-50px, 70px) scale(1.05); }
+  67% { transform: translate(30px, -50px) scale(0.95); }
+}
+
+@keyframes hero-blob-5 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(60px, -50px) scale(0.95); }
+  67% { transform: translate(-30px, 40px) scale(1.1); }
 }
 
 /* OS '동작 줄이기' 설정 시 CSS 애니메이션·트랜지션 무력화.

@@ -201,9 +201,9 @@ const Portfolio = () => {
                 {/* 2. Awards Section */}
                 <section className="mb-32">
                     <div className="max-w-4xl mx-auto bg-transparent rounded-[2rem] p-8 md:p-12 shadow-sm border border-slate-100 relative">
-                        <h3 className="text-xl font-bold text-slate-900 mb-10 flex items-center">
+                        <h2 className="text-xl font-bold text-slate-900 mb-10 flex items-center">
                             <Trophy className="w-6 h-6 mr-3 text-brand-accent" /> History & Awards
-                        </h3>
+                        </h2>
 
                         {isLoadingHistory ? (
                             <div className="py-20 flex flex-col items-center justify-center">
@@ -241,7 +241,7 @@ const Portfolio = () => {
                                                     </div>
                                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-8">
                                                         <div>
-                                                            <h4 className="text-base md:text-lg font-bold text-slate-900 mb-1">{award.title}</h4>
+                                                            <h3 className="text-base md:text-lg font-bold text-slate-900 mb-1">{award.title}</h3>
                                                             <p className="text-xs md:text-sm text-slate-500 font-medium">{award.organization}</p>
                                                         </div>
                                                         <div className="text-xs md:text-sm font-bold text-slate-500 whitespace-nowrap bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm self-start md:self-auto">
@@ -263,7 +263,7 @@ const Portfolio = () => {
                 {/* 3. Project Outputs Gallery */}
                 <section>
                     <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
-                        <h3 className="text-2xl font-bold text-slate-900">Featured Work</h3>
+                        <h2 className="text-2xl font-bold text-slate-900">Featured Work</h2>
 
                         {!isLoading && projectsData.length > 0 && (
                             <div className="flex flex-wrap justify-center gap-2 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
@@ -334,7 +334,7 @@ const Portfolio = () => {
                                             <div className="flex justify-between items-start mb-3">
                                                 <span className="text-xs font-extrabold text-brand-accent tracking-wider">{project.category}</span>
                                             </div>
-                                            <h4 className="text-lg font-bold text-slate-900 mb-3 leading-snug line-clamp-2">{project.title}</h4>
+                                            <h3 className="text-lg font-bold text-slate-900 mb-3 leading-snug line-clamp-2">{project.title}</h3>
                                             <p className="text-slate-600 text-sm leading-relaxed mb-6 line-clamp-3 w-full break-keep">{project.summary}</p>
 
                                             {/*KBLs의 새로운 소식을 확인해보세요*/}
@@ -358,6 +358,7 @@ const Portfolio = () => {
                     {totalPages > 1 && (
                         <div className="flex items-center justify-center gap-2 mt-16">
                             <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
+                                aria-label="이전 페이지"
                                 className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                                 <ChevronLeft className="w-4 h-4" />
                             </button>
@@ -368,6 +369,7 @@ const Portfolio = () => {
                                 </button>
                             ))}
                             <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
+                                aria-label="다음 페이지"
                                 className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                                 <ChevronRight className="w-4 h-4" />
                             </button>

@@ -122,7 +122,7 @@ const Recruit = () => {
                 <header className="mb-12 text-left">
                     <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug mb-4 break-keep">
                         26학년도 상반기 KBLs 신입 회원 모집<br />
-                        <span className="text-lg md:text-2xl text-slate-400 font-bold block mt-3">(학사 신입/재학생)</span>
+                        <span className="text-lg md:text-2xl text-slate-500 font-bold block mt-3">(학사 신입/재학생)</span>
                     </h1>
                     <p className="text-base text-slate-600 font-medium mt-6 break-keep">
                         "스스로 문제를 정의하고 해결하고 싶다면, KBLs와 함께하세요."
@@ -134,7 +134,7 @@ const Recruit = () => {
                     <div className="flex space-x-8">
                         <button
                             onClick={() => setActiveTab("info")}
-                            className={`pb-4 font-bold text-lg transition-colors relative ${activeTab === "info" ? "text-slate-900" : "text-slate-400 hover:text-slate-600"
+                            className={`pb-4 font-bold text-lg transition-colors relative ${activeTab === "info" ? "text-slate-900" : "text-slate-500 hover:text-slate-700"
                                 }`}
                         >
                             모집 정보
@@ -147,7 +147,7 @@ const Recruit = () => {
                         </button>
                         <button
                             onClick={() => setActiveTab("form")}
-                            className={`pb-4 font-bold text-lg transition-colors relative ${activeTab === "form" ? "text-slate-900" : "text-slate-400 hover:text-slate-600"
+                            className={`pb-4 font-bold text-lg transition-colors relative ${activeTab === "form" ? "text-slate-900" : "text-slate-500 hover:text-slate-700"
                                 }`}
                         >
                             지원서 작성
@@ -175,7 +175,7 @@ const Recruit = () => {
                             >
                                 {/* 모집 대상 */}
                                 <section>
-                                    <h3 className="text-xl font-bold text-slate-900 mb-5 tracking-tight">모집 대상</h3>
+                                    <h2 className="text-xl font-bold text-slate-900 mb-5 tracking-tight">모집 대상</h2>
                                     <ul className="list-disc pl-6 space-y-3 text-slate-700 font-medium text-base leading-relaxed">
                                         <li>데이터 분석 실전 적용 희망자</li>
                                         <li>공모전 완주 목표자</li>
@@ -185,7 +185,7 @@ const Recruit = () => {
 
                                 {/* 핵심 혜택 */}
                                 <section>
-                                    <h3 className="text-xl font-bold text-slate-900 mb-6 tracking-tight">KBLs만의 핵심 혜택</h3>
+                                    <h2 className="text-xl font-bold text-slate-900 mb-6 tracking-tight">KBLs만의 핵심 혜택</h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {[
                                             { emoji: "✨", text: "유료 생성형 AI 서비스 지원" },
@@ -205,7 +205,7 @@ const Recruit = () => {
 
                                 {/* 상세 모집 일정 (타임라인) */}
                                 <section>
-                                    <h3 className="text-xl font-bold text-slate-900 mb-8 tracking-tight">상세 모집 일정</h3>
+                                    <h2 className="text-xl font-bold text-slate-900 mb-8 tracking-tight">상세 모집 일정</h2>
                                     <div className="relative pl-7 border-l-2 border-slate-200 space-y-10 ml-2">
                                         {[
                                             { date: "3/02~3/17", title: "서류 접수" },
@@ -224,7 +224,7 @@ const Recruit = () => {
 
                                 {/* Rules & Duties (아코디언) */}
                                 <section>
-                                    <h3 className="text-xl font-bold text-slate-900 mb-5 tracking-tight">Rules & Duties</h3>
+                                    <h2 className="text-xl font-bold text-slate-900 mb-5 tracking-tight">Rules & Duties</h2>
                                     <div className="space-y-4">
                                         {[
                                             { title: "활동 의무", content: "학기당 공모전/스터디 1회 필수, 화요일 정기 모임" },
@@ -294,14 +294,14 @@ const Recruit = () => {
                             >
                                 <div className="w-full bg-white rounded-[2rem] border border-slate-200 shadow-sm mb-12 p-8 md:p-12">
                                     <div className="mb-10 text-center">
-                                        <h3 className="text-xl font-bold text-slate-900 mb-3">2026 KBLs 상반기 지원서</h3>
+                                        <h2 className="text-xl font-bold text-slate-900 mb-3">2026 KBLs 상반기 지원서</h2>
                                         <p className="text-slate-500 font-medium">아래 항목을 꼼꼼히 작성한 후 제출해주세요.</p>
                                     </div>
 
                                     <form onSubmit={handleSubmit} className="space-y-10 max-w-2xl mx-auto">
                                         {/* 기본 인적 사항 */}
                                         <div className="space-y-6 bg-slate-50 border border-slate-100 p-6 md:p-8 rounded-2xl">
-                                            <h4 className="font-bold text-base text-slate-800 mb-4 border-b border-slate-200 pb-2">기본 인적사항</h4>
+                                            <h3 className="font-bold text-base text-slate-800 mb-4 border-b border-slate-200 pb-2">기본 인적사항</h3>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div className="space-y-2">
@@ -542,17 +542,17 @@ const Recruit = () => {
 
                                 {/* Contact Area (Forms layout matches perfectly with this block) */}
                                 <div className="text-sm text-slate-600 font-medium space-y-3 leading-relaxed bg-white border border-slate-200 p-8 rounded-3xl shadow-sm">
-                                    <h4 className="font-bold text-slate-900 text-base mb-4">문의 연락처</h4>
+                                    <h3 className="font-bold text-slate-900 text-base mb-4">문의 연락처</h3>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
-                                        <span className="w-24 text-slate-400 font-bold mb-1 sm:mb-0">[지도교수]</span>
+                                        <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[지도교수]</span>
                                         <span className="text-slate-800">이상곤 교수님 (sklee@koreatech.ac.kr)</span>
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
-                                        <span className="w-24 text-slate-400 font-bold mb-1 sm:mb-0">[임원진]</span>
+                                        <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[임원진]</span>
                                         <span className="text-slate-800">김예진 회장 (kimyejin7783@koreatech.ac.kr) / 지근학 부회장 (sol003@koreatech.ac.kr)</span>
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
-                                        <span className="w-24 text-slate-400 font-bold mb-1 sm:mb-0">[방문 문의]</span>
+                                        <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[방문 문의]</span>
                                         <span className="text-slate-800">인문경영관 212호 KBLs 연구실</span>
                                     </p>
                                     <div className="pt-4 flex justify-end">

@@ -162,36 +162,30 @@ const Home = () => {
                 1. Hero Section — 최초 중앙 정렬 테마로 복구
             ═══════════════════════════════════════════ */}
             <section className="relative min-h-[100dvh] flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
-                {/* Animated Mesh Gradient Blobs */}
+                {/* Animated Mesh Gradient Blobs.
+                    framer-motion(JS 구동) 대신 CSS 키프레임으로 컴포지터에서만 돌린다
+                    (키프레임 좌표·주기·easing은 index.css에 동일하게 이식).
+                    무한 rAF 구동이 메인스레드 TBT에 얹히는 것을 막기 위한 조치로,
+                    reduced-motion 분기도 index.css의 @media 가드가 담당한다. */}
                 <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                    <motion.div
-                        className="absolute w-[600px] h-[600px] rounded-full opacity-20 bg-blue-400 blur-[120px]"
-                        animate={{ x: [0, 80, -40, 0], y: [0, -60, 40, 0], scale: [1, 1.15, 0.95, 1] }}
-                        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-1 absolute w-[600px] h-[600px] rounded-full opacity-20 bg-blue-400 blur-[120px]"
                         style={{ top: '-10%', left: '10%' }}
                     />
-                    <motion.div
-                        className="absolute w-[500px] h-[500px] rounded-full opacity-15 bg-teal-400 blur-[120px]"
-                        animate={{ x: [0, -60, 50, 0], y: [0, 50, -30, 0], scale: [1, 0.9, 1.1, 1] }}
-                        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-2 absolute w-[500px] h-[500px] rounded-full opacity-15 bg-teal-400 blur-[120px]"
                         style={{ top: '20%', right: '5%' }}
                     />
-                    <motion.div
-                        className="absolute w-[450px] h-[450px] rounded-full opacity-15 bg-emerald-300 blur-[100px]"
-                        animate={{ x: [0, 40, -60, 0], y: [0, -40, 60, 0], scale: [1, 1.1, 0.9, 1] }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-3 absolute w-[450px] h-[450px] rounded-full opacity-15 bg-emerald-300 blur-[100px]"
                         style={{ bottom: '5%', left: '25%' }}
                     />
-                    <motion.div
-                        className="absolute w-[550px] h-[550px] rounded-full opacity-10 bg-indigo-400 blur-[130px]"
-                        animate={{ x: [0, -50, 30, 0], y: [0, 70, -50, 0], scale: [1, 1.05, 0.95, 1] }}
-                        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-4 absolute w-[550px] h-[550px] rounded-full opacity-10 bg-indigo-400 blur-[130px]"
                         style={{ top: '40%', left: '50%' }}
                     />
-                    <motion.div
-                        className="absolute w-[400px] h-[400px] rounded-full opacity-10 bg-cyan-300 blur-[100px]"
-                        animate={{ x: [0, 60, -30, 0], y: [0, -50, 40, 0], scale: [1, 0.95, 1.1, 1] }}
-                        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+                    <div
+                        className="hero-blob hero-blob-5 absolute w-[400px] h-[400px] rounded-full opacity-10 bg-cyan-300 blur-[100px]"
                         style={{ top: '10%', right: '30%' }}
                     />
                 </div>
@@ -252,9 +246,9 @@ const Home = () => {
                         className="max-w-4xl mx-auto text-center"
                     >
 
-                        <h3 className="text-3xl md:text-4xl font-bold mb-10 text-slate-900">
+                        <h2 className="text-3xl md:text-4xl font-bold mb-10 text-slate-900">
                             <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
-                        </h3>
+                        </h2>
                         <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight">
                             KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 연구실 입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
                         </p>
@@ -369,7 +363,7 @@ const Home = () => {
                                 <div className="w-14 h-14 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                                     {item.icon}
                                 </div>
-                                <h4 className="text-xl font-bold mb-4 text-slate-900">{item.title}</h4>
+                                <h3 className="text-xl font-bold mb-4 text-slate-900">{item.title}</h3>
                                 <p className="text-slate-500 leading-relaxed text-base">{item.desc}</p>
                                 <div className="mt-6 h-px w-12 bg-slate-200 group-hover:w-20 group-hover:bg-brand-accent transition-all duration-500" />
                             </motion.div>
@@ -517,9 +511,9 @@ const Home = () => {
 
                                     {/* Minimalist details */}
                                     <div className="px-2">
-                                        <h4 className="text-lg font-bold text-slate-900 group-hover:text-brand-accent transition-colors line-clamp-1">
+                                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-accent transition-colors line-clamp-1">
                                             {project.title}
-                                        </h4>
+                                        </h3>
                                         <p className="text-sm text-slate-500 mt-1 font-medium">
                                             {project.category}
                                         </p>
