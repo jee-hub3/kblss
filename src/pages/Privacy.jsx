@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
+import { ROUTE_META } from '../lib/routeMeta';
 
 /**
  * 개인정보처리방침. 지원 폼이 개인정보를 수집하므로 공개 고지가 필요하다.
@@ -20,11 +21,7 @@ const LIST = `${BODY} list-disc pl-5 space-y-2 marker:text-slate-400`;
 const Privacy = () => {
     return (
         <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32">
-            <Seo
-                path="/privacy"
-                title="개인정보처리방침 | KBLs"
-                description="KBLs가 수집하는 개인정보의 항목·목적·보유기간과 정보주체의 권리를 안내합니다."
-            />
+            <Seo {...ROUTE_META['/privacy']} />
 
             <div className="container mx-auto px-6">
                 <div className="max-w-3xl mx-auto">

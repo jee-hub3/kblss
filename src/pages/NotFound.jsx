@@ -3,16 +3,12 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home, ArrowRight } from 'lucide-react';
 import Seo from '../components/Seo';
+import { ROUTE_META } from '../lib/routeMeta';
 
 const NotFound = () => {
     return (
         <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32 flex items-center justify-center">
-            <Seo
-                path="/404"
-                title="페이지를 찾을 수 없습니다 | KBLs"
-                description="요청하신 페이지가 존재하지 않거나 이동되었습니다."
-                noindex
-            />
+            <Seo {...ROUTE_META['/404']} />
             <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}

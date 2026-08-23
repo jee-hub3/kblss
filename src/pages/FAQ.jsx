@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Seo from '../components/Seo';
+import { ROUTE_META } from '../lib/routeMeta';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircleQuestion } from 'lucide-react';
 
@@ -56,11 +57,7 @@ const FAQ = () => {
 
     return (
         <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32">
-            <Seo
-                path="/faq"
-                title="FAQ | KBLs"
-                description="지원 자격부터 활동 기간, 참여 방식까지. KBLs에 대해 자주 묻는 질문을 모았습니다."
-            />
+            <Seo {...ROUTE_META['/faq']} />
             <div className="container mx-auto px-6 max-w-4xl">
                 {/* Hero Section */}
                 <section className="mb-20 text-center">
