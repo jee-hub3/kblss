@@ -18,6 +18,7 @@ const News = lazy(() => import('./pages/News'))
 const NewsDetail = lazy(() => import('./pages/NewsDetail'))
 const Recruit = lazy(() => import('./pages/Recruit'))
 const FAQ = lazy(() => import('./pages/FAQ'))
+const Privacy = lazy(() => import('./pages/Privacy'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 
@@ -43,6 +44,8 @@ function App() {
                         <Route path="news/:id" element={<NewsDetail />} />
                         <Route path="apply" element={<Recruit />} />
                         <Route path="faq" element={<FAQ />} />
+                        {/* GNB에는 노출하지 않고 푸터·지원 폼에서만 진입한다 */}
+                        <Route path="privacy" element={<Privacy />} />
                         <Route path="*" element={<NotFound />} />
                     </Route>
                 </Routes>
