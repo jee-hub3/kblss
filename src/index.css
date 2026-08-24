@@ -12,6 +12,9 @@
   --color-brand-800: #243b53;
   --color-brand-900: #102a43;
   --color-brand-accent: #2563eb;
+  /* brand-accent 버튼의 hover 톤. Tailwind 팔레트(blue-700)를 직접 참조하지 않고
+     브랜드 토큰으로 소유한다 — 팔레트가 바뀌어도 여기만 고치면 된다. */
+  --color-brand-accent-hover: #1d4ed8;
   /* 어두운 배경(slate-900) 위 전용 밝은 톤. #2563eb는 slate-900 위에서 3.5:1로
      WCAG AA(4.5:1) 미달이라, 같은 blue 계열에서 4.85:1이 나오는 톤을 쓴다.
      밝은 배경에서는 계속 brand-accent를 쓸 것. */

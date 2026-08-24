@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, MapPin } from 'lucide-react';
+import Button from './Button';
+import { trackEvent } from '../lib/analytics';
 
 const Footer = () => {
     return (
@@ -28,7 +30,13 @@ const Footer = () => {
                             <li><Link to="/organization" className="hover:text-brand-400 transition-colors">Organization</Link></li>
                             <li><Link to="/news" className="hover:text-brand-400 transition-colors">Log & News</Link></li>
                             <li><Link to="/faq" className="hover:text-brand-400 transition-colors">FAQ</Link></li>
-                            <li><Link to="/apply" className="hover:text-brand-400 transition-colors font-semibold text-brand-accent-on-dark">Apply Now</Link></li>
+                            {/* primary(흰 텍스트 on brand-accent)는 배경과 무관하게 대비가 성립하므로
+                                어두운 푸터에서도 그대로 쓴다. brand-accent-on-dark는 텍스트 전용 토큰. */}
+                            <li className="pt-2">
+                                <Button to="/apply" size="md" onClick={() => trackEvent('apply_cta_click', { location: 'footer' })}>
+                                    지원하기
+                                </Button>
+                            </li>
                         </ul>
                     </div>
 

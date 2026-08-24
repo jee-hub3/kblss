@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Seo from '../components/Seo';
+import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Loader2 } from 'lucide-react';
@@ -297,15 +298,18 @@ const Recruit = () => {
 
                                 {/* 하단 버튼 - Text Left to match Daangn layout style */}
                                 <div className="pt-10 pb-20">
-                                    <button
+                                    {/* apply_cta_click은 붙이지 않는다 — 이미 /apply 안이고,
+                                        탭 전환은 apply_form_tab_view가 별도로 잡는다. */}
+                                    <Button
+                                        size="lg"
+                                        className="w-full"
                                         onClick={() => {
                                             setActiveTab("form");
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="w-full py-5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-lg shadow-md transition-all flex items-center justify-center"
                                     >
-                                        지원서 작성하기
-                                    </button>
+                                        지원하기
+                                    </Button>
                                 </div>
                             </motion.div>
 

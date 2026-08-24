@@ -7,7 +7,9 @@ import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, Image as ImageIc
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 import Seo from '../components/Seo';
+import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
+import { trackEvent } from '../lib/analytics';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
@@ -596,9 +598,9 @@ const Home = () => {
                         <h2 className="text-3xl md:text-5xl font-extrabold mb-8 leading-tight text-slate-900">
                             스스로 문제를 정의하고<br />해결하고 싶다면,<br />KBLs와 함께하세요
                         </h2>
-                        <Link to="/apply" className="inline-block bg-brand-accent hover:bg-blue-700 text-white px-10 py-5 rounded-full text-lg font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                            KBLs 합류하기
-                        </Link>
+                        <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'home_bottom' })} className="transform hover:-translate-y-1">
+                            지원하기
+                        </Button>
                     </motion.div>
                 </div>
             </section>
