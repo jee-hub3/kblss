@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, MapPin } from 'lucide-react';
-import Button from './Button';
 import { trackEvent } from '../lib/analytics';
 
 const Footer = () => {
@@ -30,12 +29,18 @@ const Footer = () => {
                             <li><Link to="/organization" className="hover:text-brand-400 transition-colors">Organization</Link></li>
                             <li><Link to="/news" className="hover:text-brand-400 transition-colors">Log & News</Link></li>
                             <li><Link to="/faq" className="hover:text-brand-400 transition-colors">FAQ</Link></li>
-                            {/* primary(흰 텍스트 on brand-accent)는 배경과 무관하게 대비가 성립하므로
-                                어두운 푸터에서도 그대로 쓴다. brand-accent-on-dark는 텍스트 전용 토큰. */}
-                            <li className="pt-2">
-                                <Button to="/apply" size="md" onClick={() => trackEvent('apply_cta_click', { location: 'footer' })}>
+                            {/* 오너 결정: 푸터는 filled 버튼 대신 텍스트 링크를 유지한다
+                                (메뉴 리스트의 결을 지킴). 문구 통일("지원하기")과
+                                GA4 location: footer는 그대로 적용. 색은 어두운 배경 전용
+                                토큰(brand-accent-on-dark) — index.css 주석 참고. */}
+                            <li>
+                                <Link
+                                    to="/apply"
+                                    onClick={() => trackEvent('apply_cta_click', { location: 'footer' })}
+                                    className="hover:text-brand-400 transition-colors font-semibold text-brand-accent-on-dark"
+                                >
                                     지원하기
-                                </Button>
+                                </Link>
                             </li>
                         </ul>
                     </div>
