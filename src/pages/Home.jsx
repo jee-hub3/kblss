@@ -281,7 +281,7 @@ const Home = () => {
                         className="max-w-4xl mx-auto text-center"
                     >
 
-                        <h2 className="text-3xl md:text-4xl font-bold mb-10 text-slate-900">
+                        <h2 className="text-heading font-bold mb-10 text-slate-900">
                             <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
                         </h2>
                         <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight max-w-[68ch] mx-auto">
@@ -308,7 +308,7 @@ const Home = () => {
                         >
 
                             <h2
-                                className="text-3xl md:text-4xl font-bold text-slate-900 leading-[1.2] tracking-tight"
+                                className="text-heading font-bold text-slate-900 leading-[1.2] tracking-tight"
                                 style={{ fontFamily: "'Pretendard Variable', Pretendard, sans-serif" }}
                             >
                                 사람을 연결하고,<br />
@@ -371,7 +371,7 @@ const Home = () => {
                         className="flex flex-col md:flex-row justify-between items-end mb-20"
                     >
                         <div className="max-w-2xl">
-                            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">What We Do</h2>
+                            <h2 className="text-heading font-bold mb-6 text-slate-900">What We Do</h2>
                             <p className="text-lg text-slate-600 leading-relaxed">
                                 이론에서 멈추지 않습니다.<br />KBLs에서는 이런 실전 경험들이 당신의 일상이 됩니다.
                             </p>
@@ -426,7 +426,7 @@ const Home = () => {
                         variants={fadeInUp}
                         className="text-center mb-20"
                     >
-                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
+                        <h2 className="text-heading font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
                         <p className="text-lg text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 몰입</p>
                     </motion.div>
 
@@ -488,7 +488,7 @@ const Home = () => {
                         className="flex flex-col md:flex-row justify-between items-end mb-16"
                     >
                         <div className="max-w-2xl">
-                            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">Featured Portfolio</h2>
+                            <h2 className="text-heading font-bold mb-6 text-slate-900">Featured Portfolio</h2>
                             <p className="text-lg text-slate-600 leading-relaxed">
                                 치열한 고민 끝에 탄생한 산출물, <br />당신의 다음 포트폴리오가 될 수 있습니다.
                             </p>
@@ -576,7 +576,7 @@ const Home = () => {
                         variants={fadeInUp}
                         className="mb-16"
                     >
-                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">Who We Are Looking For</h2>
+                        <h2 className="text-heading font-bold mb-6 text-slate-900">Who We Are Looking For</h2>
                         <p className="text-lg text-slate-600">완벽하지 않아도 좋습니다. KBLs는 이런 열정을 가진 분을 기다립니다.</p>
                     </motion.div>
 

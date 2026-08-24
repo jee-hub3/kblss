@@ -131,7 +131,7 @@ const Activities = () => {
                         variants={fadeInUp}
                         className="mb-16 md:mb-24 text-center"
                     >
-                        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">Our Culture DNA</h2>
+                        <h2 className="text-heading font-extrabold text-slate-900 mb-6">Our Culture DNA</h2>
                         <p className="text-lg text-slate-500">KBLs를 움직이는 3가지 핵심 동력</p>
                     </motion.div>
 
@@ -204,7 +204,7 @@ const Activities = () => {
                         className="mb-20 text-center"
                     >
 
-                        <h2 className="text-3xl md:text-4xl font-extrabold mb-6 leading-tight">주도적 문제 해결,<br />서비스 기획 및 해커톤</h2>
+                        <h2 className="text-heading font-extrabold mb-6 leading-tight">주도적 문제 해결,<br />서비스 기획 및 해커톤</h2>
                         <p className="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
                             누군가 던져준 과제가 아닌, 세상의 문제를 스스로 발굴합니다. 실제 데이터를 분석하여 근거를 찾고, 아이디어를 최소 기능 제품(MVP)으로 구현하여 실무 기획력을 기릅니다.
                         </p>
@@ -265,7 +265,7 @@ const Activities = () => {
                     className="text-center mb-16"
                 >
 
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6 leading-tight">성장의 뼈대를 세우는<br />체계적인 지식 공유</h2>
+                    <h2 className="text-heading font-extrabold text-slate-900 mb-6 leading-tight">성장의 뼈대를 세우는<br />체계적인 지식 공유</h2>
                     <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
                         단발성 겉핥기식 스터디를 지양합니다. 학기 초 수요 조사를 통해 정규 커리큘럼을 세우고, 스터디 리더의 주도하에 '결과물 도출'을 목표로 밀도 있게 진행됩니다.
                     </p>
