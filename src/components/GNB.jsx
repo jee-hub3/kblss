@@ -67,8 +67,10 @@ const GNB = () => {
                                     <span className="font-extrabold">L</span><span className="font-medium">eader</span><span className="font-extrabold">s</span>
                                 </span>
                             </span>
-                            {/* 옆 텍스트가 이미 "KBLs"를 읽어주므로 로고는 장식으로 둔다 */}
-                            <img src="/kbls-logo.svg" alt="" className="w-6 h-6 ml-2" />
+                            {/* 옆 텍스트가 이미 "KBLs"를 읽어주므로 로고는 장식(alt="")으로 둔다.
+                                모바일에서는 제거 — 24px에서 필터+그라데이션이 뭉개지고,
+                                로고+텍스트+CTA+햄버거로 빽빽한 공간을 CTA에 양보한다. */}
+                            <img src="/kbls-logo.svg" alt="" className="hidden md:block w-6 h-6 ml-2" />
                         </Link>
                     </div>
 
