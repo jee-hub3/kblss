@@ -3,6 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Rocket, Search, Users, Sparkles, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import Button from './Button';
 
 /* ── Animation Variants ── */
 const fadeInUp = {
@@ -254,15 +255,17 @@ const FitVisionTab = ({ onBack }) => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex justify-center mt-20"
+                    className="flex flex-col items-center mt-20"
                 >
-                    <Link
-                        to="/apply"
-                        className="group inline-flex items-center bg-brand-accent hover:bg-blue-700 text-white font-bold text-base px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                    >
-                        망설임을 실행으로 바꿀 시간, KBLs 지원하기
+                    {/* 카피는 버리지 않는다 — 버튼 라벨은 '지원하기'로 통일하고
+                        수식 문장은 버튼 위로 분리한다. */}
+                    <p className="text-copy text-slate-600 font-medium mb-6 break-keep text-center">
+                        망설임을 실행으로 바꿀 시간.
+                    </p>
+                    <Button to="/apply" size="lg" className="group transform hover:-translate-y-1">
+                        지원하기
                         <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                    </Button>
                 </motion.div>
             </section>
 
