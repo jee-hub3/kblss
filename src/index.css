@@ -22,6 +22,21 @@
 
   --font-sans: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
 
+  /* ── 역할 기반 타이포 스케일 (P1) ──
+     크기가 아니라 역할로 고른다. 같은 크기라도 한 줄 라벨(label)과
+     여러 줄 본문(copy)은 행간이 달라야 하므로 단계를 나눈다.
+     display는 반응형 + tracking이 필요해 아래 @utility로 별도 정의.
+     heading(24px)은 정의만 하고 섹션 제목 매핑은 보류 —
+     현행 섹션 제목(30/36px)을 줄일지는 오너가 P2에서 결정한다. */
+  --text-heading: 1.5rem;        /* 24px — 섹션 제목 */
+  --text-heading--line-height: 1.3;
+  --text-subhead: 1.25rem;       /* 20px — 카드·소제목 */
+  --text-subhead--line-height: 1.4;
+  --text-copy: 1rem;             /* 16px — 여러 줄 본문 */
+  --text-copy--line-height: 1.6;
+  --text-label: 0.8125rem;       /* 13px — 한 줄 라벨·캡션·태그 */
+  --text-label--line-height: 1.4;
+
   --animate-fade-up: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-blob: blob 7s infinite;
 
@@ -63,6 +78,23 @@
        본문 서체에 없는 이모지를 계속 렌더링해 준다. */
     font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif,
       'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  }
+}
+
+/* 타이포 스케일의 display 단계. 반응형 크기 + md 이상 음수 tracking이
+   필요해 @theme 토큰 대신 utility로 정의한다.
+   30px → md 36px → lg 48px. 음수 letter-spacing은 36px 이상에만. */
+@utility text-display {
+  font-size: 1.875rem; /* 30px */
+  line-height: 1.1;
+
+  @media (min-width: 48rem) {
+    font-size: 2.25rem; /* 36px */
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 64rem) {
+    font-size: 3rem; /* 48px */
   }
 }
 

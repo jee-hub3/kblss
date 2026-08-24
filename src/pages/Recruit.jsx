@@ -204,8 +204,8 @@ const Recruit = () => {
                             >
                                 {/* 모집 대상 */}
                                 <section>
-                                    <h2 className="text-xl font-bold text-slate-900 mb-5 tracking-tight">모집 대상</h2>
-                                    <ul className="list-disc pl-6 space-y-3 text-slate-700 font-medium text-base leading-relaxed">
+                                    <h2 className="text-subhead font-bold text-slate-900 mb-5 tracking-tight">모집 대상</h2>
+                                    <ul className="list-disc pl-6 space-y-3 text-slate-700 font-medium text-copy">
                                         <li>데이터 분석 실전 적용 희망자</li>
                                         <li>공모전 완주 목표자</li>
                                         <li>책임감 있게 팀 활동이 가능한 분</li>
@@ -214,7 +214,7 @@ const Recruit = () => {
 
                                 {/* 핵심 혜택 */}
                                 <section>
-                                    <h2 className="text-xl font-bold text-slate-900 mb-6 tracking-tight">KBLs만의 핵심 혜택</h2>
+                                    <h2 className="text-subhead font-bold text-slate-900 mb-6 tracking-tight">KBLs만의 핵심 혜택</h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {[
                                             { emoji: "✨", text: "유료 생성형 AI 서비스 지원" },
@@ -234,7 +234,7 @@ const Recruit = () => {
 
                                 {/* 상세 모집 일정 (타임라인) */}
                                 <section>
-                                    <h2 className="text-xl font-bold text-slate-900 mb-8 tracking-tight">상세 모집 일정</h2>
+                                    <h2 className="text-subhead font-bold text-slate-900 mb-8 tracking-tight">상세 모집 일정</h2>
                                     <div className="relative pl-7 border-l-2 border-slate-200 space-y-10 ml-2">
                                         {RECRUIT_SCHEDULE.steps.map((step, i) => (
                                             <div key={i} className="relative">
@@ -251,7 +251,7 @@ const Recruit = () => {
 
                                 {/* Rules & Duties (아코디언) */}
                                 <section>
-                                    <h2 className="text-xl font-bold text-slate-900 mb-5 tracking-tight">Rules & Duties</h2>
+                                    <h2 className="text-subhead font-bold text-slate-900 mb-5 tracking-tight">Rules & Duties</h2>
                                     <div className="space-y-4">
                                         {[
                                             { title: "활동 의무", content: "학기당 공모전/스터디 1회 필수, 화요일 정기 모임" },
@@ -284,7 +284,7 @@ const Recruit = () => {
                                                             exit={{ height: 0, opacity: 0 }}
                                                             className="overflow-hidden"
                                                         >
-                                                            <div className="p-6 pt-0 text-slate-600 font-medium text-base leading-relaxed bg-white border-t border-slate-50">
+                                                            <div className="p-6 pt-0 text-slate-600 font-medium text-copy bg-white border-t border-slate-50">
                                                                 {rule.content}
                                                             </div>
                                                         </motion.div>
@@ -324,7 +324,7 @@ const Recruit = () => {
                             >
                                 <div className="w-full bg-white rounded-[2rem] border border-slate-200 shadow-sm mb-12 p-8 md:p-12">
                                     <div className="mb-10 text-center">
-                                        <h2 className="text-xl font-bold text-slate-900 mb-3">2026학년도 상반기 KBLs 지원서</h2>
+                                        <h2 className="text-subhead font-bold text-slate-900 mb-3">2026학년도 상반기 KBLs 지원서</h2>
                                         <p className="text-slate-500 font-medium">아래 항목을 꼼꼼히 작성한 후 제출해주세요.</p>
                                     </div>
 

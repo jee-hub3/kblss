@@ -169,7 +169,7 @@ const News = () => {
                                                             <span className="px-4 py-1.5 bg-brand-50 text-brand-accent font-bold text-sm rounded-full tracking-wide">{post.tag}</span>
                                                         </div>
                                                         <h2 className="text-2xl lg:text-3xl font-extrabold text-slate-900 mb-6 leading-[1.3] break-keep group-hover:text-brand-accent transition-colors duration-300">{post.title}</h2>
-                                                        <p className="text-base text-slate-600 leading-relaxed mb-10 overflow-hidden line-clamp-3 break-keep font-medium">{post.summary}</p>
+                                                        <p className="text-copy text-slate-600 mb-10 overflow-hidden line-clamp-3 break-keep font-medium">{post.summary}</p>
                                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-slate-100 mt-auto">
                                                             <div className="flex items-center gap-6">
                                                                 <div className="flex items-center text-slate-500 text-sm font-medium"><User className="w-4 h-4 mr-2 text-slate-400" />{post.author}</div>
@@ -223,7 +223,7 @@ const News = () => {
                         {/* 3. Category Filter & Content Grid */}
                         <section>
                             <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
-                                <h3 className="text-xl font-bold text-slate-900">
+                                <h3 className="text-subhead font-bold text-slate-900">
                                     {activeFilter === "전체보기" ? "Latest KBLs Log" : `${activeFilter} 탭의 글`}
                                 </h3>
                                 <div className="flex flex-wrap justify-center gap-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
@@ -256,7 +256,7 @@ const News = () => {
                                             </div>
 
                                             <div className="flex flex-col items-start px-1 mt-4">
-                                                <span className="inline-block bg-gray-100 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full">
+                                                <span className="inline-block bg-gray-100 text-blue-600 text-label font-semibold px-3 py-1 rounded-full">
                                                     {post.tag}
                                                 </span>
                                                 <h4 className="mt-2 text-base font-bold text-gray-900 line-clamp-2 group-hover:text-brand-accent transition-colors">

@@ -203,14 +203,13 @@ const Home = () => {
                         <span className="text-sm font-semibold text-brand-800">2026학년도 상반기 신입 회원 모집중</span>
                     </motion.div>
 
-                    {/* Centered large typography.
-                        text-3xl(30px)는 앞으로 만들 타이포 스케일의 모바일 display 단계.
-                        음수 letter-spacing은 36px 이상(md~)에만 건다. */}
+                    {/* 타이포 스케일의 display 단계(30→36→48px, 음수 tracking은 md~).
+                        정의는 index.css의 @utility text-display. */}
                     <motion.h1
                         variants={staggerContainer}
                         initial="hidden"
                         animate="visible"
-                        className="text-3xl md:text-4xl lg:text-5xl font-extrabold md:tracking-tight text-slate-900 mb-8 leading-snug"
+                        className="text-display font-extrabold text-slate-900 mb-8"
                     >
                         <motion.span variants={fadeInUp} className="block">
                             아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">실행</span></span>으로
@@ -396,8 +395,8 @@ const Home = () => {
                                 <div className="w-14 h-14 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                                     {item.icon}
                                 </div>
-                                <h3 className="text-xl font-bold mb-4 text-slate-900">{item.title}</h3>
-                                <p className="text-slate-500 leading-relaxed text-base">{item.desc}</p>
+                                <h3 className="text-subhead font-bold mb-4 text-slate-900">{item.title}</h3>
+                                <p className="text-slate-500 text-copy">{item.desc}</p>
                                 <div className="mt-6 h-px w-12 bg-slate-200 group-hover:w-20 group-hover:bg-brand-accent transition-all duration-500" />
                             </motion.div>
                         ))}
@@ -459,7 +458,7 @@ const Home = () => {
                                     </div>
                                     <div className="text-base text-slate-500 font-medium">{stat.title}</div>
                                     {stat.basis && (
-                                        <div className="text-xs text-slate-400 mt-1.5 break-keep">{stat.basis}</div>
+                                        <div className="text-label text-slate-400 mt-1.5 break-keep">{stat.basis}</div>
                                     )}
                                 </motion.div>
                             ))}
@@ -468,7 +467,7 @@ const Home = () => {
 
                     {/* 가장 최근 기준일 1회 표시. 기준일이 하나도 없으면 생략한다. */}
                     {!metricsError && latestAsOf && (
-                        <p className="text-xs text-slate-400 text-center mt-12">기준: {latestAsOf}</p>
+                        <p className="text-label text-slate-400 text-center mt-12">기준: {latestAsOf}</p>
                     )}
                 </div>
             </section>

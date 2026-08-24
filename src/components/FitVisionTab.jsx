@@ -213,7 +213,7 @@ const FitVisionTab = ({ onBack }) => {
                                             <span className={`text-sm font-extrabold tracking-widest text-slate-400 block mb-2`}>
                                                 {step.year}
                                             </span>
-                                            <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight">{step.phase}</h3>
+                                            <h3 className="text-subhead font-black text-slate-900 mb-3 tracking-tight">{step.phase}</h3>
                                             <p className="text-sm text-slate-500 leading-relaxed font-medium break-keep">{step.desc}</p>
                                         </div>
                                     </motion.div>
@@ -234,10 +234,10 @@ const FitVisionTab = ({ onBack }) => {
 
                                     {/* Content */}
                                     <div className="pt-2">
-                                        <span className={`text-xs font-extrabold tracking-widest text-slate-400 block mb-1`}>
+                                        <span className={`text-label font-extrabold tracking-widest text-slate-400 block mb-1`}>
                                             {step.year}
                                         </span>
-                                        <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">{step.phase}</h3>
+                                        <h3 className="text-subhead font-black text-slate-900 mb-2 tracking-tight">{step.phase}</h3>
                                         <p className="text-sm text-slate-500 leading-relaxed font-medium break-keep">{step.desc}</p>
                                     </div>
                                 </motion.div>

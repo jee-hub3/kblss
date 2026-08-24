@@ -34,7 +34,7 @@ const DnaCard = ({ title, desc, icon: Icon, delay }) => (
                 <Icon className="w-8 h-8" />
             </div>
             <h3 className="text-xl md:text-2xl font-extrabold text-slate-900 mb-4 tracking-tight">{title}</h3>
-            <p className="text-base text-slate-600 leading-relaxed font-medium">{desc}</p>
+            <p className="text-copy text-slate-600 font-medium">{desc}</p>
         </div>
     </motion.div>
 );
@@ -170,7 +170,7 @@ const Activities = () => {
                     >
 
                         <h2 className="text-3xl font-extrabold text-slate-900 mb-6 leading-tight">한계를 넘는 실전 경험,<br />체계적인 공모전 완주</h2>
-                        <p className="text-base text-slate-600 leading-relaxed">
+                        <p className="text-copy text-slate-600">
                             KBLs의 공모전은 팀 빌딩부터 다릅니다. 전체 현황을 점검하는 랩실 임원과 실무를 이끄는 팀장의 이중 관리 시스템을 통해 중도 포기 리스크를 차단합니다.
                         </p>
                     </motion.div>

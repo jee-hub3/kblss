@@ -193,7 +193,7 @@ const PortfolioDetail = () => {
 
                         {/* [1st Row] Category Badge */}
                         <div className="flex items-center">
-                            <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 font-bold rounded-full text-xs tracking-wider">
+                            <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 font-bold rounded-full text-label tracking-wider">
                                 {project.category}
                             </span>
                         </div>

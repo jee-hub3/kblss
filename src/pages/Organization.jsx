@@ -36,10 +36,10 @@ const GlassCard = ({ role, name, desc }) => (
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300 bg-brand-50 text-brand-accent group-hover:bg-brand-100 shrink-0">
                 <User className="w-6 h-6" />
             </div>
-            <div className="text-xs font-bold tracking-[0.15em] uppercase mb-2 text-slate-400 group-hover:text-brand-accent transition-colors">
+            <div className="text-label font-bold tracking-[0.15em] uppercase mb-2 text-slate-400 group-hover:text-brand-accent transition-colors">
                 {role}
             </div>
-            <h4 className="text-xl font-extrabold mb-3 tracking-tight text-slate-900">
+            <h4 className="text-subhead font-extrabold mb-3 tracking-tight text-slate-900">
                 {name}
             </h4>
             <p className="text-sm leading-relaxed font-medium break-keep max-w-xs text-slate-500 mt-auto">

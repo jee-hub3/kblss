@@ -178,7 +178,7 @@ const NewsDetail = () => {
             <section className="pt-32 pb-12">
                 <div className="container mx-auto px-6 max-w-3xl flex flex-col items-start gap-y-6">
                     {/* [1] tag 뱃지 */}
-                    <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 font-bold rounded-full text-xs tracking-wider">
+                    <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 font-bold rounded-full text-label tracking-wider">
                         {post.tag || "소식"}
                     </span>
 
