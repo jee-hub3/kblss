@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Share2, Users, CheckCircle, Search, LineChart, LayoutTemplate, Rocket, Check, ChevronRight } from 'lucide-react';
+import { ArrowRight, Share2, Users, CheckCircle, Search, LineChart, LayoutTemplate, Rocket, Check, ChevronRight, Wrench, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
@@ -84,10 +84,15 @@ const ProcessNode = ({ step, title, idx, total }) => (
 const Activities = () => {
     const [activeTab, setActiveTab] = useState(0);
 
+    // 스터디는 학기마다 부원 수요조사로 개설된다 — 고정 커리큘럼이 아니라
+    // "주제 영역"만 안내한다(개별 스터디를 나열하면 그 학기에 안 열렸을 때
+    // 약속을 깬 것이 된다 — 오너 결정). 후보 주제는 아래 별도 라벨로 구분.
+    // 갱신 주기: 모집 시즌 전 1회 — docs/OPERATIONS.md 점검 항목 참고.
     const studyTabs = [
-        { title: "데이터 분석", keys: ["#데이터분석", "#SQL"], desc: "실제 데이터를 가공하고 인사이트를 도출하는 SQL 및 파이썬 기반 데이터 분석 스터디입니다.", icon: LineChart },
-        { title: "서비스 기획", keys: ["#서비스기획", "#Notion/Figma"], desc: "유저 리서치부터 와이어프레임 설계까지, 고객 중심의 서비스 구축 과정을 학습합니다.", icon: LayoutTemplate },
-        { title: "AI 및 자격증", keys: ["#AI활용", "#ADsP자격증"], desc: "생성형 AI 인공지능 프롬프트 활용 및 실무 자격증 취득을 목표로 지식을 쌓습니다.", icon: CheckCircle }
+        { title: "데이터 분석", keys: ["#데이터분석", "#SQL·Python"], desc: "실제 데이터를 가공하고 인사이트를 도출하는 SQL 및 파이썬 기반 데이터 분석 스터디입니다.", icon: LineChart },
+        { title: "서비스 기획", keys: ["#서비스기획", "#유저리서치"], desc: "유저 리서치부터 와이어프레임 설계까지, 고객 중심의 서비스 구축 과정을 학습합니다.", icon: LayoutTemplate },
+        { title: "툴 활용", keys: ["#Notion", "#Figma"], desc: "노션·피그마 등 협업 도구를 실제 프로젝트 흐름 속에서 다루며 팀의 생산성을 끌어올립니다.", icon: Wrench },
+        { title: "AI 활용·트렌드", keys: ["#AI활용", "#AI트렌드"], desc: "생성형 AI 프롬프트 활용을 익히고, AI 저널과 리포트를 함께 읽고 토의하며 흐름을 따라잡습니다.", icon: Sparkles }
     ];
 
     return (
@@ -267,7 +272,7 @@ const Activities = () => {
 
                     <h2 className="text-heading font-extrabold text-slate-900 mb-6 leading-tight">성장의 뼈대를 세우는<br />체계적인 지식 공유</h2>
                     <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                        단발성 겉핥기식 스터디를 지양합니다. 학기 초 수요 조사를 통해 정규 커리큘럼을 세우고, 스터디 리더의 주도하에 '결과물 도출'을 목표로 밀도 있게 진행됩니다.
+                        단발성 겉핥기식 스터디를 지양합니다. 스터디는 매 학기 부원 수요조사를 통해 개설되며, 스터디 리더의 주도하에 '결과물 도출'을 목표로 밀도 있게 진행됩니다.
                     </p>
                 </motion.div>
 
@@ -320,6 +325,17 @@ const Activities = () => {
                             </motion.div>
                         </AnimatePresence>
                     </div>
+                </div>
+
+                {/* 후보 주제 — 운영 중인 탭 본문과 한눈에 구분되는 별도 라벨(오너 결정).
+                    메시지는 "네 수요가 반영된다"이지 "이걸 해준다"가 아니다.
+                    특히 국가공인 자격(ADsP 등)을 운영 중인 것처럼 쓰지 않는다. */}
+                <div className="max-w-5xl mx-auto mt-6 px-2">
+                    <p className="text-label text-slate-600 leading-relaxed break-keep border border-dashed border-slate-300 rounded-xl px-5 py-4 bg-white">
+                        <span className="inline-block font-bold text-slate-700 bg-slate-100 rounded-md px-2 py-0.5 mr-2">주제 예시</span>
+                        부원이 제안할 수 있는 주제 예시 — ADsP·빅데이터분석기사 자격증 대비, AI 트렌드 리포트 토의 등.
+                        개설 여부는 매 학기 수요조사로 정해집니다.
+                    </p>
                 </div>
             </section>
 
