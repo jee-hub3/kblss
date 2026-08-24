@@ -651,11 +651,13 @@ const Home = () => {
                         <div className="max-w-[68ch] mx-auto">
                             <h2 className="text-subhead font-bold text-slate-700 mb-6">지표 산출 기준</h2>
                             <ul className="space-y-3">
+                                {/* bg-slate-50 위 대비: slate-600 7.24:1, slate-500 4.55:1 (AA).
+                                    slate-400은 2.45:1로 미달이라 쓰지 않는다. */}
                                 {kblsNumbersData.filter((s) => s.basis || s.asOf).map((stat) => (
-                                    <li key={stat.id} className="text-label text-slate-500 leading-relaxed break-keep">
-                                        <span className="font-semibold text-slate-600">{stat.title}</span>
+                                    <li key={stat.id} className="text-label text-slate-600 leading-relaxed break-keep">
+                                        <span className="font-semibold text-slate-700">{stat.title}</span>
                                         {stat.basis && <> — {stat.basis}</>}
-                                        {stat.asOf && <span className="text-slate-400"> (기준일 {stat.asOf})</span>}
+                                        {stat.asOf && <span className="text-slate-500"> (기준일 {stat.asOf})</span>}
                                     </li>
                                 ))}
                             </ul>
