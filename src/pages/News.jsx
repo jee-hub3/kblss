@@ -283,7 +283,7 @@ const News = () => {
                             {/* Pagination */}
                             {totalPages > 1 && (
                                 <div className="flex items-center justify-center gap-2 mt-16">
-                                    <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
+                                    <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} aria-label="이전 페이지"
                                         className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                                         <ChevronLeft className="w-4 h-4" />
                                     </button>
@@ -293,7 +293,7 @@ const News = () => {
                                             {page}
                                         </button>
                                     ))}
-                                    <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
+                                    <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} aria-label="다음 페이지"
                                         className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                                         <ChevronRight className="w-4 h-4" />
                                     </button>

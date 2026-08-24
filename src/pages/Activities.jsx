@@ -251,7 +251,7 @@ const Activities = () => {
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 text-slate-400 text-sm font-bold mb-4">
                                         {idx + 1}
                                     </div>
-                                    <h4 className="text-lg font-bold mb-3">{step.title}</h4>
+                                    <h3 className="text-lg font-bold mb-3">{step.title}</h3>
                                     <p className="text-slate-400 text-sm leading-relaxed px-4">{step.desc}</p>
                                 </div>
                             </motion.div>

@@ -218,7 +218,7 @@ const NewsDetail = () => {
                         />
                     ) : (
                         <div className="notion-renderer text-lg">
-                            <ul className="list-none p-0 m-0 space-y-1">
+                            <div className="space-y-1">
                                 {blocks.map((block, idx) => {
                                     const isBullet = block.type === 'bulleted_list_item';
                                     const isNumbered = block.type === 'numbered_list_item';
@@ -234,7 +234,7 @@ const NewsDetail = () => {
                                     }
                                     return renderBlock(block);
                                 })}
-                            </ul>
+                            </div>
                         </div>
                     )}
                 </div>

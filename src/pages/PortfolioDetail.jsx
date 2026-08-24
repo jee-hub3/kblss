@@ -173,9 +173,12 @@ const PortfolioDetail = () => {
                 description={project.summary || `KBLs 포트폴리오 — ${project.title}`}
             />
 
-            {/* Detached Boxless Back Button (Icon Only) */}
+            {/* 뒤로가기는 navigate(-1)이 아니라 목적지를 명시한다.
+                상세 페이지 직접 접근(공유 링크)이 정상 경로가 된 뒤로는
+                -1이 공유한 사람의 페이지나 빈 탭으로 나가버린다.
+                NewsDetail과도 동작이 통일된다. */}
             <button
-                onClick={() => navigate(-1)}
+                onClick={() => navigate('/portfolio')}
                 className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-3 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-full text-slate-500 hover:text-brand-accent hover:bg-white hover:shadow-md transition-all group"
                 aria-label="포트폴리오 목록으로 돌아가기"
             >
@@ -204,7 +207,7 @@ const PortfolioDetail = () => {
                         </h1>
 
                         {/* [3rd Row] Metadata 1 (Date, Participants, Achievement) */}
-                        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-500 font-medium">
+                        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-600 font-medium">
                             {project.date && (
                                 <div className="flex items-center">
                                     <Calendar className="w-4 h-4 mr-1.5 opacity-50" />
@@ -265,7 +268,7 @@ const PortfolioDetail = () => {
                             />
                         ) : (
                             <div className="notion-renderer text-lg">
-                                <ul className="list-none p-0 m-0 space-y-1">
+                                <div className="space-y-1">
                                     {blocks.map((block, idx) => {
                                         const isBullet = block.type === 'bulleted_list_item';
                                         const isNumbered = block.type === 'numbered_list_item';
@@ -281,7 +284,7 @@ const PortfolioDetail = () => {
                                         }
                                         return renderBlock(block);
                                     })}
-                                </ul>
+                                </div>
                             </div>
                         )}
                     </div>

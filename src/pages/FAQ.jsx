@@ -96,9 +96,9 @@ const FAQ = () => {
                                         onClick={() => toggleAccordion(index)}
                                         className="w-full text-left px-8 py-6 flex justify-between items-center bg-white hover:bg-slate-50/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-inset"
                                     >
-                                        <h3 className={`text-lg md:text-xl font-bold transition-colors ${isOpen ? 'text-brand-accent' : 'text-slate-900'}`}>
+                                        <h2 className={`text-lg md:text-xl font-bold transition-colors ${isOpen ? 'text-brand-accent' : 'text-slate-900'}`}>
                                             {faq.question}
-                                        </h3>
+                                        </h2>
                                         <motion.div
                                             animate={{ rotate: isOpen ? 180 : 0 }}
                                             transition={{ duration: 0.3, ease: "easeInOut" }}

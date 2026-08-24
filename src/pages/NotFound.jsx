@@ -15,7 +15,7 @@ const NotFound = () => {
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="container mx-auto px-6 max-w-xl text-center"
             >
-                <p className="text-7xl md:text-8xl font-extrabold text-slate-200 tracking-tight mb-6 select-none">404</p>
+                <p aria-hidden="true" className="text-7xl md:text-8xl font-extrabold text-slate-200 tracking-tight mb-6 select-none">404</p>
                 <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-4">페이지를 찾을 수 없습니다</h1>
                 <p className="text-slate-500 font-medium leading-relaxed mb-10 break-keep">
                     주소가 잘못 입력되었거나, 페이지가 이동 또는 삭제되었을 수 있습니다.
