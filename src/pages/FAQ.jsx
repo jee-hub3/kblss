@@ -70,7 +70,11 @@ const FAQ = () => {
                         </motion.h1>
                         <motion.p variants={fadeInUp} className="text-lg text-slate-600 leading-relaxed font-medium">
                             KBLs 지원 전 궁금하신 점들을 확인해 보세요. <br className="hidden md:block" />
-                            해결되지 않은 궁금증은 오른쪽 아래 공식 이메일로 문의 바랍니다.
+                            {/* "오른쪽 아래" 같은 위치 설명은 모바일 레이아웃에서 어긋난다.
+                                위치를 설명하는 대신 그 자리에서 바로 보낼 수 있게 mailto를 둔다. */}
+                            해결되지 않은 궁금증은{' '}
+                            <a href="mailto:keybridgeleaders@gmail.com" className="text-brand-accent font-semibold hover:underline break-all">keybridgeleaders@gmail.com</a>
+                            으로 문의 바랍니다.
                         </motion.p>
                     </motion.div>
                 </section>

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackEvent } from '../lib/analytics';
+import Button from './Button';
 
 const navLinks = [
     { name: 'Organization', path: '/organization' },
@@ -78,20 +79,23 @@ const GNB = () => {
 
                     {/* Right: Desktop CTA + Mobile Hamburger */}
                     <div className="flex-1 flex justify-end items-center gap-3">
-                        <Link to="/apply" onClick={() => trackEvent('apply_cta_click', { location: 'gnb_desktop' })} className="hidden md:inline-block bg-brand-accent hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        {/* `hidden`은 Button 베이스의 inline-flex와 같은 우선순위라 지지 못한다.
+                            미디어쿼리 변형(max-md:)은 항상 이기므로 이걸로 숨긴다. */}
+                        <Button to="/apply" size="md" onClick={() => trackEvent('apply_cta_click', { location: 'gnb_desktop' })} className="max-md:hidden transform hover:-translate-y-0.5">
                             지원하기
-                        </Link>
+                        </Button>
 
                         {/* 모바일 상시 노출 CTA — 햄버거를 열지 않아도 보이는 컴팩트 버튼.
                             location을 gnb_mobile_inline으로 구분해 데스크톱(gnb_desktop),
                             오버레이 내부(gnb_mobile)와 진입점별 성과를 나눠 본다. */}
-                        <Link
+                        <Button
                             to="/apply"
+                            size="md"
                             onClick={() => trackEvent('apply_cta_click', { location: 'gnb_mobile_inline' })}
-                            className="md:hidden inline-flex items-center justify-center min-h-11 bg-brand-accent hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-all shadow-md"
+                            className="md:hidden"
                         >
                             지원하기
-                        </Link>
+                        </Button>
 
                         {/* Hamburger button — mobile only */}
                         <button
@@ -155,16 +159,17 @@ const GNB = () => {
                                 transition={{ delay: 0.1 + navLinks.length * 0.06 }}
                                 className="mt-6 w-full max-w-xs"
                             >
-                                <Link
+                                <Button
                                     to="/apply"
+                                    size="lg"
                                     onClick={() => {
                                         trackEvent('apply_cta_click', { location: 'gnb_mobile' });
                                         setIsMobileMenuOpen(false);
                                     }}
-                                    className="block w-full text-center bg-brand-accent hover:bg-blue-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all shadow-lg"
+                                    className="w-full"
                                 >
-                                    KBLs 지원하기
-                                </Link>
+                                    지원하기
+                                </Button>
                             </motion.div>
                         </motion.nav>
                     </motion.div>

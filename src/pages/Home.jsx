@@ -7,7 +7,10 @@ import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, Image as ImageIc
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 import Seo from '../components/Seo';
+import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
+import { getDocDeadlineLabel } from '../lib/recruitSchedule';
+import { trackEvent } from '../lib/analytics';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
@@ -158,7 +161,8 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 1. Hero Section — 최초 중앙 정렬 테마로 복구
             ═══════════════════════════════════════════ */}
-            <section className="relative min-h-[100dvh] flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
+            {/* 88dvh: 다음 섹션 윗머리가 살짝 보이게(peek) 해 false bottom을 없앤다 */}
+            <section className="relative min-h-[88dvh] flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
                 {/* Animated Mesh Gradient Blobs.
                     framer-motion(JS 구동) 대신 CSS 키프레임으로 컴포지터에서만 돌린다
                     (키프레임 좌표·주기·easing은 index.css에 동일하게 이식).
@@ -192,17 +196,21 @@ const Home = () => {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, ease: "easeOut" }}
-                        className="mb-10 inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50 shadow-sm"
+                        // 배지에는 그림자를 두지 않는다 — 그림자는 버튼(클릭 가능)의 시각 단서라
+                        // 상태 태그가 이를 흉내내면 안 된다. 링크·버튼으로도 만들지 말 것.
+                        className="mb-10 inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50"
                     >
                         <span className="text-sm font-semibold text-brand-800">2026학년도 상반기 신입 회원 모집중</span>
                     </motion.div>
 
-                    {/* Centered large typography — Elegant solid colors, reduced size */}
+                    {/* Centered large typography.
+                        text-3xl(30px)는 앞으로 만들 타이포 스케일의 모바일 display 단계.
+                        음수 letter-spacing은 36px 이상(md~)에만 건다. */}
                     <motion.h1
                         variants={staggerContainer}
                         initial="hidden"
                         animate="visible"
-                        className="text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 mb-8 leading-snug"
+                        className="text-3xl md:text-4xl lg:text-5xl font-extrabold md:tracking-tight text-slate-900 mb-8 leading-snug"
                     >
                         <motion.span variants={fadeInUp} className="block">
                             아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">실행</span></span>으로
@@ -210,7 +218,7 @@ const Home = () => {
                         <motion.span variants={fadeInUp} className="block mt-2">
                             사람을 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">연결</span></span>로
                         </motion.span>
-                        <motion.span variants={fadeInUp} className="block mt-6 text-xl md:text-2xl text-slate-900 font-bold tracking-tight">
+                        <motion.span variants={fadeInUp} className="block mt-6 text-xl md:text-2xl text-slate-900 font-bold">
                             우리가 함께 성장을 증명하는 곳
                         </motion.span>
                     </motion.h1>
@@ -221,13 +229,41 @@ const Home = () => {
                         transition={{ duration: 0.8, delay: 0.6 }}
                         className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed"
                     >
-                        세상에는 수많은 문제들이 있습니다.<br className="hidden md:block" />
+                        {/* JSX는 줄바꿈에 붙은 공백을 지우므로, md 미만에서 br이 숨겨지면
+                            문장이 붙는다. {' '}로 공백을 명시해 둔다. */}
+                        세상에는 수많은 문제들이 있습니다.<br className="hidden md:block" />{' '}
                         중요한 것은, 행동하고 실천하며 해결책을 만들어가는 것입니다.
                     </motion.p>
+
+                    {/* ★ CTA에는 opacity 초기값·delay를 절대 걸지 않는다 (ADR).
+                        위 문단이 delay 0.6s 때문에 LCP 후보에서 빠져 LCP가 1.4초
+                        밀린 전력이 있다. 버튼이 새 LCP 후보가 될 수 있으므로
+                        처음부터 보이게 렌더한다. 움직임이 필요하면 transform만. */}
+                    <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'home_hero' })}>
+                            지원하기
+                        </Button>
+                        <Button to="/activities" variant="secondary" size="lg">
+                            활동 둘러보기
+                        </Button>
+                    </div>
+
+                    {/* 일정 요약 한 줄. 값은 recruitSchedule.js(단일 소스)에서 파생하므로
+                        /apply 타임라인과 어긋날 수 없다. 4단계 표를 여기 복제하지 말 것.
+                        연도는 쓰지 않는다 — 모집 중인 시즌이라 맥락으로 명확하다.
+                        CTA와 같은 이유로 opacity 애니메이션 없이 즉시 렌더. */}
+                    <Link
+                        to="/apply"
+                        className="mt-6 inline-flex items-center text-sm font-medium text-slate-500 hover:text-brand-accent transition-colors group"
+                    >
+                        서류 마감 {getDocDeadlineLabel()} · 전형 일정 보기
+                        <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
                 </div>
 
-                {/* Bottom fade-out so the gradient blends into the next section */}
-                <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#f8fafc] z-[5] pointer-events-none" />
+                {/* 폭 전체 수평 페이드는 "여기서 페이지가 끝났다"는 잘못된 신호(false
+                    bottom)를 주므로 제거했다. 다음 섹션이 from-[#f8fafc]로 시작해
+                    배경 연결은 그대로 유지된다. */}
             </section>
 
             {/* ═══════════════════════════════════════════
@@ -594,9 +630,9 @@ const Home = () => {
                         <h2 className="text-3xl md:text-5xl font-extrabold mb-8 leading-tight text-slate-900">
                             스스로 문제를 정의하고<br />해결하고 싶다면,<br />KBLs와 함께하세요
                         </h2>
-                        <Link to="/apply" className="inline-block bg-brand-accent hover:bg-blue-700 text-white px-10 py-5 rounded-full text-lg font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                            KBLs 합류하기
-                        </Link>
+                        <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'home_bottom' })} className="transform hover:-translate-y-1">
+                            지원하기
+                        </Button>
                     </motion.div>
                 </div>
             </section>
