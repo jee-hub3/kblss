@@ -79,7 +79,9 @@ const GNB = () => {
 
                     {/* Right: Desktop CTA + Mobile Hamburger */}
                     <div className="flex-1 flex justify-end items-center gap-3">
-                        <Button to="/apply" size="md" onClick={() => trackEvent('apply_cta_click', { location: 'gnb_desktop' })} className="hidden md:inline-flex transform hover:-translate-y-0.5">
+                        {/* `hidden`은 Button 베이스의 inline-flex와 같은 우선순위라 지지 못한다.
+                            미디어쿼리 변형(max-md:)은 항상 이기므로 이걸로 숨긴다. */}
+                        <Button to="/apply" size="md" onClick={() => trackEvent('apply_cta_click', { location: 'gnb_desktop' })} className="max-md:hidden transform hover:-translate-y-0.5">
                             지원하기
                         </Button>
 
