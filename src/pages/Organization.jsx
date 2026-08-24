@@ -100,14 +100,21 @@ const Organization = () => {
     );
 
     return (
-        <div className="w-full bg-slate-50/50 pt-24 md:pt-32 pb-0 overflow-hidden">
+        // overflow-hidden은 sticky 탭 스트립을 무력화한다(스크롤 기준이 뷰포트가
+        // 아니게 됨). 가로 삐짐 방지 목적은 overflow-x-clip이 대신한다 —
+        // clip은 스크롤 컨테이너를 만들지 않아 sticky가 유지된다.
+        <div className="w-full bg-slate-50/50 pt-24 md:pt-32 pb-0 overflow-x-clip">
             <Seo {...ROUTE_META['/organization']} />
-            {/* Tabs Controller */}
-            <div className="flex justify-center mb-10 pt-4 relative z-20">
+            {/* Tabs Controller — sticky.
+                /apply 탭바와 같은 top-[80px] 기준(헤더 높이 기준은 하나여야 한다).
+                z-30: GNB.jsx의 층 규약(페이지 sticky ≤ z-30).
+                탭이 화면에 남아 인재상 탭 안쪽에서도 현재 위치가 보이고
+                '구성'으로 되돌아갈 수 있다 — 별도 뒤로가기 화살표는 제거했다. */}
+            <div className="sticky top-[80px] z-30 bg-slate-50/90 backdrop-blur-sm flex justify-center mb-10 pt-4">
                 <div className="flex space-x-8">
                     <button
                         onClick={() => setActiveTab('구성')}
-                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '구성' ? "text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
+                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '구성' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                     >
                         구성
                         {activeTab === '구성' && (
@@ -119,7 +126,7 @@ const Organization = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('인재상')}
-                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '인재상' ? "text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
+                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '인재상' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                     >
                         인재상
                         {activeTab === '인재상' && (
@@ -331,7 +338,7 @@ const Organization = () => {
                         transition={{ duration: 0.4, ease: "easeInOut" }}
                         className="w-full"
                     >
-                        <FitVisionTab onBack={() => setActiveTab('구성')} />
+                        <FitVisionTab />
                     </motion.div>
                 )}
             </AnimatePresence>

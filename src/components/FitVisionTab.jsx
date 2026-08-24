@@ -1,8 +1,7 @@
 import FlexibleImage from './FlexibleImage';
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Rocket, Search, Users, Sparkles, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Rocket, Search, Users, Sparkles, ChevronRight } from 'lucide-react';
 import Button from './Button';
 import { trackEvent } from '../lib/analytics';
 
@@ -94,31 +93,14 @@ const roadmapSteps = [
     },
 ];
 
-const FitVisionTab = ({ onBack }) => {
-    const navigate = useNavigate();
-
-    const handleBack = () => {
-        navigate('/#fit-section');
-        setTimeout(() => {
-            const el = document.getElementById('fit-section');
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 100);
-    };
-
-
+/* 뒤로가기 화살표는 제거했다 — 목적지가 홈으로 하드코딩돼 /organization 진입자도
+   홈으로 튕겼고(onBack prop은 죽은 채였다), 접근 이름이 없었고, z-50으로 층 규약을
+   어겼다. 대신 Organization.jsx의 탭 스트립(구성|인재상)이 sticky로 남아
+   현재 위치 표시와 되돌아가기를 겸한다. */
+const FitVisionTab = () => {
 
     return (
         <div className="w-full bg-slate-50/50 text-slate-900 relative overflow-hidden">
-            {/* Back Button */}
-            <button
-                onClick={handleBack}
-                className="absolute top-8 left-6 z-50 group inline-flex items-center justify-center p-2 transition-all duration-300"
-            >
-                <ArrowLeft className="w-8 h-8 text-slate-800 group-hover:text-brand-accent transition-colors" />
-            </button>
-
             {/* 2. Intro / Hero */}
             <section className="relative z-10 pt-28 pb-20 px-6">
                 <div className="max-w-4xl mx-auto text-center">
