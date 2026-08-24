@@ -412,7 +412,7 @@ const Recruit = () => {
                                         {/* 역량 확인 */}
                                         <div className="space-y-6">
                                             <div className="space-y-3">
-                                                <label className="block text-sm font-bold text-slate-700">6. 사용 가능한 툴 <span className="text-slate-400 font-medium">(선택)</span></label>
+                                                <label className="block text-sm font-bold text-slate-700">6. 사용 가능한 툴 <span className="text-slate-500 font-medium">(선택)</span></label>
                                                 <p className="text-xs text-slate-500 mb-2">본인이 다룰 줄 알거나 경험해본 툴을 모두 선택해주세요.</p>
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                                     {['Excel', 'Python', 'R', 'Notion', 'Figma', '기타(커서 등)', '없음(배워보고싶음)'].map((tool) => (

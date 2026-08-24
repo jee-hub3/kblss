@@ -176,7 +176,7 @@ const PortfolioDetail = () => {
             {/* Detached Boxless Back Button (Icon Only) */}
             <button
                 onClick={() => navigate(-1)}
-                className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-3 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-full text-slate-400 hover:text-brand-accent hover:bg-white hover:shadow-md transition-all group"
+                className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-3 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-full text-slate-500 hover:text-brand-accent hover:bg-white hover:shadow-md transition-all group"
                 aria-label="포트폴리오 목록으로 돌아가기"
             >
                 <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />

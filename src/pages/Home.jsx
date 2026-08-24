@@ -369,7 +369,7 @@ const Home = () => {
                             </p>
                             <div className="mt-10 flex items-center gap-3">
                                 <div className="h-px w-16 bg-slate-300" />
-                                <span className="text-sm font-semibold text-slate-400 tracking-wider uppercase" style={{ fontFamily: "'Pretendard Variable', Pretendard, sans-serif" }}>Connecting People, Growing Together.</span>
+                                <span className="text-sm font-semibold text-slate-500 tracking-wider uppercase" style={{ fontFamily: "'Pretendard Variable', Pretendard, sans-serif" }}>Connecting People, Growing Together.</span>
                             </div>
                         </motion.div>
 
@@ -392,27 +392,27 @@ const Home = () => {
                                 <ol className="relative">
                                     <li>
                                         <div className="flex items-baseline gap-4">
-                                            <span className="text-label font-bold text-slate-400 tracking-widest">01</span>
+                                            <span className="text-label font-bold text-slate-500 tracking-widest">01</span>
                                             <span className="text-heading font-extrabold text-slate-900">아이디어</span>
                                         </div>
                                         <div aria-hidden="true" className="ml-2.5 h-10 w-px bg-gradient-to-b from-brand-accent/60 to-brand-accent/15 my-2" />
                                     </li>
                                     <li>
                                         <div className="flex items-baseline gap-4">
-                                            <span className="text-label font-bold text-slate-400 tracking-widest">02</span>
+                                            <span className="text-label font-bold text-slate-500 tracking-widest">02</span>
                                             <span className="text-heading font-extrabold text-brand-accent">실행</span>
                                         </div>
                                         <div aria-hidden="true" className="ml-2.5 h-10 w-px bg-gradient-to-b from-brand-accent/60 to-brand-accent/15 my-2" />
                                     </li>
                                     <li>
                                         <div className="flex items-baseline gap-4">
-                                            <span className="text-label font-bold text-slate-400 tracking-widest">03</span>
+                                            <span className="text-label font-bold text-slate-500 tracking-widest">03</span>
                                             <span className="text-heading font-extrabold text-slate-900">성장</span>
                                         </div>
                                     </li>
                                 </ol>
 
-                                <p className="mt-10 text-label font-semibold text-slate-400 tracking-wider uppercase">The Bridge We Build</p>
+                                <p className="mt-10 text-label font-semibold text-slate-500 tracking-wider uppercase">The Bridge We Build</p>
                             </div>
                         </motion.div>
 
