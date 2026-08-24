@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Rocket, Search, Users, Sparkles, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from './Button';
+import { trackEvent } from '../lib/analytics';
 
 /* ── Animation Variants ── */
 const fadeInUp = {
@@ -262,7 +263,9 @@ const FitVisionTab = ({ onBack }) => {
                     <p className="text-copy text-slate-600 font-medium mb-6 break-keep text-center">
                         망설임을 실행으로 바꿀 시간.
                     </p>
-                    <Button to="/apply" size="lg" className="group transform hover:-translate-y-1">
+                    {/* 인재상(핏 확인)을 읽고 누르는 전환은 GNB의 무심결 클릭과
+                        성격이 달라 location을 구분한다. */}
+                    <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'organization_fit' })} className="group transform hover:-translate-y-1">
                         지원하기
                         <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
