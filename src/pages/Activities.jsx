@@ -115,7 +115,7 @@ const Activities = () => {
                         variants={fadeInUp}
                         className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-[1.3] mb-6 break-keep"
                     >
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500">KBLs만의 일하는 방식</span>을 배웁니다
+                        <span className="text-brand-accent">KBLs만의 일하는 방식</span>을 배웁니다
                     </motion.h1>
                     <motion.p
                         variants={fadeInUp}
