@@ -404,7 +404,7 @@ const Recruit = () => {
                                                     type="tel" name="phone" required
                                                     value={formData.phone} onChange={handleInputChange}
                                                     className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all font-medium"
-                                                    placeholder="010-XXXX-XXXX"
+                                                    placeholder="01012345678"
                                                 />
                                             </div>
                                         </div>

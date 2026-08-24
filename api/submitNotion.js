@@ -27,6 +27,15 @@ export default async function handler(request, response) {
             return response.status(400).json({ error: '개인정보 수집·이용에 동의해야 지원할 수 있습니다.', missingFields: ['privacyAgreement'] });
         }
 
+        // 전화번호는 숫자만 남겨 한 형식(하이픈 없는 숫자열)으로 통일해 저장한다.
+        // 입력 예시에서 하이픈을 뺐어도 하이픈 포함 입력이 섞여 들어오면
+        // 노션에서 정렬·중복 확인이 어려워지기 때문. 새 항목 수집이 아니라
+        // 형식 통일이므로 개인정보처리방침 변경은 필요 없다.
+        const normalizedPhone = String(phone).replace(/\D/g, '');
+        if (!normalizedPhone) {
+            return response.status(400).json({ error: '모든 필수 항목을 입력해주세요.', missingFields: ['phone'] });
+        }
+
         const NOTION_API_KEY = process.env.NOTION_API_KEY;
         const NOTION_DATABASE_ID = process.env.NOTION_RECRUIT_DB_ID;
 
@@ -58,7 +67,7 @@ export default async function handler(request, response) {
                         rich_text: [{ text: { content: major } }]
                     },
                     "전화번호": {
-                        phone_number: phone
+                        phone_number: normalizedPhone
                     },
                     "사용 가능한 툴": {
                         multi_select: Array.isArray(tools) ? tools.map(tool => ({ name: tool })) : []
