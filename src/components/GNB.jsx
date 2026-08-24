@@ -58,7 +58,8 @@ const GNB = () => {
                                     <span className="font-extrabold">L</span><span className="font-medium">eader</span><span className="font-extrabold">s</span>
                                 </span>
                             </span>
-                            <img src="/kbls-logo.svg" alt="KBLs" className="w-6 h-6 ml-2" />
+                            {/* 옆 텍스트가 이미 "KBLs"를 읽어주므로 로고는 장식으로 둔다 */}
+                            <img src="/kbls-logo.svg" alt="" className="w-6 h-6 ml-2" />
                         </Link>
                     </div>
 

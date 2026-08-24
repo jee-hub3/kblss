@@ -31,7 +31,7 @@ const Privacy = () => {
                             개인정보처리방침
                         </h1>
                         <p className={BODY}>
-                            KBLs(Key Bridge Leaders)는 신입 부원 모집 과정에서 지원자의 개인정보를 수집하며,
+                            KBLs(Key Bridge Leaders)는 신입 회원 모집 과정에서 지원자의 개인정보를 수집하며,
                             아래와 같이 처리합니다.
                         </p>
                     </header>
@@ -41,7 +41,7 @@ const Privacy = () => {
                         <section>
                             <h2 className={SECTION_TITLE}>1. 수집하는 개인정보 항목</h2>
                             <p className={`${BODY} mb-4`}>
-                                KBLs는 신입 부원 모집을 위해 지원서를 통해 아래 정보를 수집합니다.
+                                KBLs는 신입 회원 모집을 위해 지원서를 통해 아래 정보를 수집합니다.
                             </p>
                             <ul className={LIST}>
                                 <li>
@@ -66,7 +66,7 @@ const Privacy = () => {
                         <section>
                             <h2 className={SECTION_TITLE}>2. 수집 및 이용 목적</h2>
                             <ul className={LIST}>
-                                <li>신입 부원 모집 심사 및 선발</li>
+                                <li>신입 회원 모집 심사 및 선발</li>
                                 <li>심사 결과 안내 및 후속 절차 연락</li>
                                 <li>웹사이트 이용 현황 분석을 통한 서비스 개선</li>
                             </ul>

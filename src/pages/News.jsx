@@ -197,7 +197,7 @@ const News = () => {
                                                         setCurrentFeaturedIndex(idx);
                                                     }}
                                                     className="group/dot flex h-11 w-11 items-center justify-center"
-                                                    aria-label={`Go to slide ${idx + 1}`}
+                                                    aria-label={`${idx + 1}번째 소식으로 이동`}
                                                 >
                                                     <span className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentFeaturedIndex ? 'bg-brand-accent w-8' : 'w-2.5 bg-gray-300 group-hover/dot:bg-gray-400'}`} />
                                                 </button>

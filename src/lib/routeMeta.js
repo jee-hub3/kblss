@@ -41,7 +41,7 @@ export const ROUTE_META = {
     '/apply': {
         path: '/apply',
         title: '지원하기 | KBLs',
-        description: 'KBLs 신규 기수 모집 안내입니다. 지원 자격과 전형 일정을 확인하고 지원서를 작성해 보세요.',
+        description: 'KBLs 신입 회원 모집 안내입니다. 지원 자격과 전형 일정을 확인하고 지원서를 작성해 보세요.',
     },
     '/faq': {
         path: '/faq',

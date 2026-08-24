@@ -6,6 +6,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
 
+// 서버가 돌려준 필드명을 화면 라벨로 바꿔 보여주기 위한 표.
+// 폼 항목을 추가·변경하면 여기도 함께 고쳐야 안내가 어긋나지 않는다.
+const FIELD_LABELS = {
+    name: '이름',
+    studentId: '학번',
+    grade: '학년',
+    major: '학과(전공)',
+    phone: '전화번호',
+    motivation: '지원 동기 · 목적',
+    interest: '관심 분야 · 관심 직무',
+    experience: '공모전·프로젝트 경험',
+    participation: '랩실 활동 참여',
+    futurePlan: '하고 싶은 활동',
+    agreement: '랩실 활동 참여 및 운영 규정 확인',
+    privacyAgreement: '개인정보 수집·이용 동의',
+};
+
 const Recruit = () => {
     // 탭 상태는 URL 쿼리(?tab=form)가 단일 기준이다. /apply?tab=form 딥링크로
     // 지원서 탭을 바로 열 수 있고, 그 외 값과 파라미터 없음은 info로 폴백한다.
@@ -71,8 +88,9 @@ const Recruit = () => {
         e.preventDefault();
 
         // 개인정보 수집·이용 미동의 시 제출 차단.
-        // 규정 확인 체크박스는 required(네이티브)로 막히지만, 이 항목은
-        // 인라인 안내를 보여주기 위해 자바스크립트에서 직접 검증한다.
+        // 체크박스에도 required가 걸려 있어 보통은 네이티브 검증이 먼저 막지만,
+        // 자바스크립트로 폼을 제출하는 경로(requestSubmit 미사용 등)까지 대비해
+        // 여기서도 한 번 더 검증한다. 서버(api/submitNotion.js)도 별도로 막는다.
         if (!formData.privacyAgreement) {
             setPrivacyError(true);
             return;
@@ -100,7 +118,19 @@ const Recruit = () => {
                 setActiveTab("info");
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                alert(`오류 발생: ${data.error || '알 수 없는 오류'}\n상세: ${JSON.stringify(data.details || {})}`);
+                // 서버 응답 원문은 콘솔에만 남긴다. 화면에 JSON을 그대로 띄우면
+                // 내부 구조가 드러나고, 사용자는 무엇을 고쳐야 할지 알 수 없다.
+                console.error('지원서 제출 실패:', response.status, data);
+
+                // 서버가 비어 있는 항목을 알려주면 화면 라벨로 바꿔 안내한다.
+                const missing = Array.isArray(data.missingFields)
+                    ? data.missingFields.map((f) => FIELD_LABELS[f] || f)
+                    : [];
+                alert(
+                    missing.length > 0
+                        ? '다음 항목을 확인해 주세요: ' + missing.join(', ')
+                        : '지원서를 제출하지 못했습니다. 입력 내용을 확인한 뒤 다시 시도해 주세요.'
+                );
             }
         } catch (error) {
             console.error("Form submission error:", error);
@@ -118,7 +148,7 @@ const Recruit = () => {
                 {/* 1. Header (공통 상단 - Left Aligned) */}
                 <header className="mb-12 text-left">
                     <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug mb-4 break-keep">
-                        26학년도 상반기 KBLs 신입 회원 모집<br />
+                        2026학년도 상반기 KBLs 신입 회원 모집<br />
                         <span className="text-lg md:text-2xl text-slate-500 font-bold block mt-3">(학사 신입/재학생)</span>
                     </h1>
                     <p className="text-base text-slate-600 font-medium mt-6 break-keep">
@@ -291,7 +321,7 @@ const Recruit = () => {
                             >
                                 <div className="w-full bg-white rounded-[2rem] border border-slate-200 shadow-sm mb-12 p-8 md:p-12">
                                     <div className="mb-10 text-center">
-                                        <h2 className="text-xl font-bold text-slate-900 mb-3">2026 KBLs 상반기 지원서</h2>
+                                        <h2 className="text-xl font-bold text-slate-900 mb-3">2026학년도 상반기 KBLs 지원서</h2>
                                         <p className="text-slate-500 font-medium">아래 항목을 꼼꼼히 작성한 후 제출해주세요.</p>
                                     </div>
 
@@ -360,7 +390,7 @@ const Recruit = () => {
                                         {/* 역량 확인 */}
                                         <div className="space-y-6">
                                             <div className="space-y-3">
-                                                <label className="block text-sm font-bold text-slate-700">6. 사용 가능한 툴 <span className="text-brand-accent">*</span></label>
+                                                <label className="block text-sm font-bold text-slate-700">6. 사용 가능한 툴 <span className="text-slate-400 font-medium">(선택)</span></label>
                                                 <p className="text-xs text-slate-500 mb-2">본인이 다룰 줄 알거나 경험해본 툴을 모두 선택해주세요.</p>
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                                     {['Excel', 'Python', 'R', 'Notion', 'Figma', '기타(커서 등)', '없음(배워보고싶음)'].map((tool) => (
@@ -415,7 +445,7 @@ const Recruit = () => {
 
                                             <div className="space-y-3">
                                                 <label className="block text-sm font-bold text-slate-700">10. 랩실 활동 참여 <span className="text-brand-accent">*</span></label>
-                                                <p className="text-xs text-slate-500 mb-2">화요일 정기 모임 및 오프라인 연구실 활동 참여가 가능하신가요?</p>
+                                                <p className="text-xs text-slate-500 mb-2">화요일 정기 모임 및 오프라인 랩실 활동 참여가 가능하신가요?</p>
                                                 <div className="flex space-x-6">
                                                     {['예', '어려울 것 같다'].map((opt) => (
                                                         <label key={opt} className="flex items-center space-x-2 cursor-pointer">
@@ -447,7 +477,7 @@ const Recruit = () => {
                                         <div className="pt-4 border-t border-slate-200">
                                             <label className="flex items-start space-x-3 cursor-pointer group bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-slate-300 transition-colors">
                                                 <input
-                                                    type="checkbox" name="agreement" required
+                                                    type="checkbox" name="agreement" required aria-required="true"
                                                     checked={formData.agreement}
                                                     onChange={(e) => setFormData(prev => ({ ...prev, agreement: e.target.checked }))}
                                                     className="mt-1 w-5 h-5 text-brand-500 border-slate-300 rounded focus:ring-brand-500"
@@ -487,7 +517,7 @@ const Recruit = () => {
                                                         >
                                                             <div className="px-5 pb-5 pt-1 text-sm text-slate-600 font-medium leading-relaxed space-y-2 border-t border-slate-100">
                                                                 <p className="pt-3"><span className="font-bold text-slate-800">수집 항목</span> — 이름, 학번, 학년, 학과, 전화번호, 지원서 기재 내용</p>
-                                                                <p><span className="font-bold text-slate-800">수집 목적</span> — KBLs 신입 부원 모집 심사 및 합격 안내 연락</p>
+                                                                <p><span className="font-bold text-slate-800">수집 목적</span> — KBLs 신입 회원 모집 심사 및 합격 안내 연락</p>
                                                                 <p><span className="font-bold text-slate-800">보유 기간</span> — 모집 절차 종료 후 6개월 이내 파기</p>
                                                                 <p className="text-slate-500">
                                                                     귀하는 개인정보 수집·이용에 동의하지 않을 권리가 있습니다.
@@ -510,11 +540,19 @@ const Recruit = () => {
                                             {/* 필수 동의 체크박스 — 규정 확인과 별도 */}
                                             <label className={`flex items-start space-x-3 cursor-pointer group bg-slate-50 p-5 rounded-2xl border transition-colors ${privacyError ? 'border-red-300' : 'border-slate-100 hover:border-slate-300'}`}>
                                                 <input
-                                                    type="checkbox" name="privacyAgreement"
+                                                    type="checkbox" name="privacyAgreement" required aria-required="true"
                                                     checked={formData.privacyAgreement}
                                                     onChange={(e) => {
                                                         setFormData(prev => ({ ...prev, privacyAgreement: e.target.checked }));
                                                         if (e.target.checked) setPrivacyError(false);
+                                                    }}
+                                                    // required를 붙이면 네이티브 검증이 onSubmit보다 먼저 막아
+                                                    // handleSubmit의 setPrivacyError가 실행되지 않는다. 그러면 기존
+                                                    // 인라인 안내가 사라지고 브라우저 기본 말풍선만 뜬다.
+                                                    // preventDefault로 말풍선을 막고 인라인 안내를 그대로 살린다.
+                                                    onInvalid={(e) => {
+                                                        e.preventDefault();
+                                                        setPrivacyError(true);
                                                     }}
                                                     className="mt-1 w-5 h-5 text-brand-500 border-slate-300 rounded focus:ring-brand-500"
                                                 />
@@ -550,11 +588,17 @@ const Recruit = () => {
                                     <h3 className="font-bold text-slate-900 text-base mb-4">문의 연락처</h3>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[지도교수]</span>
-                                        <span className="text-slate-800">이상곤 교수님 (sklee@koreatech.ac.kr)</span>
+                                        <span className="text-slate-800">이상곤 교수님</span>
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[임원진]</span>
-                                        <span className="text-slate-800">김예진 회장 (kimyejin7783@koreatech.ac.kr) / 지근학 부회장 (sol003@koreatech.ac.kr)</span>
+                                        <span className="text-slate-800">김예진 랩실장 / 지근학 부랩실장</span>
+                                    </p>
+                                    <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
+                                        <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[이메일]</span>
+                                        {/* 개인정보처리방침·푸터와 같은 대표 주소로 창구를 하나로 모은다.
+                                            열람·정정·삭제 요구를 받을 창구가 갈리면 안 된다. */}
+                                        <span className="text-slate-800"><a href="mailto:keybridgeleaders@gmail.com" className="text-brand-accent font-semibold hover:underline break-all">keybridgeleaders@gmail.com</a></span>
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[방문 문의]</span>

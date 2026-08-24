@@ -194,7 +194,7 @@ const Home = () => {
                         transition={{ duration: 0.6, ease: "easeOut" }}
                         className="mb-10 inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50 shadow-sm"
                     >
-                        <span className="text-sm font-semibold text-brand-800">2026년 KBLs 신규 회원 모집중</span>
+                        <span className="text-sm font-semibold text-brand-800">2026학년도 상반기 신입 회원 모집중</span>
                     </motion.div>
 
                     {/* Centered large typography — Elegant solid colors, reduced size */}
@@ -247,7 +247,7 @@ const Home = () => {
                             <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
                         </h2>
                         <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight">
-                            KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 연구실입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
+                            KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 랩실입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
                         </p>
                     </motion.div>
                 </div>

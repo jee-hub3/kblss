@@ -9,13 +9,22 @@ export default async function handler(request, response) {
             tools, motivation, interest, experience, participation, futurePlan, agreement, privacyAgreement
         } = request.body;
 
-        if (!name || !studentId || !grade || !major || !phone || !motivation || !interest || !experience || !participation || !futurePlan || agreement === undefined) {
-            return response.status(400).json({ error: '모든 필수 항목을 입력해주세요.' });
+        // 어떤 항목이 비었는지 함께 돌려준다. 클라이언트가 화면 라벨로 바꿔 안내하므로
+        // 사용자가 무엇을 고쳐야 하는지 알 수 있다. 필드명 외의 내부 정보는 싣지 않는다.
+        const REQUIRED = {
+            name, studentId, grade, major, phone,
+            motivation, interest, experience, participation, futurePlan,
+        };
+        const missingFields = Object.keys(REQUIRED).filter((k) => !REQUIRED[k]);
+        if (agreement === undefined) missingFields.push('agreement');
+
+        if (missingFields.length > 0) {
+            return response.status(400).json({ error: '모든 필수 항목을 입력해주세요.', missingFields });
         }
 
         // 개인정보 수집·이용 동의는 필수. 클라이언트 검증을 우회한 요청도 여기서 차단한다.
         if (privacyAgreement !== true) {
-            return response.status(400).json({ error: '개인정보 수집·이용에 동의해야 지원할 수 있습니다.' });
+            return response.status(400).json({ error: '개인정보 수집·이용에 동의해야 지원할 수 있습니다.', missingFields: ['privacyAgreement'] });
         }
 
         const NOTION_API_KEY = process.env.NOTION_API_KEY;
