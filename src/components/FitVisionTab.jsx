@@ -194,7 +194,7 @@ const FitVisionTab = () => {
 
                                         {/* Content block instead of card */}
                                         <div className="w-full px-4">
-                                            <span className={`text-sm font-extrabold tracking-widest text-slate-400 block mb-2`}>
+                                            <span className={`text-sm font-extrabold tracking-widest text-slate-500 block mb-2`}>
                                                 {step.year}
                                             </span>
                                             <h3 className="text-subhead font-black text-slate-900 mb-3 tracking-tight">{step.phase}</h3>
@@ -218,7 +218,7 @@ const FitVisionTab = () => {
 
                                     {/* Content */}
                                     <div className="pt-2">
-                                        <span className={`text-label font-extrabold tracking-widest text-slate-400 block mb-1`}>
+                                        <span className={`text-label font-extrabold tracking-widest text-slate-500 block mb-1`}>
                                             {step.year}
                                         </span>
                                         <h3 className="text-subhead font-black text-slate-900 mb-2 tracking-tight">{step.phase}</h3>

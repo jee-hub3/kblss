@@ -168,7 +168,7 @@ const NewsDetail = () => {
             {/* 뒤로 가기 버튼: 텍스트나 박스 없이 깔끔한 <- 화살표 아이콘만 고정 배치 */}
             <button
                 onClick={() => navigate('/news')}
-                className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-2 text-slate-400 hover:text-brand-accent transition-colors"
+                className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-2 text-slate-500 hover:text-brand-accent transition-colors"
                 aria-label="목록으로 돌아가기"
             >
                 <ArrowLeft className="w-8 h-8" strokeWidth={1.5} />
@@ -218,7 +218,7 @@ const NewsDetail = () => {
                         />
                     ) : (
                         <div className="notion-renderer text-lg">
-                            <ul className="list-none p-0 m-0 space-y-1">
+                            <div className="space-y-1">
                                 {blocks.map((block, idx) => {
                                     const isBullet = block.type === 'bulleted_list_item';
                                     const isNumbered = block.type === 'numbered_list_item';
@@ -234,7 +234,7 @@ const NewsDetail = () => {
                                     }
                                     return renderBlock(block);
                                 })}
-                            </ul>
+                            </div>
                         </div>
                     )}
                 </div>
