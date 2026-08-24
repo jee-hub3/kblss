@@ -84,16 +84,6 @@ const Home = () => {
 
     useEffect(() => { fetchMetrics(); }, [fetchMetrics]);
 
-    // 지표들의 기준일 중 가장 최근 것을 "YYYY.MM"으로 만든다.
-    // ISO 날짜(YYYY-MM-DD)는 사전순 = 시간순이라 문자열 비교로 충분하다.
-    const latestAsOf = (() => {
-        const dates = kblsNumbersData.map(s => s.asOf).filter(Boolean);
-        if (dates.length === 0) return '';
-        const latest = dates.reduce((a, b) => (a > b ? a : b));
-        const [year, month] = latest.split('-');
-        return month ? `${year}.${month}` : year;
-    })();
-
     // 2. Featured Portfolio Data State
     const [featuredProjects, setFeaturedProjects] = useState([]);
     const [isLoadingPortfolios, setIsLoadingPortfolios] = useState(true);
@@ -265,12 +255,70 @@ const Home = () => {
             </section>
 
             {/* ═══════════════════════════════════════════
-                2. Our Identity
+                2. KBLs in Numbers — 히어로 바로 다음으로 상향 (성과 선노출)
             ═══════════════════════════════════════════ */}
             {/* peek 장치: 히어로 바로 다음 섹션만 상단 패딩을 48px로 고정해
                 첫 화면 하단에 제목이 실제로 걸치게 한다(1440에서 pt-24면 12px만 노출).
-                하단은 섹션 간격 체계(py-12 md:py-24)를 그대로 따른다. */}
-            <section className="pt-12 pb-12 md:pb-24 bg-gradient-to-b from-[#f8fafc] via-white to-white">
+                하단은 섹션 간격 체계(py-12 md:py-24)를 그대로 따른다.
+                배경은 히어로(#f8fafc)에서 이어받는다. */}
+            <section className="pt-12 pb-12 md:pb-24 bg-gradient-to-br from-[#f8fafc] via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
+                <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="container mx-auto px-6 relative z-10">
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={fadeInUp}
+                        className="text-center mb-20"
+                    >
+                        <h2 className="text-heading font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
+                        <p className="text-lg text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 몰입</p>
+                    </motion.div>
+
+                    {isLoadingMetrics ? (
+                        <div className="w-full py-20 flex justify-center">
+                            <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
+                        </div>
+                    ) : metricsError ? (
+                        <DataNotice
+                            title="데이터를 불러올 수 없습니다"
+                            description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+                            onRetry={fetchMetrics}
+                        />
+                    ) : kblsNumbersData.length === 0 ? (
+                        <DataNotice title="아직 등록된 지표가 없습니다" />
+                    ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
+                            {kblsNumbersData.map((stat) => (
+                                <motion.div
+                                    key={stat.id}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.5, delay: stat.order * 0.1 }}
+                                    className="text-center"
+                                >
+                                    <div className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500 mb-4 inline-flex items-center">
+                                        {prefersReducedMotion
+                                            ? <span>{stat.num}</span>
+                                            : <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce />}
+                                        <span>{stat.suffix}</span>
+                                    </div>
+                                    <div className="text-base text-slate-500 font-medium">{stat.title}</div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    )}
+                    {/* 산출 기준·기준일 병기는 페이지 끝의 '지표 산출 기준' 각주 섹션으로 옮겼다 */}
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════
+                3. Our Identity
+            ═══════════════════════════════════════════ */}
+            <section className="py-12 md:py-24 bg-gradient-to-b from-indigo-50/30 via-white to-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -426,73 +474,10 @@ const Home = () => {
             </section>
 
             {/* ═══════════════════════════════════════════
-                4. KBLs in Numbers — 밝은 화이트/블루 그라데이션
-            ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
-                <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
-
-                <div className="container mx-auto px-6 relative z-10">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeInUp}
-                        className="text-center mb-20"
-                    >
-                        <h2 className="text-heading font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
-                        <p className="text-lg text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 몰입</p>
-                    </motion.div>
-
-                    {isLoadingMetrics ? (
-                        <div className="w-full py-20 flex justify-center">
-                            <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
-                        </div>
-                    ) : metricsError ? (
-                        <DataNotice
-                            title="데이터를 불러올 수 없습니다"
-                            description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
-                            onRetry={fetchMetrics}
-                        />
-                    ) : kblsNumbersData.length === 0 ? (
-                        <DataNotice title="아직 등록된 지표가 없습니다" />
-                    ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
-                            {kblsNumbersData.map((stat) => (
-                                <motion.div
-                                    key={stat.id}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: stat.order * 0.1 }}
-                                    className="text-center"
-                                >
-                                    <div className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500 mb-4 inline-flex items-center">
-                                        {prefersReducedMotion
-                                            ? <span>{stat.num}</span>
-                                            : <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce />}
-                                        <span>{stat.suffix}</span>
-                                    </div>
-                                    <div className="text-base text-slate-500 font-medium">{stat.title}</div>
-                                    {stat.basis && (
-                                        <div className="text-label text-slate-400 mt-1.5 break-keep">{stat.basis}</div>
-                                    )}
-                                </motion.div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* 가장 최근 기준일 1회 표시. 기준일이 하나도 없으면 생략한다. */}
-                    {!metricsError && latestAsOf && (
-                        <p className="text-label text-slate-400 text-center mt-12">기준: {latestAsOf}</p>
-                    )}
-                </div>
-            </section>
-
-            {/* ═══════════════════════════════════════════
                 5. Featured Portfolio
             ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-indigo-50/30 via-white to-white">
+            {/* Numbers가 위로 이동해 이전 섹션이 What We Do(to-slate-50)가 됐다 */}
+            <section className="py-12 md:py-24 bg-gradient-to-b from-slate-50 via-white to-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -652,6 +637,32 @@ const Home = () => {
                     </motion.div>
                 </div>
             </section>
+
+            {/* ═══════════════════════════════════════════
+                8. 지표 산출 기준 (각주)
+            ═══════════════════════════════════════════ */}
+            {/* 노션 metrics의 '산출 기준'·'기준일'을 모아 보여주는 각주.
+                값이 하나도 없으면 섹션 자체를 렌더하지 않는다 — 오너가 노션을
+                채우면 배포 없이 자동으로 나타난다('산출 기준' 병기와 같은
+                하위 호환 패턴). 수치 본문(Numbers)에서는 병기를 걷어냈다. */}
+            {!metricsError && kblsNumbersData.some((s) => s.basis || s.asOf) && (
+                <section className="py-12 md:py-24 bg-slate-50 border-t border-slate-100">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-[68ch] mx-auto">
+                            <h2 className="text-subhead font-bold text-slate-700 mb-6">지표 산출 기준</h2>
+                            <ul className="space-y-3">
+                                {kblsNumbersData.filter((s) => s.basis || s.asOf).map((stat) => (
+                                    <li key={stat.id} className="text-label text-slate-500 leading-relaxed break-keep">
+                                        <span className="font-semibold text-slate-600">{stat.title}</span>
+                                        {stat.basis && <> — {stat.basis}</>}
+                                        {stat.asOf && <span className="text-slate-400"> (기준일 {stat.asOf})</span>}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            )}
         </div>
     );
 };
