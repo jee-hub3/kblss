@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import Seo from '../components/Seo';
 import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
@@ -538,18 +538,27 @@ const Recruit = () => {
                                                             <div className="px-5 pb-5 pt-1 text-sm text-slate-600 font-medium leading-relaxed space-y-2 border-t border-slate-100">
                                                                 <p className="pt-3"><span className="font-bold text-slate-800">수집 항목</span> — 이름, 학번, 학년, 학과, 전화번호, 지원서 기재 내용</p>
                                                                 <p><span className="font-bold text-slate-800">수집 목적</span> — KBLs 신입 회원 모집 심사 및 합격 안내 연락</p>
-                                                                <p><span className="font-bold text-slate-800">보유 기간</span> — 모집 절차 종료 후 6개월 이내 파기</p>
+                                                                {/* 방침(Privacy.jsx) 3항의 예외를 요약에도 반영 — 간이 고지와
+                                                                    방침이 다르면 안 된다. */}
+                                                                <p><span className="font-bold text-slate-800">보유 기간</span> — 모집 절차 종료 후 6개월 이내 파기 (선발된 부원은 활동 기간 동안 보관 후 파기)</p>
                                                                 <p className="text-slate-500">
                                                                     귀하는 개인정보 수집·이용에 동의하지 않을 권리가 있습니다.
                                                                     다만 동의하지 않을 경우 지원서 접수가 불가능합니다.
                                                                 </p>
                                                                 <p className="pt-1">
-                                                                    <Link
-                                                                        to="/privacy"
+                                                                    {/* 폼 안에서만 새 탭으로 연다 — SPA 내 이동이면 뒤로가기 복귀 시
+                                                                        작성 중이던 폼 값이 전부 사라지기 때문(QA #2).
+                                                                        sessionStorage 저장은 방침에 없는 처리라 쓰지 않는다.
+                                                                        푸터 등 폼 밖 방침 링크는 기존대로 SPA Link 유지. */}
+                                                                    <a
+                                                                        href="/privacy"
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        aria-label="개인정보처리방침 자세히 보기 (새 탭에서 열림)"
                                                                         className="text-brand-accent font-bold hover:underline"
                                                                     >
-                                                                        자세한 내용은 개인정보처리방침을 확인해 주세요
-                                                                    </Link>
+                                                                        자세한 내용은 개인정보처리방침을 확인해 주세요 ↗
+                                                                    </a>
                                                                 </p>
                                                             </div>
                                                         </motion.div>
