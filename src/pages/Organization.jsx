@@ -114,7 +114,7 @@ const Organization = () => {
                 <div className="flex space-x-8">
                     <button
                         onClick={() => setActiveTab('구성')}
-                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '구성' ? "text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
+                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '구성' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                     >
                         구성
                         {activeTab === '구성' && (
@@ -126,7 +126,7 @@ const Organization = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('인재상')}
-                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '인재상' ? "text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
+                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '인재상' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                     >
                         인재상
                         {activeTab === '인재상' && (
