@@ -221,7 +221,9 @@ const Home = () => {
                         transition={{ duration: 0.8, delay: 0.6 }}
                         className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed"
                     >
-                        세상에는 수많은 문제들이 있습니다.<br className="hidden md:block" />
+                        {/* JSX는 줄바꿈에 붙은 공백을 지우므로, md 미만에서 br이 숨겨지면
+                            문장이 붙는다. {' '}로 공백을 명시해 둔다. */}
+                        세상에는 수많은 문제들이 있습니다.<br className="hidden md:block" />{' '}
                         중요한 것은, 행동하고 실천하며 해결책을 만들어가는 것입니다.
                     </motion.p>
                 </div>
