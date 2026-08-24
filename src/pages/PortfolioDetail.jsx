@@ -243,7 +243,7 @@ const PortfolioDetail = () => {
             </section>
 
             {/* Notion Blocks Body */}
-            <section className="py-16 md:py-24 mt-4 md:mt-8">
+            <section className="py-12 md:py-24 mt-4 md:mt-8">
                 <div className="container mx-auto px-6">
                     <div className="max-w-4xl mx-auto min-h-[50vh]">
                         {isLoading ? (

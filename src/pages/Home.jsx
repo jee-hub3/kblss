@@ -268,7 +268,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 2. Our Identity
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-[#f8fafc] via-white to-white">
+            <section className="py-12 md:py-24 bg-gradient-to-b from-[#f8fafc] via-white to-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -281,7 +281,7 @@ const Home = () => {
                         <h2 className="text-3xl md:text-4xl font-bold mb-10 text-slate-900">
                             <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
                         </h2>
-                        <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight">
+                        <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight max-w-[68ch] mx-auto">
                             KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 랩실입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
                         </p>
                     </motion.div>
@@ -291,7 +291,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 ★ Bridge Section — Pretendard + Split Layout 이미지
             ═══════════════════════════════════════════ */}
-            <section className="relative py-24 md:py-32 bg-white overflow-hidden border-y border-slate-50">
+            <section className="relative py-12 md:py-24 bg-white overflow-hidden border-y border-slate-50">
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-0 items-center">
 
@@ -358,7 +358,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 3. What We Do
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-white via-slate-50/70 to-slate-50">
+            <section className="py-12 md:py-24 bg-gradient-to-b from-white via-slate-50/70 to-slate-50">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -411,7 +411,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 4. KBLs in Numbers — 밝은 화이트/블루 그라데이션
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
+            <section className="py-12 md:py-24 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
                 <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
 
@@ -475,7 +475,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 5. Featured Portfolio
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-indigo-50/30 via-white to-white">
+            <section className="py-12 md:py-24 bg-gradient-to-b from-indigo-50/30 via-white to-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -564,7 +564,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 6. Who We Are Looking For
             ═══════════════════════════════════════════ */}
-            <section id="fit-section" className="py-32 bg-gradient-to-b from-white to-slate-50">
+            <section id="fit-section" className="py-12 md:py-24 bg-gradient-to-b from-white to-slate-50">
                 <div className="container mx-auto px-6 text-center">
                     <motion.div
                         initial="hidden"
@@ -617,7 +617,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 7. Bottom CTA
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-white to-brand-50 relative overflow-hidden">
+            <section className="py-12 md:py-24 bg-gradient-to-b from-white to-brand-50 relative overflow-hidden">
                 <div className="container mx-auto px-6 relative z-10 text-center">
                     <motion.div
                         initial="hidden"

@@ -146,7 +146,7 @@ const FitVisionTab = ({ onBack }) => {
             </section>
 
             {/* 3. Detailed Core Values */}
-            <section className="relative z-10 py-24 lg:py-32 px-6">
+            <section className="relative z-10 py-12 md:py-24 px-6">
                 <div className="max-w-7xl mx-auto">
                     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={staggerContainer} className="text-center mb-20 lg:mb-28">
                         <motion.h2 variants={fadeInUp} custom={1} className="text-2xl md:text-4xl font-bold text-slate-900">
@@ -187,7 +187,7 @@ const FitVisionTab = ({ onBack }) => {
             </section>
 
             {/* 4. Roadmap by Year (Stepper) with large numbers */}
-            <section className="relative z-10 py-24 lg:py-32 px-6">
+            <section className="relative z-10 py-12 md:py-24 px-6">
                 <div className="max-w-6xl mx-auto">
                     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={staggerContainer} className="text-center mb-20">
                         <motion.h2 variants={fadeInUp} custom={1} className="text-2xl md:text-4xl font-bold text-slate-900">

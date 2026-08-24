@@ -122,7 +122,7 @@ const Activities = () => {
             </section>
 
             {/* 2. Our Culture DNA */}
-            <section className="bg-slate-50 py-32 rounded-[3rem] mx-4 md:mx-8 mb-32">
+            <section className="bg-slate-50 py-12 md:py-24 rounded-[3rem] mx-4 md:mx-8 mb-12 md:mb-24">
                 <div className="container mx-auto px-6 lg:px-12">
                     <motion.div
                         initial="hidden"
@@ -191,7 +191,7 @@ const Activities = () => {
             </section>
 
             {/* 4. Culture in Action 02 - MVP */}
-            <section className="bg-slate-900 py-32 rounded-[3rem] mx-4 md:mx-8 mb-32 text-white relative overflow-hidden">
+            <section className="bg-slate-900 py-12 md:py-24 rounded-[3rem] mx-4 md:mx-8 mb-12 md:mb-24 text-white relative overflow-hidden">
                 {/* Decorative ambient background */}
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-brand-600/30 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
 
@@ -324,7 +324,7 @@ const Activities = () => {
             </section>
 
             {/* 6. Bottom CTA */}
-            <section className="py-24 bg-gradient-to-b from-white to-brand-50 relative overflow-hidden">
+            <section className="py-12 md:py-24 bg-gradient-to-b from-white to-brand-50 relative overflow-hidden">
                 <div className="container mx-auto px-6 relative z-10 text-center">
                     <motion.div
                         initial="hidden"

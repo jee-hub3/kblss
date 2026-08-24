@@ -298,7 +298,7 @@ const Organization = () => {
                         </div>
 
                         {/* Bottom CTA */}
-                        <section className="py-24 bg-gradient-to-b from-white to-slate-50 text-slate-900 relative overflow-hidden border-t border-slate-100">
+                        <section className="py-12 md:py-24 bg-gradient-to-b from-white to-slate-50 text-slate-900 relative overflow-hidden border-t border-slate-100">
                             <div className="absolute top-0 right-[-10%] w-[40%] pt-[40%] bg-brand-100 rounded-full mix-blend-multiply filter blur-[100px] opacity-60 animate-blob"></div>
 
                             <div className="container mx-auto px-6 relative z-10 text-center">

@@ -81,6 +81,15 @@
   }
 }
 
+/* 컨테이너 이중 구조의 껍데기(P1). 기본 container는 2xl에서 1536px까지
+   늘어나므로 1280px로 고정한다. 읽는 본문은 이 안에서 다시 max-w-[68ch].
+   기존 호출부의 mx-auto px-6는 중복이지만 무해해 그대로 둔다. */
+@utility container {
+  max-width: 80rem; /* 1280px */
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
 /* 타이포 스케일의 display 단계. 반응형 크기 + md 이상 음수 tracking이
    필요해 @theme 토큰 대신 utility로 정의한다.
    30px → md 36px → lg 48px. 음수 letter-spacing은 36px 이상에만. */
