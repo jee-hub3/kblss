@@ -126,12 +126,19 @@ const PortfolioDetail = () => {
         switch (type) {
             case 'paragraph':
                 return <p key={id} className="mb-5 text-slate-700 leading-loose min-h-[1.5rem] tracking-wide">{renderRichText(value.rich_text)}</p>;
+            // 노션 본문 헤딩은 페이지 제목 h1 아래로 한 단계 오프셋한다.
+            // heading_1을 h1로 두면 페이지에 h1이 둘이 되고(axe의
+            // page-has-heading-one은 "하나 이상"만 봐서 안 잡힌다),
+            // 작성자가 제목1부터 쓰는 일반적인 경우에 h1 다음이 h1이 된다.
+            // 클래스는 그대로 두므로 시각 변화는 없다.
+            // 작성자가 제목3만 쓰는 경우는 코드로 재번호를 매기지 않는다 —
+            // 화면과 작성자 의도가 어긋난다. 운영 가이드의 작성 규칙으로 닫는다.
             case 'heading_1':
-                return <h1 key={id} className="text-heading font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</h1>;
+                return <h2 key={id} className="text-heading font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</h2>;
             case 'heading_2':
-                return <h2 key={id} className="text-2xl md:text-3xl font-bold text-slate-900 mt-12 mb-6 pb-3 border-b border-slate-100">{renderRichText(value.rich_text)}</h2>;
+                return <h3 key={id} className="text-2xl md:text-3xl font-bold text-slate-900 mt-12 mb-6 pb-3 border-b border-slate-100">{renderRichText(value.rich_text)}</h3>;
             case 'heading_3':
-                return <h3 key={id} className="text-xl md:text-2xl font-bold text-slate-800 mt-10 mb-4">{renderRichText(value.rich_text)}</h3>;
+                return <h4 key={id} className="text-xl md:text-2xl font-bold text-slate-800 mt-10 mb-4">{renderRichText(value.rich_text)}</h4>;
             case 'bulleted_list_item':
                 return <li key={id} className="mb-2.5 text-slate-700 ml-6 list-disc marker:text-brand-accent/50 pl-2 leading-relaxed">{renderRichText(value.rich_text)}</li>;
             case 'numbered_list_item':
