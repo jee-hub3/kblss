@@ -160,7 +160,8 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 1. Hero Section — 최초 중앙 정렬 테마로 복구
             ═══════════════════════════════════════════ */}
-            <section className="relative min-h-[100dvh] flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
+            {/* 88dvh: 다음 섹션 윗머리가 살짝 보이게(peek) 해 false bottom을 없앤다 */}
+            <section className="relative min-h-[88dvh] flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
                 {/* Animated Mesh Gradient Blobs.
                     framer-motion(JS 구동) 대신 CSS 키프레임으로 컴포지터에서만 돌린다
                     (키프레임 좌표·주기·easing은 index.css에 동일하게 이식).
@@ -194,17 +195,21 @@ const Home = () => {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, ease: "easeOut" }}
-                        className="mb-10 inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50 shadow-sm"
+                        // 배지에는 그림자를 두지 않는다 — 그림자는 버튼(클릭 가능)의 시각 단서라
+                        // 상태 태그가 이를 흉내내면 안 된다. 링크·버튼으로도 만들지 말 것.
+                        className="mb-10 inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50"
                     >
                         <span className="text-sm font-semibold text-brand-800">2026학년도 상반기 신입 회원 모집중</span>
                     </motion.div>
 
-                    {/* Centered large typography — Elegant solid colors, reduced size */}
+                    {/* Centered large typography.
+                        text-3xl(30px)는 앞으로 만들 타이포 스케일의 모바일 display 단계.
+                        음수 letter-spacing은 36px 이상(md~)에만 건다. */}
                     <motion.h1
                         variants={staggerContainer}
                         initial="hidden"
                         animate="visible"
-                        className="text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 mb-8 leading-snug"
+                        className="text-3xl md:text-4xl lg:text-5xl font-extrabold md:tracking-tight text-slate-900 mb-8 leading-snug"
                     >
                         <motion.span variants={fadeInUp} className="block">
                             아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">실행</span></span>으로
@@ -212,7 +217,7 @@ const Home = () => {
                         <motion.span variants={fadeInUp} className="block mt-2">
                             사람을 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">연결</span></span>로
                         </motion.span>
-                        <motion.span variants={fadeInUp} className="block mt-6 text-xl md:text-2xl text-slate-900 font-bold tracking-tight">
+                        <motion.span variants={fadeInUp} className="block mt-6 text-xl md:text-2xl text-slate-900 font-bold">
                             우리가 함께 성장을 증명하는 곳
                         </motion.span>
                     </motion.h1>
@@ -228,10 +233,24 @@ const Home = () => {
                         세상에는 수많은 문제들이 있습니다.<br className="hidden md:block" />{' '}
                         중요한 것은, 행동하고 실천하며 해결책을 만들어가는 것입니다.
                     </motion.p>
+
+                    {/* ★ CTA에는 opacity 초기값·delay를 절대 걸지 않는다 (ADR).
+                        위 문단이 delay 0.6s 때문에 LCP 후보에서 빠져 LCP가 1.4초
+                        밀린 전력이 있다. 버튼이 새 LCP 후보가 될 수 있으므로
+                        처음부터 보이게 렌더한다. 움직임이 필요하면 transform만. */}
+                    <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'home_hero' })}>
+                            지원하기
+                        </Button>
+                        <Button to="/activities" variant="secondary" size="lg">
+                            활동 둘러보기
+                        </Button>
+                    </div>
                 </div>
 
-                {/* Bottom fade-out so the gradient blends into the next section */}
-                <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#f8fafc] z-[5] pointer-events-none" />
+                {/* 폭 전체 수평 페이드는 "여기서 페이지가 끝났다"는 잘못된 신호(false
+                    bottom)를 주므로 제거했다. 다음 섹션이 from-[#f8fafc]로 시작해
+                    배경 연결은 그대로 유지된다. */}
             </section>
 
             {/* ═══════════════════════════════════════════
