@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import CountUp from 'react-countup';
-import FlexibleImage from '../components/FlexibleImage';
 import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, Image as ImageIcon } from 'lucide-react';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
@@ -326,7 +325,10 @@ const Home = () => {
                             </div>
                         </motion.div>
 
-                        {/* Right: Image placeholder — Pinterest-style overlapping panels */}
+                        {/* Right: 타이포 그래픽 — 스톡 일러스트를 제거했다.
+                            기획서 원칙: 양산형 AI 이미지·스톡 금지, 실제 활동 사진 우선,
+                            없으면 타이포·그래픽으로 대체. 실제 사진이 확보되면 이 자리를
+                            사진 패널로 되돌린다. */}
                         <motion.div
                             initial={{ opacity: 0, x: 40 }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -334,23 +336,35 @@ const Home = () => {
                             transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
                             className="relative lg:pl-8"
                         >
-                            <div className="relative">
-                                {/* Tall background panel */}
-                                <div className="w-full aspect-[4/5] rounded-[2rem] overflow-hidden">
-                                    <FlexibleImage baseSrc="/image/team" alt="KBLs 팀 단체 사진" width={1200} height={800} className="w-full h-full object-cover" />
-                                </div>
+                            <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border border-slate-100 p-8 md:p-12 overflow-hidden">
+                                {/* 장식 배경 이니셜 — 읽히지 않는 순수 장식 */}
+                                <span aria-hidden="true" className="absolute -top-4 right-2 text-[110px] md:text-[150px] font-black leading-none text-brand-accent/5 select-none pointer-events-none">B</span>
 
-                                {/* Floating overlap panel — bottom-left offset */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.6, delay: 0.4 }}
-                                    className="absolute -bottom-8 -left-6 lg:-left-16 w-[60%] aspect-[3/2] rounded-2xl border-4 border-white shadow-xl overflow-hidden"
-                                >
-                                    <FlexibleImage baseSrc="/image/workshop" alt="KBLs 워크숍 및 회의" width={800} height={533} className="w-full h-full object-cover rounded-3xl shadow-xl border-4 border-white" />
-                                </motion.div>
+                                {/* '연결의 다리' — 아이디어에서 성장까지를 잇는 타이포 다이어그램 */}
+                                <ol className="relative">
+                                    <li>
+                                        <div className="flex items-baseline gap-4">
+                                            <span className="text-label font-bold text-slate-400 tracking-widest">01</span>
+                                            <span className="text-heading font-extrabold text-slate-900">아이디어</span>
+                                        </div>
+                                        <div aria-hidden="true" className="ml-2.5 h-10 w-px bg-gradient-to-b from-brand-accent/60 to-brand-accent/15 my-2" />
+                                    </li>
+                                    <li>
+                                        <div className="flex items-baseline gap-4">
+                                            <span className="text-label font-bold text-slate-400 tracking-widest">02</span>
+                                            <span className="text-heading font-extrabold text-brand-accent">실행</span>
+                                        </div>
+                                        <div aria-hidden="true" className="ml-2.5 h-10 w-px bg-gradient-to-b from-brand-accent/60 to-brand-accent/15 my-2" />
+                                    </li>
+                                    <li>
+                                        <div className="flex items-baseline gap-4">
+                                            <span className="text-label font-bold text-slate-400 tracking-widest">03</span>
+                                            <span className="text-heading font-extrabold text-slate-900">성장</span>
+                                        </div>
+                                    </li>
+                                </ol>
 
+                                <p className="mt-10 text-label font-semibold text-slate-400 tracking-wider uppercase">The Bridge We Build</p>
                             </div>
                         </motion.div>
 
