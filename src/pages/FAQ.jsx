@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Seo from '../components/Seo';
+import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
+import { trackEvent } from '../lib/analytics';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircleQuestion } from 'lucide-react';
 
@@ -127,6 +129,14 @@ const FAQ = () => {
                             );
                         })}
                     </motion.div>
+                </section>
+
+                {/* 하단 CTA — FAQ를 끝까지 읽은 사람이 지원 의사가 가장 높다 */}
+                <section className="mt-12 md:mt-24 text-center">
+                    <p className="text-copy text-slate-600 font-medium mb-6">궁금증이 풀리셨다면, 다음 기수에서 만나요.</p>
+                    <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'faq_bottom' })}>
+                        지원하기
+                    </Button>
                 </section>
             </div>
         </div>
