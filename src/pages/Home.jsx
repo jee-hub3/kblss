@@ -9,6 +9,7 @@ import DataNotice from '../components/DataNotice';
 import Seo from '../components/Seo';
 import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
+import { getDocDeadlineLabel } from '../lib/recruitSchedule';
 import { trackEvent } from '../lib/analytics';
 
 const fadeInUp = {
@@ -246,6 +247,18 @@ const Home = () => {
                             활동 둘러보기
                         </Button>
                     </div>
+
+                    {/* 일정 요약 한 줄. 값은 recruitSchedule.js(단일 소스)에서 파생하므로
+                        /apply 타임라인과 어긋날 수 없다. 4단계 표를 여기 복제하지 말 것.
+                        연도는 쓰지 않는다 — 모집 중인 시즌이라 맥락으로 명확하다.
+                        CTA와 같은 이유로 opacity 애니메이션 없이 즉시 렌더. */}
+                    <Link
+                        to="/apply"
+                        className="mt-6 inline-flex items-center text-sm font-medium text-slate-500 hover:text-brand-accent transition-colors group"
+                    >
+                        서류 마감 {getDocDeadlineLabel()} · 전형 일정 보기
+                        <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
                 </div>
 
                 {/* 폭 전체 수평 페이드는 "여기서 페이지가 끝났다"는 잘못된 신호(false

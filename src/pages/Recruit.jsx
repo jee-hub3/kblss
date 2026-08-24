@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import Seo from '../components/Seo';
 import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
+import { RECRUIT_SCHEDULE } from '../lib/recruitSchedule';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
@@ -235,15 +236,13 @@ const Recruit = () => {
                                 <section>
                                     <h2 className="text-xl font-bold text-slate-900 mb-8 tracking-tight">상세 모집 일정</h2>
                                     <div className="relative pl-7 border-l-2 border-slate-200 space-y-10 ml-2">
-                                        {[
-                                            { date: "3/02~3/17", title: "서류 접수" },
-                                            { date: "3/18", title: "서류 발표" },
-                                            { date: "3/18~3/24", title: "면접" },
-                                            { date: "3/25", title: "최종 발표" }
-                                        ].map((step, i) => (
+                                        {RECRUIT_SCHEDULE.steps.map((step, i) => (
                                             <div key={i} className="relative">
                                                 <div className="absolute -left-[35px] top-1.5 w-4 h-4 bg-slate-400 rounded-full ring-4 ring-slate-50 relative z-10" />
-                                                <div className="text-base font-bold text-brand-600 mb-1 tracking-wide">{step.date}</div>
+                                                {/* year는 옵셔널 — 확정 전(null)에는 기존과 동일하게 날짜만 표시 */}
+                                                <div className="text-base font-bold text-brand-600 mb-1 tracking-wide">
+                                                    {RECRUIT_SCHEDULE.year ? `${RECRUIT_SCHEDULE.year}. ${step.date}` : step.date}
+                                                </div>
                                                 <div className="font-extrabold text-lg text-slate-900">{step.title}</div>
                                             </div>
                                         ))}
