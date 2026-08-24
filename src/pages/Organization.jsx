@@ -100,7 +100,10 @@ const Organization = () => {
     );
 
     return (
-        <div className="w-full bg-slate-50/50 pt-24 md:pt-32 pb-0 overflow-hidden">
+        // overflow-hidden은 sticky 탭 스트립을 무력화한다(스크롤 기준이 뷰포트가
+        // 아니게 됨). 가로 삐짐 방지 목적은 overflow-x-clip이 대신한다 —
+        // clip은 스크롤 컨테이너를 만들지 않아 sticky가 유지된다.
+        <div className="w-full bg-slate-50/50 pt-24 md:pt-32 pb-0 overflow-x-clip">
             <Seo {...ROUTE_META['/organization']} />
             {/* Tabs Controller — sticky.
                 /apply 탭바와 같은 top-[80px] 기준(헤더 높이 기준은 하나여야 한다).
