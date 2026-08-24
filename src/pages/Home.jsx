@@ -268,7 +268,10 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 2. Our Identity
             ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-[#f8fafc] via-white to-white">
+            {/* peek 장치: 히어로 바로 다음 섹션만 상단 패딩을 48px로 고정해
+                첫 화면 하단에 제목이 실제로 걸치게 한다(1440에서 pt-24면 12px만 노출).
+                하단은 섹션 간격 체계(py-12 md:py-24)를 그대로 따른다. */}
+            <section className="pt-12 pb-12 md:pb-24 bg-gradient-to-b from-[#f8fafc] via-white to-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
