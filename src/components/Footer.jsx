@@ -53,9 +53,12 @@ const Footer = () => {
                                 <MapPin className="w-5 h-5 mr-3 mt-0.5 text-slate-500 shrink-0" />
                                 <span>한국기술교육대학교 제1캠퍼스<br />인문경영관 212호</span>
                             </li>
+                            {/* 이메일이 md 4컬럼 폭(~170px)보다 길어 scrollWidth를 넘겼다.
+                                body overflow-x-hidden에 가려져 안 보였을 뿐 오버플로였다.
+                                min-w-0(플렉스 자식 축소 허용) + break-all로 컬럼 안에서 줄바꿈. */}
                             <li className="flex items-center mt-4">
                                 <Mail className="w-5 h-5 mr-3 text-slate-500 shrink-0" />
-                                <a href="mailto:keybridgeleaders@gmail.com" className="hover:text-brand-400 transition-colors">keybridgeleaders@gmail.com</a>
+                                <a href="mailto:keybridgeleaders@gmail.com" className="hover:text-brand-400 transition-colors min-w-0 break-all">keybridgeleaders@gmail.com</a>
                             </li>
                             {/* 인스타그램 아이콘은 실제 계정 URL이 정해지면 복원한다.
                                 href="#"인 채로는 이름 없는 링크(link-name 실패)이자 깨진 UX라 제거.

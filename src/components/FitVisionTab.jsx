@@ -2,7 +2,7 @@ import FlexibleImage from './FlexibleImage';
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Rocket, Search, Users, Sparkles, ChevronRight } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from './Button';
 
 /* ── Animation Variants ── */
