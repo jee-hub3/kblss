@@ -5,6 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { trackEvent } from '../lib/analytics';
 import Button from './Button';
 
+/* ── z-index 층 규약 ──────────────────────────────
+   페이지 콘텐츠 (sticky 포함)  ≤ z-30
+   전역 오버레이 (모바일 메뉴)     z-40
+   전역 헤더 (GNB)                z-50
+   페이지 안에서 sticky/fixed를 새로 만들 때는 z-30 이하로.
+   페이지 요소가 z-40 이상이면 모바일 메뉴 오버레이를 뚫는다 —
+   /apply 탭바(z-40)와 상세 페이지 뒤로가기(z-50)에서 실제로 났던 충돌이다.
+   ───────────────────────────────────────────── */
 const navLinks = [
     { name: 'Organization', path: '/organization' },
     { name: 'Activities', path: '/activities' },

@@ -159,7 +159,9 @@ const Recruit = () => {
                 </header>
 
                 {/* 2. Tab Navigation (탭 메뉴 - Sticky, Left Aligned) */}
-                <div className="sticky top-[80px] bg-slate-50 z-40 flex border-b border-slate-200 mb-10 pt-4">
+                {/* z-30: 페이지 sticky는 전역 오버레이(z-40)·GNB(z-50)보다 아래 —
+                    GNB.jsx의 층 규약 참고. z-40이면 모바일 메뉴가 탭바에 뚫린다. */}
+                <div className="sticky top-[80px] bg-slate-50 z-30 flex border-b border-slate-200 mb-10 pt-4">
                     <div className="flex space-x-8">
                         <button
                             onClick={() => setActiveTab("info")}

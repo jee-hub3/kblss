@@ -168,7 +168,7 @@ const NewsDetail = () => {
             {/* 뒤로 가기 버튼: 텍스트나 박스 없이 깔끔한 <- 화살표 아이콘만 고정 배치 */}
             <button
                 onClick={() => navigate('/news')}
-                className="fixed top-24 left-6 md:top-32 md:left-12 z-50 p-2 text-slate-400 hover:text-brand-accent transition-colors"
+                className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-2 text-slate-400 hover:text-brand-accent transition-colors"
                 aria-label="목록으로 돌아가기"
             >
                 <ArrowLeft className="w-8 h-8" strokeWidth={1.5} />
