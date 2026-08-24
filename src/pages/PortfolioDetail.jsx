@@ -127,7 +127,7 @@ const PortfolioDetail = () => {
             case 'paragraph':
                 return <p key={id} className="mb-5 text-slate-700 leading-loose min-h-[1.5rem] tracking-wide">{renderRichText(value.rich_text)}</p>;
             case 'heading_1':
-                return <h1 key={id} className="text-3xl md:text-4xl font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</h1>;
+                return <h1 key={id} className="text-heading font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</h1>;
             case 'heading_2':
                 return <h2 key={id} className="text-2xl md:text-3xl font-bold text-slate-900 mt-12 mb-6 pb-3 border-b border-slate-100">{renderRichText(value.rich_text)}</h2>;
             case 'heading_3':
@@ -193,7 +193,7 @@ const PortfolioDetail = () => {
 
                         {/* [1st Row] Category Badge */}
                         <div className="flex items-center">
-                            <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 font-bold rounded-full text-xs tracking-wider">
+                            <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 font-bold rounded-full text-label tracking-wider">
                                 {project.category}
                             </span>
                         </div>
@@ -243,7 +243,7 @@ const PortfolioDetail = () => {
             </section>
 
             {/* Notion Blocks Body */}
-            <section className="py-16 md:py-24 mt-4 md:mt-8">
+            <section className="py-12 md:py-24 mt-4 md:mt-8">
                 <div className="container mx-auto px-6">
                     <div className="max-w-4xl mx-auto min-h-[50vh]">
                         {isLoading ? (

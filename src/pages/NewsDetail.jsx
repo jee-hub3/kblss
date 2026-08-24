@@ -119,7 +119,7 @@ const NewsDetail = () => {
             case 'paragraph':
                 return <p key={id} className="mb-5 text-slate-700 leading-loose min-h-[1.5rem] tracking-wide">{renderRichText(value.rich_text)}</p>;
             case 'heading_1':
-                return <h1 key={id} className="text-3xl md:text-4xl font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</h1>;
+                return <h1 key={id} className="text-heading font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</h1>;
             case 'heading_2':
                 return <h2 key={id} className="text-2xl md:text-3xl font-bold text-slate-900 mt-12 mb-6 pb-3 border-b border-slate-100">{renderRichText(value.rich_text)}</h2>;
             case 'heading_3':
@@ -178,7 +178,7 @@ const NewsDetail = () => {
             <section className="pt-32 pb-12">
                 <div className="container mx-auto px-6 max-w-3xl flex flex-col items-start gap-y-6">
                     {/* [1] tag 뱃지 */}
-                    <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 font-bold rounded-full text-xs tracking-wider">
+                    <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 font-bold rounded-full text-label tracking-wider">
                         {post.tag || "소식"}
                     </span>
 

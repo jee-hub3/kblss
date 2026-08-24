@@ -203,14 +203,13 @@ const Home = () => {
                         <span className="text-sm font-semibold text-brand-800">2026학년도 상반기 신입 회원 모집중</span>
                     </motion.div>
 
-                    {/* Centered large typography.
-                        text-3xl(30px)는 앞으로 만들 타이포 스케일의 모바일 display 단계.
-                        음수 letter-spacing은 36px 이상(md~)에만 건다. */}
+                    {/* 타이포 스케일의 display 단계(30→36→48px, 음수 tracking은 md~).
+                        정의는 index.css의 @utility text-display. */}
                     <motion.h1
                         variants={staggerContainer}
                         initial="hidden"
                         animate="visible"
-                        className="text-3xl md:text-4xl lg:text-5xl font-extrabold md:tracking-tight text-slate-900 mb-8 leading-snug"
+                        className="text-display font-extrabold text-slate-900 mb-8"
                     >
                         <motion.span variants={fadeInUp} className="block">
                             아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">실행</span></span>으로
@@ -269,7 +268,10 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 2. Our Identity
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-[#f8fafc] via-white to-white">
+            {/* peek 장치: 히어로 바로 다음 섹션만 상단 패딩을 48px로 고정해
+                첫 화면 하단에 제목이 실제로 걸치게 한다(1440에서 pt-24면 12px만 노출).
+                하단은 섹션 간격 체계(py-12 md:py-24)를 그대로 따른다. */}
+            <section className="pt-12 pb-12 md:pb-24 bg-gradient-to-b from-[#f8fafc] via-white to-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -279,10 +281,10 @@ const Home = () => {
                         className="max-w-4xl mx-auto text-center"
                     >
 
-                        <h2 className="text-3xl md:text-4xl font-bold mb-10 text-slate-900">
+                        <h2 className="text-heading font-bold mb-10 text-slate-900">
                             <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
                         </h2>
-                        <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight">
+                        <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight max-w-[68ch] mx-auto">
                             KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 랩실입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
                         </p>
                     </motion.div>
@@ -292,7 +294,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 ★ Bridge Section — Pretendard + Split Layout 이미지
             ═══════════════════════════════════════════ */}
-            <section className="relative py-24 md:py-32 bg-white overflow-hidden border-y border-slate-50">
+            <section className="relative py-12 md:py-24 bg-white overflow-hidden border-y border-slate-50">
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-0 items-center">
 
@@ -306,7 +308,7 @@ const Home = () => {
                         >
 
                             <h2
-                                className="text-3xl md:text-4xl font-bold text-slate-900 leading-[1.2] tracking-tight"
+                                className="text-heading font-bold text-slate-900 leading-[1.2] tracking-tight"
                                 style={{ fontFamily: "'Pretendard Variable', Pretendard, sans-serif" }}
                             >
                                 사람을 연결하고,<br />
@@ -359,7 +361,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 3. What We Do
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-white via-slate-50/70 to-slate-50">
+            <section className="py-12 md:py-24 bg-gradient-to-b from-white via-slate-50/70 to-slate-50">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -369,7 +371,7 @@ const Home = () => {
                         className="flex flex-col md:flex-row justify-between items-end mb-20"
                     >
                         <div className="max-w-2xl">
-                            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">What We Do</h2>
+                            <h2 className="text-heading font-bold mb-6 text-slate-900">What We Do</h2>
                             <p className="text-lg text-slate-600 leading-relaxed">
                                 이론에서 멈추지 않습니다.<br />KBLs에서는 이런 실전 경험들이 당신의 일상이 됩니다.
                             </p>
@@ -396,8 +398,8 @@ const Home = () => {
                                 <div className="w-14 h-14 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                                     {item.icon}
                                 </div>
-                                <h3 className="text-xl font-bold mb-4 text-slate-900">{item.title}</h3>
-                                <p className="text-slate-500 leading-relaxed text-base">{item.desc}</p>
+                                <h3 className="text-subhead font-bold mb-4 text-slate-900">{item.title}</h3>
+                                <p className="text-slate-500 text-copy">{item.desc}</p>
                                 <div className="mt-6 h-px w-12 bg-slate-200 group-hover:w-20 group-hover:bg-brand-accent transition-all duration-500" />
                             </motion.div>
                         ))}
@@ -412,7 +414,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 4. KBLs in Numbers — 밝은 화이트/블루 그라데이션
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
+            <section className="py-12 md:py-24 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
                 <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
 
@@ -424,7 +426,7 @@ const Home = () => {
                         variants={fadeInUp}
                         className="text-center mb-20"
                     >
-                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
+                        <h2 className="text-heading font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
                         <p className="text-lg text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 몰입</p>
                     </motion.div>
 
@@ -459,7 +461,7 @@ const Home = () => {
                                     </div>
                                     <div className="text-base text-slate-500 font-medium">{stat.title}</div>
                                     {stat.basis && (
-                                        <div className="text-xs text-slate-400 mt-1.5 break-keep">{stat.basis}</div>
+                                        <div className="text-label text-slate-400 mt-1.5 break-keep">{stat.basis}</div>
                                     )}
                                 </motion.div>
                             ))}
@@ -468,7 +470,7 @@ const Home = () => {
 
                     {/* 가장 최근 기준일 1회 표시. 기준일이 하나도 없으면 생략한다. */}
                     {!metricsError && latestAsOf && (
-                        <p className="text-xs text-slate-400 text-center mt-12">기준: {latestAsOf}</p>
+                        <p className="text-label text-slate-400 text-center mt-12">기준: {latestAsOf}</p>
                     )}
                 </div>
             </section>
@@ -476,7 +478,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 5. Featured Portfolio
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-indigo-50/30 via-white to-white">
+            <section className="py-12 md:py-24 bg-gradient-to-b from-indigo-50/30 via-white to-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -486,7 +488,7 @@ const Home = () => {
                         className="flex flex-col md:flex-row justify-between items-end mb-16"
                     >
                         <div className="max-w-2xl">
-                            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">Featured Portfolio</h2>
+                            <h2 className="text-heading font-bold mb-6 text-slate-900">Featured Portfolio</h2>
                             <p className="text-lg text-slate-600 leading-relaxed">
                                 치열한 고민 끝에 탄생한 산출물, <br />당신의 다음 포트폴리오가 될 수 있습니다.
                             </p>
@@ -565,7 +567,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 6. Who We Are Looking For
             ═══════════════════════════════════════════ */}
-            <section id="fit-section" className="py-32 bg-gradient-to-b from-white to-slate-50">
+            <section id="fit-section" className="py-12 md:py-24 bg-gradient-to-b from-white to-slate-50">
                 <div className="container mx-auto px-6 text-center">
                     <motion.div
                         initial="hidden"
@@ -574,7 +576,7 @@ const Home = () => {
                         variants={fadeInUp}
                         className="mb-16"
                     >
-                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">Who We Are Looking For</h2>
+                        <h2 className="text-heading font-bold mb-6 text-slate-900">Who We Are Looking For</h2>
                         <p className="text-lg text-slate-600">완벽하지 않아도 좋습니다. KBLs는 이런 열정을 가진 분을 기다립니다.</p>
                     </motion.div>
 
@@ -618,7 +620,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 7. Bottom CTA
             ═══════════════════════════════════════════ */}
-            <section className="py-32 bg-gradient-to-b from-white to-brand-50 relative overflow-hidden">
+            <section className="py-12 md:py-24 bg-gradient-to-b from-white to-brand-50 relative overflow-hidden">
                 <div className="container mx-auto px-6 relative z-10 text-center">
                     <motion.div
                         initial="hidden"
