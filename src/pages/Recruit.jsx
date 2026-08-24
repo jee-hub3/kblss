@@ -202,15 +202,27 @@ const Recruit = () => {
                                 transition={{ duration: 0.3, ease: "easeOut" }}
                                 className="w-full space-y-14 pb-12"
                             >
-                                {/* 모집 대상 */}
-                                <section>
-                                    <h2 className="text-subhead font-bold text-slate-900 mb-5 tracking-tight">모집 대상</h2>
-                                    <ul className="list-disc pl-6 space-y-3 text-slate-700 font-medium text-copy">
-                                        <li>데이터 분석 실전 적용 희망자</li>
-                                        <li>공모전 완주 목표자</li>
-                                        <li>책임감 있게 팀 활동이 가능한 분</li>
-                                    </ul>
-                                </section>
+                                {/* 모집 대상 + 정기 활동 시간 — 활동 조건 선공개.
+                                    기수제 조직은 자기선별 정확도가 지원자 수보다 중요하다.
+                                    시간 값은 FAQ '정기 회의 및 주요 활동 시간' 답변에서 가져왔다
+                                    (새 값을 만들지 않는다). */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-8">
+                                    <section>
+                                        <h2 className="text-subhead font-bold text-slate-900 mb-5 tracking-tight">모집 대상</h2>
+                                        <ul className="list-disc pl-6 space-y-3 text-slate-700 font-medium text-copy">
+                                            <li>데이터 분석 실전 적용 희망자</li>
+                                            <li>공모전 완주 목표자</li>
+                                            <li>책임감 있게 팀 활동이 가능한 분</li>
+                                        </ul>
+                                    </section>
+                                    <section>
+                                        <h2 className="text-subhead font-bold text-slate-900 mb-5 tracking-tight">정기 활동 시간</h2>
+                                        <ul className="list-disc pl-6 space-y-3 text-slate-700 font-medium text-copy">
+                                            <li>정기 회의 — 매주 화요일 오후 6시 이후</li>
+                                            <li>스터디·공모전 팀 회의 — 팀원 일정에 맞춰 자율 진행</li>
+                                        </ul>
+                                    </section>
+                                </div>
 
                                 {/* 핵심 혜택 */}
                                 <section>
@@ -251,7 +263,12 @@ const Recruit = () => {
 
                                 {/* Rules & Duties (아코디언) */}
                                 <section>
-                                    <h2 className="text-subhead font-bold text-slate-900 mb-5 tracking-tight">Rules & Duties</h2>
+                                    <h2 className="text-subhead font-bold text-slate-900 mb-3 tracking-tight">Rules & Duties</h2>
+                                    {/* 핵심 의무 한 줄은 아코디언 밖에 상시 노출한다.
+                                        조건 공개는 지원자를 줄이는 대신 완주율을 올린다. */}
+                                    <p className="text-copy text-slate-700 font-medium mb-5 break-keep">
+                                        모든 회원은 <span className="font-bold text-slate-900">학기당 공모전 1회·스터디 1회 참여가 필수</span>이며, 화요일 정기 모임에 참여합니다.
+                                    </p>
                                     <div className="space-y-4">
                                         {[
                                             { title: "활동 의무", content: "학기당 공모전/스터디 1회 필수, 화요일 정기 모임" },
