@@ -4,26 +4,15 @@ import { ArrowRight, Share2, Users, CheckCircle, Search, LineChart, LayoutTempla
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
-
-const fadeInUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
-};
-
-const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.15 }
-    }
-};
+// 모션 값은 src/lib/motion.js 단일 소스에서 온다.
+import { fadeInUp, staggerContainer, tabPanel, DUR, EASE_OUT, VIEWPORT_ONCE } from '../lib/motion';
 
 const DnaCard = ({ title, desc, icon: Icon, delay }) => (
     <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.6, delay }}
+        viewport={VIEWPORT_ONCE}
+        transition={{ duration: DUR.reveal, delay, ease: EASE_OUT }}
         className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100 relative group overflow-hidden"
     >
         <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-900 group-hover:scale-150 transition-transform duration-700">
@@ -52,19 +41,10 @@ const AnimatedPath = () => (
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1.5, ease: "easeInOut" }}
         />
-        {/* Moving dot along the path */}
-        <motion.circle
-            r="6"
-            fill="#2563eb"
-            initial={{ cx: 50, opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            animate={{ cx: [50, 950] }}
-            transition={{
-                cx: { duration: 3, ease: "linear", repeat: Infinity },
-                opacity: { duration: 0.5, delay: 0.5 }
-            }}
-            cy="50"
-        />
+        {/* 경로 위를 도는 점. framer의 rAF 무한 루프(cx 애니메이션)는 화면 밖에서도
+            메인스레드에 얹히고 reduced-motion에도 잡히지 않아, hero-blob과 같은
+            결정으로 CSS 키프레임(.path-dot, index.css)에 이식했다 — 시각 결과 동일. */}
+        <circle className="path-dot" cx="50" cy="50" r="6" fill="#2563eb" />
     </svg>
 );
 
@@ -108,9 +88,8 @@ const Activities = () => {
                     variants={staggerContainer}
                     className="max-w-4xl text-left"
                 >
-                    <motion.div variants={fadeInUp} className="inline-block mb-6 relative">
-
-                    </motion.div>
+                    {/* 빈 stagger 슬롯(내용 없는 motion.div)은 h1 등장을 한 박자 늦추는
+                        데드 코드라 제거했다. */}
                     <motion.h1
                         variants={fadeInUp}
                         className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-[1.3] mb-6 break-keep"
@@ -142,19 +121,19 @@ const Activities = () => {
 
                     <div className="grid md:grid-cols-3 gap-8">
                         <DnaCard
-                            delay={0.1}
+                            delay={0}
                             icon={Share2}
                             title="투명한 공유"
                             desc="모든 회의록, 진행 상황, 트러블슈팅은 노션(Notion)에 투명하게 기록되고 공유됩니다."
                         />
                         <DnaCard
-                            delay={0.3}
+                            delay={0.08}
                             icon={Users}
                             title="시스템 기반 협업"
                             desc="개인의 의지에만 의존하지 않습니다. 임원-팀장-팀원으로 이어지는 명확한 역할 분담이 무임승차를 방지합니다."
                         />
                         <DnaCard
-                            delay={0.5}
+                            delay={0.16}
                             icon={CheckCircle}
                             title="결과물 증명"
                             desc="배움에서 멈추지 않고 기획서, MVP, 자격증 등 눈에 보이는 실질적인 산출물을 반드시 도출합니다."
@@ -284,7 +263,7 @@ const Activities = () => {
                             <button
                                 key={idx}
                                 onClick={() => setActiveTab(idx)}
-                                className={`flex items-center text-left p-4 rounded-xl transition-all min-w-[160px] md:min-w-0 font-bold text-base md:text-lg
+                                className={`flex items-center text-left p-4 rounded-xl transition-all press focus-ring min-w-[160px] md:min-w-0 font-bold text-base md:text-lg
                   ${activeTab === idx
                                         ? 'bg-white shadow-md text-brand-accent border border-brand-100'
                                         : 'bg-transparent text-slate-500 hover:bg-white/50 border border-transparent hover:border-slate-200'}`}
@@ -301,10 +280,7 @@ const Activities = () => {
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeTab}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.3 }}
+                                {...tabPanel(1)}
                                 className="bg-white w-full p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100"
                             >
                                 <div className="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-6">
@@ -352,9 +328,10 @@ const Activities = () => {
                         <h2 className="text-2xl md:text-4xl font-extrabold mb-10 leading-snug text-slate-900">
                             이러한 문화 속에서 우리는<br />어떤 결과를 만들어 냈을까요?
                         </h2>
+                        {/* hover 색은 하드코딩(blue-700) 대신 브랜드 토큰 — Button.jsx와 동일 */}
                         <Link
                             to="/portfolio"
-                            className="inline-flex items-center bg-brand-accent hover:bg-blue-700 text-white px-8 py-4 rounded-full text-base font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                            className="inline-flex items-center bg-brand-accent hover:bg-brand-accent-hover text-white px-8 py-4 rounded-full text-base font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 press focus-ring"
                         >
                             KBLs 산출물 확인하기
                         </Link>

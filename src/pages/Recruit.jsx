@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
 import { ORG_INFO } from '../lib/orgInfo';
+// 모션 값은 src/lib/motion.js 단일 소스에서 온다.
+import { tabPanel, ACCORDION_TRANSITION } from '../lib/motion';
 
 // 서버가 돌려준 필드명을 화면 라벨로 바꿔 보여주기 위한 표.
 // 폼 항목을 추가·변경하면 여기도 함께 고쳐야 안내가 어긋나지 않는다.
@@ -166,7 +168,7 @@ const Recruit = () => {
                     <div className="flex space-x-8">
                         <button
                             onClick={() => setActiveTab("info")}
-                            className={`pb-4 font-bold text-lg transition-colors relative ${activeTab === "info" ? "text-slate-900" : "text-slate-500 hover:text-slate-700"
+                            className={`pb-4 font-bold text-lg transition-colors press focus-ring relative ${activeTab === "info" ? "text-slate-900" : "text-slate-500 hover:text-slate-700"
                                 }`}
                         >
                             모집 정보
@@ -179,7 +181,7 @@ const Recruit = () => {
                         </button>
                         <button
                             onClick={() => setActiveTab("form")}
-                            className={`pb-4 font-bold text-lg transition-colors relative ${activeTab === "form" ? "text-slate-900" : "text-slate-500 hover:text-slate-700"
+                            className={`pb-4 font-bold text-lg transition-colors press focus-ring relative ${activeTab === "form" ? "text-slate-900" : "text-slate-500 hover:text-slate-700"
                                 }`}
                         >
                             지원서 작성
@@ -195,14 +197,13 @@ const Recruit = () => {
 
                 {/* 3. Tab Content Area */}
                 <div className="relative">
-                    <AnimatePresence mode="wait" custom={activeTab}>
+                    {/* custom={activeTab}은 소비하는 variants가 없는 데드 코드라 제거.
+                        패널 전환 값은 motion.js tabPanel 단일 소스. */}
+                    <AnimatePresence mode="wait">
                         {activeTab === "info" ? (
                             <motion.div
                                 key="info"
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.3, ease: "easeOut" }}
+                                {...tabPanel(-1)}
                                 className="w-full space-y-14 pb-12"
                             >
                                 {/* 모집 대상 + 정기 활동 시간 — 활동 조건 선공개.
@@ -290,13 +291,14 @@ const Recruit = () => {
                                                 )
                                             }
                                         ].map((rule, i) => (
-                                            <div key={i} className="border border-slate-200 rounded-2xl bg-white overflow-hidden transition-all">
+                                            <div key={i} className="border border-slate-200 rounded-2xl bg-white overflow-hidden">
                                                 <button
                                                     onClick={() => toggleAccordion(i)}
-                                                    className="w-full flex items-center justify-between p-6 text-left font-bold text-slate-900 text-base hover:bg-slate-50"
+                                                    aria-expanded={openAccordion === i}
+                                                    className="w-full flex items-center justify-between p-6 text-left font-bold text-slate-900 text-base hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-inset"
                                                 >
                                                     {rule.title}
-                                                    <ChevronDown className={`w-6 h-6 text-slate-400 transition-transform ${openAccordion === i ? "rotate-180" : ""}`} />
+                                                    <ChevronDown className={`w-6 h-6 text-slate-400 transition-transform duration-200 ${openAccordion === i ? "rotate-180" : ""}`} />
                                                 </button>
                                                 <AnimatePresence>
                                                     {openAccordion === i && (
@@ -304,6 +306,7 @@ const Recruit = () => {
                                                             initial={{ height: 0, opacity: 0 }}
                                                             animate={{ height: "auto", opacity: 1 }}
                                                             exit={{ height: 0, opacity: 0 }}
+                                                            transition={ACCORDION_TRANSITION}
                                                             className="overflow-hidden"
                                                         >
                                                             <div className="p-6 pt-0 text-slate-600 font-medium text-copy bg-white border-t border-slate-50">
@@ -338,10 +341,7 @@ const Recruit = () => {
 
                             <motion.div
                                 key="form"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 20 }}
-                                transition={{ duration: 0.3, ease: "easeOut" }}
+                                {...tabPanel(1)}
                                 className="w-full flex flex-col pb-20"
                             >
                                 <div className="w-full bg-white rounded-[2rem] border border-slate-200 shadow-sm mb-12 p-8 md:p-12">
@@ -473,14 +473,15 @@ const Recruit = () => {
                                                 <p className="text-xs text-slate-500 mb-2">{ORG_INFO.meeting.day} 정기 모임 및 오프라인 랩실 활동 참여가 가능하신가요?</p>
                                                 <div className="flex space-x-6">
                                                     {['예', '어려울 것 같다'].map((opt) => (
-                                                        <label key={opt} className="flex items-center space-x-2 cursor-pointer">
+                                                        <label key={opt} className="flex items-center space-x-2 cursor-pointer group">
                                                             <input
                                                                 type="radio" name="participation" value={opt} required
                                                                 checked={formData.participation === opt}
                                                                 onChange={handleInputChange}
                                                                 className="w-4 h-4 text-brand-500 border-slate-300 focus:ring-brand-500"
                                                             />
-                                                            <span className="text-sm font-medium text-slate-700">{opt}</span>
+                                                            {/* 같은 폼의 툴 체크박스 라벨과 동일한 hover 피드백 */}
+                                                            <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">{opt}</span>
                                                         </label>
                                                     ))}
                                                 </div>
@@ -525,11 +526,11 @@ const Recruit = () => {
                                                 <button
                                                     type="button"
                                                     onClick={() => setIsPrivacyOpen(!isPrivacyOpen)}
-                                                    className="w-full flex items-center justify-between p-5 text-left hover:bg-slate-50 transition-colors"
+                                                    className="w-full flex items-center justify-between p-5 text-left hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-inset"
                                                     aria-expanded={isPrivacyOpen}
                                                 >
                                                     <span className="text-sm font-bold text-slate-800">개인정보 수집·이용 안내</span>
-                                                    <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${isPrivacyOpen ? 'rotate-180' : ''}`} />
+                                                    <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isPrivacyOpen ? 'rotate-180' : ''}`} />
                                                 </button>
                                                 <AnimatePresence initial={false}>
                                                     {isPrivacyOpen && (
@@ -537,7 +538,7 @@ const Recruit = () => {
                                                             initial={{ height: 0, opacity: 0 }}
                                                             animate={{ height: 'auto', opacity: 1 }}
                                                             exit={{ height: 0, opacity: 0 }}
-                                                            transition={{ duration: 0.25 }}
+                                                            transition={ACCORDION_TRANSITION}
                                                             className="overflow-hidden"
                                                         >
                                                             <div className="px-5 pb-5 pt-1 text-sm text-slate-600 font-medium leading-relaxed space-y-2 border-t border-slate-100">
@@ -607,7 +608,7 @@ const Recruit = () => {
                                             <button
                                                 type="submit"
                                                 disabled={isSubmitting}
-                                                className="w-full py-4 bg-brand-accent hover:bg-brand-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold rounded-xl text-base shadow-md transition-all flex items-center justify-center"
+                                                className="w-full py-4 bg-brand-accent hover:bg-brand-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold rounded-xl text-base shadow-md transition-all press focus-ring flex items-center justify-center"
                                             >
                                                 {isSubmitting ? (
                                                     <><Loader2 className="w-6 h-6 mr-3 animate-spin" /> 지원서 제출 중...</>

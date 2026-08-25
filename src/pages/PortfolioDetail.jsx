@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ArrowLeft, Loader2, Calendar, Users, Wrench, Trophy } from 'lucide-react';
 import { fetchBlockChildren, fetchPage, mapPortfolioPage } from '../lib/notion';
 import { buildHeadingTagMap, groupNotionBlocks, headingTagFor } from '../lib/notionBlocks';
 import DataNotice from '../components/DataNotice';
 import NotFound from './NotFound';
 import Seo from '../components/Seo';
-
-const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-};
+// 모션 값은 src/lib/motion.js 단일 소스에서 온다.
+import { fadeInUp } from '../lib/motion';
 
 const PortfolioDetail = () => {
     const location = useLocation();
@@ -192,7 +189,7 @@ const PortfolioDetail = () => {
                 NewsDetail과도 동작이 통일된다. */}
             <button
                 onClick={() => navigate('/portfolio')}
-                className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-3 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-full text-slate-500 hover:text-brand-accent hover:bg-white hover:shadow-md transition-all group"
+                className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-3 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-full text-slate-500 hover:text-brand-accent hover:bg-white hover:shadow-md transition-all press focus-ring group"
                 aria-label="포트폴리오 목록으로 돌아가기"
             >
                 <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />

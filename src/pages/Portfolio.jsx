@@ -6,18 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Award, Medal, ExternalLink, Sparkles, Filter, ChevronLeft, ChevronRight, Loader2, Info, Image as ImageIcon, Plus, Flag, Star, Circle, Rocket, Pin } from 'lucide-react';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
-const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-};
-
-const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.1 }
-    }
-};
+// 모션 값은 src/lib/motion.js 단일 소스에서 온다.
+import { fadeInUp, staggerContainer, gridItem, DUR, EASE_OUT } from '../lib/motion';
 
 const getHistoryIconProps = (iconTag) => {
     switch (iconTag) {
@@ -264,9 +254,11 @@ const Portfolio = () => {
 
                         {!isLoading && projectsData.length > 0 && (
                             <div className="flex flex-wrap justify-center gap-2 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
+                                {/* 활성 필터 색은 News 필터·양 페이지 페이지네이션과 같은
+                                    slate-900로 통일 — brand-accent는 행동(CTA) 전용으로 남긴다 */}
                                 {dynamicCategories.map((cat, idx) => (
                                     <button key={idx} onClick={() => handleFilterChange(cat)}
-                                        className={`min-h-11 px-5 py-2 rounded-xl text-sm font-bold transition-all ${activeFilter === cat ? 'bg-brand-accent text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
+                                        className={`min-h-11 px-5 py-2 rounded-xl text-sm font-bold transition-all press focus-ring ${activeFilter === cat ? 'bg-slate-900 text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
                                         {cat}
                                     </button>
                                 ))}
@@ -303,8 +295,8 @@ const Portfolio = () => {
                             <AnimatePresence mode="popLayout">
                                 {paginatedProjects.map((project) => (
                                     <motion.div onClick={() => navigate(`/portfolio/${project.id}`, { state: { project } })} key={project.id} layout
-                                        initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.4 }}
-                                        className="group bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-400 flex flex-col cursor-pointer">
+                                        {...gridItem}
+                                        className="group bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer">
 
                                         {/* Image Section */}
                                         <div className={`w-full aspect-video ${project.imageUrl ? 'bg-slate-100' : `bg-gradient-to-br ${project.imageGrad}`} relative overflow-hidden`}>
@@ -356,18 +348,18 @@ const Portfolio = () => {
                         <div className="flex items-center justify-center gap-2 mt-16">
                             <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
                                 aria-label="이전 페이지"
-                                className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
                                 <ChevronLeft className="w-4 h-4" />
                             </button>
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                                 <button key={page} onClick={() => setCurrentPage(page)}
-                                    className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
+                                    className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold transition-all press focus-ring ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
                                     {page}
                                 </button>
                             ))}
                             <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
                                 aria-label="다음 페이지"
-                                className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
                                 <ChevronRight className="w-4 h-4" />
                             </button>
                         </div>
@@ -380,11 +372,12 @@ const Portfolio = () => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
+                        transition={{ duration: DUR.reveal, ease: EASE_OUT }}
                     >
+                        {/* hover 색은 하드코딩(blue-700) 대신 브랜드 토큰 — Button.jsx와 동일 */}
                         <button
                             onClick={() => navigate('/news')}
-                            className="group inline-flex items-center bg-brand-accent hover:bg-blue-700 text-white font-bold px-10 py-5 rounded-full text-base shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+                            className="group inline-flex items-center bg-brand-accent hover:bg-brand-accent-hover text-white font-bold px-10 py-5 rounded-full text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 press focus-ring"
                         >
                             KBLs의 새로운 소식을 확인해보세요
                         </button>
