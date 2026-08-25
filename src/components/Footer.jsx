@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Mail, MapPin } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
 import { ORG_INFO } from '../lib/orgInfo';
+import { NAV_LINKS } from '../lib/navLinks';
 
 const Footer = () => {
     return (
@@ -25,11 +26,16 @@ const Footer = () => {
                         <h2 className="text-white font-bold mb-6 tracking-wide">Menu</h2>
                         <ul className="space-y-4">
 
-                            <li><Link to="/activities" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">Activities</Link></li>
-                            <li><Link to="/portfolio" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">Portfolio</Link></li>
-                            <li><Link to="/organization" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">Organization</Link></li>
-                            <li><Link to="/news" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">Log & News</Link></li>
-                            <li><Link to="/faq" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">FAQ</Link></li>
+                            {/* 항목·라벨·순서는 GNB와 같은 단일 소스에서 온다 —
+                                손으로 맞춰두면 메뉴가 바뀔 때 또 어긋난다(같은 페이지가
+                                헤더는 'News', 푸터는 'Log & News'로 보이던 원인). */}
+                            {NAV_LINKS.map((item) => (
+                                <li key={item.path}>
+                                    <Link to={item.path} className="hover:text-brand-400 transition-colors focus-ring rounded-sm">
+                                        {item.name}
+                                    </Link>
+                                </li>
+                            ))}
                             {/* 오너 결정: 푸터는 filled 버튼 대신 텍스트 링크를 유지한다
                                 (메뉴 리스트의 결을 지킴). 문구 통일("지원하기")과
                                 GA4 location: footer는 그대로 적용. 색은 어두운 배경 전용

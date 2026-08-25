@@ -339,9 +339,11 @@ const Recruit = () => {
 
                 {/* 1. Header (공통 상단 - Left Aligned) */}
                 <header className="mb-12 text-left">
+                    {/* 지원 자격 제한은 두지 않는다(오너 확정) — 전공·학년 제한이 없다는
+                        FAQ 답변이 정본이라, 대상을 좁혀 읽히던 '(학사 신입/재학생)' 줄을 뺐다.
+                        자격 문구를 다시 넣어야 한다면 FAQ 답변과 함께 고칠 것. */}
                     <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug mb-4 break-keep">
-                        {RECRUIT_SCHEDULE.semesterLabel} KBLs 신입 회원 모집<br />
-                        <span className="text-lg md:text-2xl text-slate-500 font-bold block mt-3">(학사 신입/재학생)</span>
+                        {RECRUIT_SCHEDULE.semesterLabel} KBLs 신입 회원 모집
                     </h1>
                     <p className="text-base text-slate-600 font-medium mt-6 break-keep">
                         "스스로 문제를 정의하고 해결하고 싶다면, KBLs와 함께하세요."
@@ -592,7 +594,14 @@ const Recruit = () => {
                                                             className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all font-medium appearance-none"
                                                         >
                                                             <option value="" disabled>학년을 선택해주세요</option>
-                                                            {['1학년', '2학년', '3학년', '4학년', '5학년', '휴학중'].map(g => (
+                                                            {/* ★ 이 라벨이 그대로 노션 '학년' select에 저장되는 값이다.
+                                                                바꾸거나 추가할 때는 반드시 노션 옵션을 먼저 고칠 것 —
+                                                                코드가 앞서면 노션에 옵션이 자동 생성되어 과거 지원자
+                                                                데이터와 갈라진다(운영 가이드 '손대면 안 되는 것').
+                                                                대학원생·졸업생은 2026-08-25 노션에 먼저 추가했다.
+                                                                지원 자격에 제한이 없다는 고지와 맞추기 위한 선택지다 —
+                                                                고를 칸이 없으면 문구만 제한 없음이고 실제로는 장벽이다. */}
+                                                            {['1학년', '2학년', '3학년', '4학년', '5학년', '휴학중', '대학원생', '졸업생'].map(g => (
                                                                 <option key={g} value={g}>{g}</option>
                                                             ))}
                                                         </select>
