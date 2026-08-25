@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, MapPin } from 'lucide-react';
+import { Instagram, Mail, MapPin } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
 
 const Footer = () => {
@@ -60,9 +60,20 @@ const Footer = () => {
                                 <Mail className="w-5 h-5 mr-3 text-slate-500 shrink-0" />
                                 <a href="mailto:keybridgeleaders@gmail.com" className="hover:text-brand-400 transition-colors min-w-0 break-all">keybridgeleaders@gmail.com</a>
                             </li>
-                            {/* 인스타그램 아이콘은 실제 계정 URL이 정해지면 복원한다.
-                                href="#"인 채로는 이름 없는 링크(link-name 실패)이자 깨진 UX라 제거.
-                                복원 시: <a href="실제URL" aria-label="KBLs 인스타그램" ...> */}
+                            {/* 공유 링크의 igsi= 추적 파라미터는 떼고 정규 프로필 주소만 쓴다.
+                                링크 텍스트는 계정 핸들 — "인스타그램"만 쓰면 어디로 가는지 안 보인다. */}
+                            <li className="flex items-center mt-4">
+                                <Instagram className="w-5 h-5 mr-3 text-slate-500 shrink-0" />
+                                <a
+                                    href="https://www.instagram.com/koreatech_kbls"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="KBLs 인스타그램 @koreatech_kbls (새 탭에서 열림)"
+                                    className="hover:text-brand-400 transition-colors min-w-0 break-all"
+                                >
+                                    @koreatech_kbls
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
