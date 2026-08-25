@@ -189,15 +189,46 @@
   75%, 100% { transform: scale(2.4); opacity: 0; }
 }
 
-/* 첫 진입 시 blob 배경이 서서히 차오른다(1회). 배경은 LCP 후보가 아니라
-   지연 등장 금지(ADR)와 무관하다. */
-.hero-backdrop-in {
-  animation: hero-backdrop-in 1.6s ease-out backwards;
+/* 첫 진입 시 blob이 조명 켜지듯 하나씩 블룸(밝아지며 커짐)한다 — 오너 후속
+   지시(2026-08-26). 등장(opacity+scale)은 래퍼가, 상시 드리프트(transform)는
+   내부 blob이 맡아 transform 애니메이션이 충돌하지 않는다.
+   배경은 LCP 후보가 아니라 지연 등장 금지(ADR)와 무관하다. */
+.hero-light {
+  animation: hero-light-in 1.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  will-change: transform, opacity;
 }
 
-@keyframes hero-backdrop-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.hero-light-1 { animation-delay: 0.05s; }
+.hero-light-2 { animation-delay: 0.4s; }
+.hero-light-3 { animation-delay: 0.7s; }
+.hero-light-4 { animation-delay: 0.95s; }
+.hero-light-5 { animation-delay: 1.2s; }
+
+@keyframes hero-light-in {
+  from { opacity: 0; transform: scale(0.72); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* 홈 전체를 잇는 단일 연속 배경 — 섹션마다 자체 그라디언트를 갖고 리셋되던
+   것을 걷어냈다(오너: "섹션별로 너무 딱 구분되어 있다·배경이 이어지지 않는다").
+   색 이야기는 기존 체인 그대로(slate-50 히어로 → white → 옅은 slate →
+   blue·indigo 힌트(Numbers 대역) → brand-50 마감)이되, 한 장의 그라디언트라
+   이음새가 원천적으로 없다. 섹션 배경은 전부 투명 — 콘텐츠 길이가 변해도
+   배경이 뚝 끊기지 않고, 섹션 순서를 다시 바꿔도 배경은 손댈 필요가 없다. */
+.home-flow-bg {
+  background: linear-gradient(
+    180deg,
+    #f8fafc 0%,
+    #fdfdfe 16%,
+    #ffffff 26%,
+    #f8fafc 42%,
+    #fcfdfe 56%,
+    #ffffff 64%,
+    #eff6ff 76%,
+    #eef2ff 84%,
+    #f6f8fc 92%,
+    #f0f4f8 100%
+  );
 }
 
 /* 카피 강조어(실행·연결) 밑줄 스윕 — 히어로 스테이징(h1 stagger 0.15×3 +

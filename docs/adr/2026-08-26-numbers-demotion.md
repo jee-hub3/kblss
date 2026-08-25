@@ -35,9 +35,12 @@ Numbers를 2번째 섹션(히어로 직후)에서 6번째 섹션(Featured 다음
 
 1. **peek 장치(pt-12)**: Numbers → Identity로 이관. 히어로 다음 섹션의 상단
    패딩 48px 고정은 false bottom 방지 장치라 "2번째 섹션"을 따라간다.
-2. **배경 그라데이션 체인**: Identity가 히어로(#f8fafc)를 이어받고, Numbers는
-   Featured(to-white)에서 시작해 indigo-50/30으로, 병합 CTA 섹션이
-   indigo-50/30 → brand-50으로 닫는다.
+2. **배경**: 당초 섹션별 그라데이션 체인을 새 순서로 재연결했으나, 오너 후속
+   지시("배경이 이어지지 않는 느낌")로 **홈 전체 단일 연속 그라디언트**
+   (`.home-flow-bg`, index.css)로 교체 — 섹션 배경은 전부 투명이 됐다.
+   색 이야기는 동일(slate-50 → white → blue·indigo 힌트 → brand-50)하되
+   이음새가 원천적으로 없고, 이후 섹션 순서가 또 바뀌어도 배경은 손댈
+   필요가 없다.
 3. **#fit-section 앵커**: 병합 섹션에 유지(2026-08-26 기준 저장소 내 사용처 0곳
    — e3c7290에서 소비자가 제거됨. 외부 공유 링크 대비 보존).
 4. **GA4**: `apply_cta_click` location `home_bottom` 유지(병합 후에도 홈 최하단

@@ -134,41 +134,39 @@ const Home = () => {
     useEffect(() => { fetchTopPortfolios(); }, [fetchTopPortfolios]);
 
     return (
-        <div className="w-full">
+        // home-flow-bg: 홈 전체가 한 장의 연속 그라디언트를 공유한다(index.css).
+        // 섹션 배경은 전부 투명 — 배경이 섹션 경계에서 끊기지 않는다.
+        <div className="w-full home-flow-bg">
             <Seo {...ROUTE_META['/']} />
             {/* ═══════════════════════════════════════════
                 1. Hero Section — 최초 중앙 정렬 테마로 복구
             ═══════════════════════════════════════════ */}
             {/* 88dvh: 다음 섹션 윗머리가 살짝 보이게(peek) 해 false bottom을 없앤다 */}
-            <section className="relative min-h-[88dvh] flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
+            <section className="relative min-h-[88dvh] flex items-center justify-center pt-20 overflow-hidden">
                 {/* Animated Mesh Gradient Blobs.
                     framer-motion(JS 구동) 대신 CSS 키프레임으로 컴포지터에서만 돌린다
                     (키프레임 좌표·주기·easing은 index.css에 동일하게 이식).
                     무한 rAF 구동이 메인스레드 TBT에 얹히는 것을 막기 위한 조치로,
                     reduced-motion 분기도 index.css의 @media 가드가 담당한다.
-                    hero-backdrop-in: 첫 진입 시 배경이 서서히 차오르는 1회 페이드 —
-                    배경은 LCP 후보가 아니라 지연 등장 금지(ADR)와 무관하다. */}
-                <div className="hero-backdrop-in absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                    <div
-                        className="hero-blob hero-blob-1 absolute w-[600px] h-[600px] rounded-full opacity-20 bg-blue-400 blur-[120px]"
-                        style={{ top: '-10%', left: '10%' }}
-                    />
-                    <div
-                        className="hero-blob hero-blob-2 absolute w-[500px] h-[500px] rounded-full opacity-15 bg-teal-400 blur-[120px]"
-                        style={{ top: '20%', right: '5%' }}
-                    />
-                    <div
-                        className="hero-blob hero-blob-3 absolute w-[450px] h-[450px] rounded-full opacity-15 bg-emerald-300 blur-[100px]"
-                        style={{ bottom: '5%', left: '25%' }}
-                    />
-                    <div
-                        className="hero-blob hero-blob-4 absolute w-[550px] h-[550px] rounded-full opacity-10 bg-indigo-400 blur-[130px]"
-                        style={{ top: '40%', left: '50%' }}
-                    />
-                    <div
-                        className="hero-blob hero-blob-5 absolute w-[400px] h-[400px] rounded-full opacity-10 bg-cyan-300 blur-[100px]"
-                        style={{ top: '10%', right: '30%' }}
-                    />
+                    구조: hero-light 래퍼(위치 + 조명 켜지듯 순차 블룸 등장)가
+                    hero-blob(크기·색 + 상시 드리프트)을 감싼다 — 등장과 드리프트가
+                    서로 다른 요소의 transform이라 충돌하지 않는다(index.css 참조). */}
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    <div className="hero-light hero-light-1 absolute" style={{ top: '-10%', left: '10%' }}>
+                        <div className="hero-blob hero-blob-1 w-[600px] h-[600px] rounded-full opacity-20 bg-blue-400 blur-[120px]" />
+                    </div>
+                    <div className="hero-light hero-light-2 absolute" style={{ top: '20%', right: '5%' }}>
+                        <div className="hero-blob hero-blob-2 w-[500px] h-[500px] rounded-full opacity-15 bg-teal-400 blur-[120px]" />
+                    </div>
+                    <div className="hero-light hero-light-3 absolute" style={{ bottom: '5%', left: '25%' }}>
+                        <div className="hero-blob hero-blob-3 w-[450px] h-[450px] rounded-full opacity-15 bg-emerald-300 blur-[100px]" />
+                    </div>
+                    <div className="hero-light hero-light-4 absolute" style={{ top: '40%', left: '50%' }}>
+                        <div className="hero-blob hero-blob-4 w-[550px] h-[550px] rounded-full opacity-10 bg-indigo-400 blur-[130px]" />
+                    </div>
+                    <div className="hero-light hero-light-5 absolute" style={{ top: '10%', right: '30%' }}>
+                        <div className="hero-blob hero-blob-5 w-[400px] h-[400px] rounded-full opacity-10 bg-cyan-300 blur-[100px]" />
+                    </div>
                 </div>
 
                 <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
@@ -254,8 +252,8 @@ const Home = () => {
             ═══════════════════════════════════════════ */}
             {/* peek 장치(Numbers에서 이관): 히어로 바로 다음 섹션만 상단 패딩을
                 48px로 고정해 첫 화면 하단에 제목이 실제로 걸치게 한다(false bottom
-                방지). 배경도 히어로(#f8fafc)를 이 섹션이 이어받는다. */}
-            <section className="pt-12 pb-12 md:pb-24 bg-gradient-to-b from-[#f8fafc] via-white to-white">
+                방지). 배경은 래퍼의 home-flow-bg 연속 그라디언트가 담당한다. */}
+            <section className="pt-12 pb-12 md:pb-24">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -278,7 +276,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 3. Bridge — 서사 2장 '팀이 된다' 계속 (Pretendard + Split Layout)
             ═══════════════════════════════════════════ */}
-            <section className="relative py-12 md:py-24 bg-white overflow-hidden border-y border-slate-50">
+            <section className="relative py-12 md:py-24 overflow-hidden">
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-0 items-center">
 
@@ -360,7 +358,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 4. What We Do — 서사 3장 '만든다'
             ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-white via-slate-50/70 to-slate-50">
+            <section className="py-12 md:py-24">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -416,7 +414,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 5. Featured Portfolio — 서사 3장 '만든다' (산출물)
             ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-slate-50 via-white to-white">
+            <section className="py-12 md:py-24">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -509,9 +507,10 @@ const Home = () => {
                 뒤집어 서사 4장으로 내린다 — 맥락 없는 숫자는 "그래서 뭐"가 되고,
                 팀(2장)·활동·산출물(3장)을 본 뒤에는 같은 숫자가 결론으로 읽힌다.
                 근거 조사·되돌릴 조건: docs/adr/2026-08-26-numbers-demotion.md.
-                peek 장치(pt-12)는 Identity로 이관했고, 배경은 Featured(to-white)에서
-                이어받아 브랜드 톤(indigo)으로 넘어간다. */}
-            <section className="py-12 md:py-24 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
+                peek 장치(pt-12)는 Identity로 이관했고, 배경의 blue·indigo 힌트는
+                래퍼의 home-flow-bg 연속 그라디언트가 이 대역에서 깔아 준다
+                (장식 blur 원 2개는 섹션에 남긴다). */}
+            <section className="py-12 md:py-24 relative overflow-hidden">
                 <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
 
@@ -608,8 +607,8 @@ const Home = () => {
                 외부 공유 링크 대비로 유지).
                 GA4 apply_cta_click location은 'home_bottom' 유지 — 병합 후에도
                 홈 최하단 CTA라는 의미가 같아 기존 데이터와 연속 비교 가능하다.
-                배경은 Numbers(to-indigo-50/30)에서 이어받아 brand-50으로 닫는다. */}
-            <section id="fit-section" className="py-12 md:py-24 bg-gradient-to-b from-indigo-50/30 via-white to-brand-50">
+                배경은 래퍼의 home-flow-bg가 brand-50으로 닫아 준다. */}
+            <section id="fit-section" className="py-12 md:py-24">
                 <div className="container mx-auto px-6 text-center">
                     <motion.div
                         initial="hidden"
