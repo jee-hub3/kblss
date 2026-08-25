@@ -14,7 +14,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, CalendarClock, CalendarX2, CheckCircle2, ChevronDown, Loader2, Mail, Phone } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
-import { ORG_INFO } from '../lib/orgInfo';
+import { ORG_INFO, getLeadsByTier } from '../lib/orgInfo';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { tabPanel, ACCORDION_TRANSITION } from '../lib/motion';
 
@@ -888,7 +888,12 @@ const Recruit = () => {
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[임원진]</span>
-                                        <span className="text-slate-800">{ORG_INFO.leads[0].name} {ORG_INFO.leads[0].role} / {ORG_INFO.leads[1].name} {ORG_INFO.leads[1].role}</span>
+                                        {/* 문의 창구는 운영 총괄(랩실장·부랩실장)이다. leads[0]·[1]로
+                                            집던 것을 tier로 바꿨다 — 명단 순서가 바뀌어도 기능별
+                                            임원이 문의처로 잘못 올라오지 않는다. */}
+                                        <span className="text-slate-800">
+                                            {getLeadsByTier('lead').map((lead) => `${lead.name} ${lead.role}`).join(' / ')}
+                                        </span>
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[이메일]</span>
