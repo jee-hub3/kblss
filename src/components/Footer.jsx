@@ -25,20 +25,22 @@ const Footer = () => {
                         <h2 className="text-white font-bold mb-6 tracking-wide">Menu</h2>
                         <ul className="space-y-4">
 
-                            <li><Link to="/activities" className="hover:text-brand-400 transition-colors">Activities</Link></li>
-                            <li><Link to="/portfolio" className="hover:text-brand-400 transition-colors">Portfolio</Link></li>
-                            <li><Link to="/organization" className="hover:text-brand-400 transition-colors">Organization</Link></li>
-                            <li><Link to="/news" className="hover:text-brand-400 transition-colors">Log & News</Link></li>
-                            <li><Link to="/faq" className="hover:text-brand-400 transition-colors">FAQ</Link></li>
+                            <li><Link to="/activities" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">Activities</Link></li>
+                            <li><Link to="/portfolio" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">Portfolio</Link></li>
+                            <li><Link to="/organization" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">Organization</Link></li>
+                            <li><Link to="/news" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">Log & News</Link></li>
+                            <li><Link to="/faq" className="hover:text-brand-400 transition-colors focus-ring rounded-sm">FAQ</Link></li>
                             {/* 오너 결정: 푸터는 filled 버튼 대신 텍스트 링크를 유지한다
                                 (메뉴 리스트의 결을 지킴). 문구 통일("지원하기")과
                                 GA4 location: footer는 그대로 적용. 색은 어두운 배경 전용
                                 토큰(brand-accent-on-dark) — index.css 주석 참고. */}
                             <li>
+                                {/* 강조 링크의 hover가 brand-400으로 오히려 어두워지던 것을
+                                    수정 — 다른 링크들과 반대 방향이었다. hover는 밝아져야 한다. */}
                                 <Link
                                     to="/apply"
                                     onClick={() => trackEvent('apply_cta_click', { location: 'footer' })}
-                                    className="hover:text-brand-400 transition-colors font-semibold text-brand-accent-on-dark"
+                                    className="hover:text-white transition-colors font-semibold text-brand-accent-on-dark focus-ring rounded-sm"
                                 >
                                     지원하기
                                 </Link>
@@ -59,7 +61,7 @@ const Footer = () => {
                                 min-w-0(플렉스 자식 축소 허용) + break-all로 컬럼 안에서 줄바꿈. */}
                             <li className="flex items-center mt-4">
                                 <Mail className="w-5 h-5 mr-3 text-slate-500 shrink-0" />
-                                <a href={`mailto:${ORG_INFO.email}`} className="hover:text-brand-400 transition-colors min-w-0 break-all">{ORG_INFO.email}</a>
+                                <a href={`mailto:${ORG_INFO.email}`} className="hover:text-brand-400 transition-colors min-w-0 break-all focus-ring rounded-sm">{ORG_INFO.email}</a>
                             </li>
                             {/* 인스타그램 링크는 두지 않는다 — 계정 URL이 없어서가 아니라
                                 2026-08 운영진이 SNS 채널 자체를 폐기하기로 결정했다.
@@ -73,7 +75,7 @@ const Footer = () => {
                     {/* 이용약관은 계정·결제·사용자 게시물이 없어 규율할 대상이 없다.
                         링크가 하나뿐이라 space-x-6(항목 사이 간격)은 의미가 없어 걷어낸다. */}
                     <div className="mt-4 md:mt-0">
-                        <Link to="/privacy" className="hover:text-white transition-colors">개인정보처리방침</Link>
+                        <Link to="/privacy" className="hover:text-white transition-colors focus-ring rounded-sm">개인정보처리방침</Link>
                     </div>
                 </div>
             </div>

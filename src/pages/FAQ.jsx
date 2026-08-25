@@ -6,19 +6,8 @@ import { trackEvent } from '../lib/analytics';
 import { ORG_INFO } from '../lib/orgInfo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircleQuestion } from 'lucide-react';
-
-const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-};
-
-const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.1 }
-    }
-};
+// 모션 값은 src/lib/motion.js 단일 소스에서 온다.
+import { fadeInUp, staggerContainer, ACCORDION_TRANSITION, VIEWPORT_ONCE } from '../lib/motion';
 
 const faqs = [
     {
@@ -89,7 +78,9 @@ const FAQ = () => {
 
                 {/* FAQ Accordion */}
                 <section>
-                    <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="space-y-4">
+                    {/* 마운트 즉시(animate)가 아니라 뷰포트 진입 시 재생 — 첫 화면 밖
+                        카드의 등장이 보이기 전에 끝나 버리는 문제를 막는다(기준 3항). */}
+                    <motion.div initial="hidden" whileInView="visible" viewport={VIEWPORT_ONCE} variants={staggerContainer} className="space-y-4">
                         {faqs.map((faq, index) => {
                             const isOpen = openIndex === index;
                             return (
@@ -100,18 +91,19 @@ const FAQ = () => {
                                 >
                                     <button
                                         onClick={() => toggleAccordion(index)}
+                                        aria-expanded={isOpen}
                                         className="w-full text-left px-8 py-6 flex justify-between items-center bg-white hover:bg-slate-50/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-inset"
                                     >
                                         <h2 className={`text-lg md:text-xl font-bold transition-colors ${isOpen ? 'text-brand-accent' : 'text-slate-900'}`}>
                                             {faq.question}
                                         </h2>
-                                        <motion.div
-                                            animate={{ rotate: isOpen ? 180 : 0 }}
-                                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                                            className={`flex-shrink-0 ml-4 p-1 rounded-full ${isOpen ? 'bg-brand-50 text-brand-accent' : 'bg-slate-100 text-slate-400'}`}
+                                        {/* 셰브론 회전은 사이트 공통으로 CSS transition-transform
+                                            duration-200 — Recruit 아코디언과 같은 구현·속도 */}
+                                        <div
+                                            className={`flex-shrink-0 ml-4 p-1 rounded-full transition-all duration-200 ${isOpen ? 'bg-brand-50 text-brand-accent rotate-180' : 'bg-slate-100 text-slate-400'}`}
                                         >
                                             <ChevronDown className="w-5 h-5" />
-                                        </motion.div>
+                                        </div>
                                     </button>
 
                                     <AnimatePresence initial={false}>
@@ -120,7 +112,7 @@ const FAQ = () => {
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 exit={{ height: 0, opacity: 0 }}
-                                                transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
+                                                transition={ACCORDION_TRANSITION}
                                             >
                                                 <div className="px-8 pb-8 pt-2">
                                                     <div className="w-full h-[1px] bg-slate-100 mb-6"></div>

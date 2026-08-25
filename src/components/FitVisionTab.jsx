@@ -27,11 +27,6 @@ const staggerContainer = {
     },
 };
 
-const cardHover = {
-    rest: { scale: 1, y: 0 },
-    hover: { scale: 1.03, y: -6, transition: { duration: 0.35, ease: 'easeOut' } },
-};
-
 /* ── Core Values Data ── */
 const coreValues = [
     {
@@ -247,7 +242,7 @@ const FitVisionTab = () => {
                     </p>
                     {/* 인재상(핏 확인)을 읽고 누르는 전환은 GNB의 무심결 클릭과
                         성격이 달라 location을 구분한다. */}
-                    <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'organization_fit' })} className="group transform hover:-translate-y-1">
+                    <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'organization_fit' })} className="group transform hover:-translate-y-0.5">
                         지원하기
                         <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>

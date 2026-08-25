@@ -6,19 +6,8 @@ import { ArrowRight, Clock, User, ArrowUpRight, ChevronLeft, ChevronRight, Loade
 import { useNavigate } from 'react-router-dom';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
-
-const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-};
-
-const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.1 }
-    }
-};
+// 모션 값은 src/lib/motion.js 단일 소스에서 온다.
+import { fadeInUp, gridItem } from '../lib/motion';
 
 const defaultCategories = ["전체보기"];
 
@@ -168,7 +157,7 @@ const News = () => {
                                                         <div className="flex items-center gap-3 mb-6">
                                                             <span className="px-4 py-1.5 bg-brand-50 text-brand-accent font-bold text-sm rounded-full tracking-wide">{post.tag}</span>
                                                         </div>
-                                                        <h2 className="text-2xl lg:text-3xl font-extrabold text-slate-900 mb-6 leading-[1.3] break-keep group-hover:text-brand-accent transition-colors duration-300">{post.title}</h2>
+                                                        <h2 className="text-2xl lg:text-3xl font-extrabold text-slate-900 mb-6 leading-[1.3] break-keep group-hover:text-brand-accent transition-colors">{post.title}</h2>
                                                         <p className="text-copy text-slate-600 mb-10 overflow-hidden line-clamp-3 break-keep font-medium">{post.summary}</p>
                                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-slate-100 mt-auto">
                                                             <div className="flex items-center gap-6">
@@ -196,10 +185,10 @@ const News = () => {
                                                         e.stopPropagation();
                                                         setCurrentFeaturedIndex(idx);
                                                     }}
-                                                    className="group/dot flex h-11 w-11 items-center justify-center"
+                                                    className="group/dot flex h-11 w-11 items-center justify-center focus-ring rounded-full"
                                                     aria-label={`${idx + 1}번째 소식으로 이동`}
                                                 >
-                                                    <span className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentFeaturedIndex ? 'bg-brand-accent w-8' : 'w-2.5 bg-gray-300 group-hover/dot:bg-gray-400'}`} />
+                                                    <span className={`h-2.5 rounded-full transition-[width,background-color] duration-300 ${idx === currentFeaturedIndex ? 'bg-brand-accent w-8' : 'w-2.5 bg-gray-300 group-hover/dot:bg-gray-400'}`} />
                                                 </button>
                                             ))}
                                         </div>
@@ -229,20 +218,21 @@ const News = () => {
                                 <div className="flex flex-wrap justify-center gap-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
                                     {dynamicCategories.map((cat, idx) => (
                                         <button key={idx} onClick={() => handleFilterChange(cat)}
-                                            className={`min-h-11 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeFilter === cat ? 'bg-slate-900 text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
+                                            className={`min-h-11 px-5 py-2.5 rounded-xl text-sm font-bold transition-all press focus-ring ${activeFilter === cat ? 'bg-slate-900 text-white shadow-md' : 'bg-transparent text-slate-600 hover:bg-slate-50'}`}>
                                             {cat}
                                         </button>
                                     ))}
                                 </div>
                             </div>
 
-                            <motion.div key={activeFilter} layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {/* key={activeFilter}는 필터 전환마다 그리드 전체를 리마운트해
+                                바로 옆의 layout 애니메이션을 무력화했다(Portfolio와 동일 구조로 통일). */}
+                            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 <AnimatePresence mode="popLayout">
                                     {paginatedNews.map((post) => (
                                         <motion.div key={post.id} layout
                                             onClick={() => navigate(`/news/${post.id}`, { state: { post } })}
-                                            initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                                            transition={{ duration: 0.4, ease: "easeOut" }}
+                                            {...gridItem}
                                             className="cursor-pointer group flex flex-col bg-transparent">
 
                                             <div className={`w-full aspect-video ${post.thumbnail ? 'bg-slate-100' : `bg-gradient-to-br ${post.imageGrad}`} rounded-2xl relative overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-lg`}>
@@ -284,17 +274,17 @@ const News = () => {
                             {totalPages > 1 && (
                                 <div className="flex items-center justify-center gap-2 mt-16">
                                     <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} aria-label="이전 페이지"
-                                        className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                        className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
                                         <ChevronLeft className="w-4 h-4" />
                                     </button>
                                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                                         <button key={page} onClick={() => setCurrentPage(page)}
-                                            className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
+                                            className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold transition-all press focus-ring ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
                                             {page}
                                         </button>
                                     ))}
                                     <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} aria-label="다음 페이지"
-                                        className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                                        className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>

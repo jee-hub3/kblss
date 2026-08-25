@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackEvent } from '../lib/analytics';
 import Button from './Button';
+import { DUR, EASE_OUT } from '../lib/motion';
 
 /* ── z-index 층 규약 ──────────────────────────────
    페이지 콘텐츠 (sticky 포함)  ≤ z-30
@@ -50,8 +51,11 @@ const GNB = () => {
 
     return (
         <>
+            {/* transition-all이면 스크롤 문턱마다 의도치 않은 속성까지 애니메이트된다.
+                실제로 바뀌는 padding·배경·그림자만 명시(motion.js 기준 4항의 절충 —
+                padding은 layout 속성이지만 fixed 헤더라 아래 문서를 리플로우하지 않는다). */}
             <header
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled || isMobileMenuOpen ? 'bg-white/80 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'
+                className={`fixed top-0 left-0 right-0 z-50 transition-[padding,background-color,box-shadow] duration-300 ${scrolled || isMobileMenuOpen ? 'bg-white/80 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'
                     }`}
             >
                 <div className="container mx-auto px-6 md:px-12 flex items-center">
@@ -80,7 +84,7 @@ const GNB = () => {
                             <Link
                                 key={item.name}
                                 to={item.path}
-                                className="text-sm font-medium text-slate-600 hover:text-brand-accent transition-colors"
+                                className="text-sm font-medium text-slate-600 hover:text-brand-accent transition-colors focus-ring rounded-md"
                             >
                                 {item.name}
                             </Link>
@@ -110,8 +114,9 @@ const GNB = () => {
                         {/* Hamburger button — mobile only */}
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="md:hidden relative w-11 h-11 flex items-center justify-center rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
+                            className="md:hidden relative w-11 h-11 flex items-center justify-center rounded-xl text-slate-700 hover:bg-slate-100 transition-colors press focus-ring"
                             aria-label="메뉴 열기/닫기"
+                            aria-expanded={isMobileMenuOpen}
                         >
                             <AnimatePresence mode="wait" initial={false}>
                                 {isMobileMenuOpen ? (
@@ -151,7 +156,7 @@ const GNB = () => {
                                     key={item.name}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 + idx * 0.06 }}
+                                    transition={{ duration: DUR.base, ease: EASE_OUT, delay: 0.1 + idx * 0.06 }}
                                 >
                                     <Link
                                         to={item.path}
@@ -166,7 +171,7 @@ const GNB = () => {
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.1 + navLinks.length * 0.06 }}
+                                transition={{ duration: DUR.base, ease: EASE_OUT, delay: 0.1 + navLinks.length * 0.06 }}
                                 className="mt-6 w-full max-w-xs"
                             >
                                 <Button

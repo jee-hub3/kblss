@@ -178,13 +178,14 @@ const NewsDetail = () => {
                 description={post.summary || `KBLs 소식 — ${post.title}`}
             />
 
-            {/* 뒤로 가기 버튼: 텍스트나 박스 없이 깔끔한 <- 화살표 아이콘만 고정 배치 */}
+            {/* 뒤로가기는 PortfolioDetail과 같은 알약형으로 통일 — 형제 상세 페이지의
+                모션·어포던스 언어가 달랐다(맨 화살표 vs 알약). */}
             <button
                 onClick={() => navigate('/news')}
-                className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-2 text-slate-500 hover:text-brand-accent transition-colors"
+                className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-3 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-full text-slate-500 hover:text-brand-accent hover:bg-white hover:shadow-md transition-all press focus-ring group"
                 aria-label="목록으로 돌아가기"
             >
-                <ArrowLeft className="w-8 h-8" strokeWidth={1.5} />
+                <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
             </button>
 
             {/* 헤더 영역 (수직 Flex) */}

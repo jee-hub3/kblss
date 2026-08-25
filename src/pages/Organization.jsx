@@ -6,28 +6,13 @@ import FitVisionTab from '../components/FitVisionTab';
 import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
 import { ORG_INFO } from '../lib/orgInfo';
-
-const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-};
-
-const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.12 }
-    }
-};
-
-const cardVariants = {
-    hidden: { opacity: 0, y: 40, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
-};
+// 모션 값은 src/lib/motion.js 단일 소스에서 온다.
+// 조직도 선 그리기(pathLength)의 duration·delay는 연출이라 로컬 값을 유지한다.
+import { fadeInUp, staggerContainer, scaleIn, tabPanel } from '../lib/motion';
 
 const GlassCard = ({ role, name, desc }) => (
     <motion.div
-        variants={cardVariants}
+        variants={scaleIn}
         className="relative group h-full rounded-3xl p-8 transition-all duration-300 bg-white/60 backdrop-blur-md border border-white/50 shadow-sm hover:border-brand-400 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10 flex flex-col items-center text-center"
     >
         {/* Subtle glow on hover for all cards */}
@@ -76,33 +61,6 @@ const Organization = () => {
         }
     }, [location.search]);
 
-    // Hand-drawn SVG lines
-    const SvgLine = ({ pathD, width, height, viewBox, className }) => (
-        <svg
-            width={width}
-            height={height}
-            viewBox={viewBox}
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={className}
-        >
-            <motion.path
-                d={pathD}
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-                vectorEffect="non-scaling-stroke"
-                initial={{ pathLength: 0, opacity: 0 }}
-                whileInView={{ pathLength: 1, opacity: 1 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 1.2, ease: "easeInOut", delay: 0.2 }}
-                style={{ strokeDasharray: "4 4" }} // give it a little sketchy dashed look or use solid hand-drawn
-            />
-        </svg>
-    );
-
     return (
         // overflow-hidden은 sticky 탭 스트립을 무력화한다(스크롤 기준이 뷰포트가
         // 아니게 됨). 가로 삐짐 방지 목적은 overflow-x-clip이 대신한다 —
@@ -118,7 +76,7 @@ const Organization = () => {
                 <div className="flex space-x-8">
                     <button
                         onClick={() => setActiveTab('구성')}
-                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '구성' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors press focus-ring relative ${activeTab === '구성' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                     >
                         구성
                         {activeTab === '구성' && (
@@ -130,7 +88,7 @@ const Organization = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('인재상')}
-                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors relative ${activeTab === '인재상' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
+                        className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors press focus-ring relative ${activeTab === '인재상' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                     >
                         인재상
                         {activeTab === '인재상' && (
@@ -147,10 +105,7 @@ const Organization = () => {
                 {activeTab === '구성' ? (
                     <motion.div
                         key="org"
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 30 }}
-                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                        {...tabPanel(-1)}
                         className="w-full"
                     >
                         <div>
@@ -323,9 +278,10 @@ const Organization = () => {
                                     <h2 className="text-2xl md:text-4xl font-extrabold mb-10 leading-snug tracking-tight">
                                         이들이 모여 어떤 방식으로<br className="md:hidden" /> 일하는지 궁금하신가요?
                                     </h2>
+                                    {/* hover 색은 Button.jsx와 같은 브랜드 토큰으로 통일 */}
                                     <Link
                                         to="/activities"
-                                        className="inline-flex items-center bg-brand-accent text-white hover:bg-brand-700 px-8 py-4 rounded-full text-base font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                                        className="inline-flex items-center bg-brand-accent text-white hover:bg-brand-accent-hover px-8 py-4 rounded-full text-base font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 press focus-ring"
                                     >
                                         KBLs 활동 방식 보기
                                     </Link>
@@ -336,10 +292,7 @@ const Organization = () => {
                 ) : (
                     <motion.div
                         key="fit"
-                        initial={{ opacity: 0, x: 30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -30 }}
-                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                        {...tabPanel(1)}
                         className="w-full"
                     >
                         <FitVisionTab />

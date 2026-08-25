@@ -33,20 +33,9 @@
   --text-label: 0.8125rem;       /* 13px — 한 줄 라벨·캡션·태그 */
   --text-label--line-height: 1.4;
 
-  --animate-fade-up: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* fadeUp 키프레임·--animate-fade-up 토큰은 참조가 0곳이라 제거했다.
+     등장 애니메이션은 src/lib/motion.js의 fadeInUp(framer)만 쓴다. */
   --animate-blob: blob 7s infinite;
-
-  @keyframes fadeUp {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
   @keyframes blob {
     0% {
@@ -147,6 +136,44 @@
   background-repeat: no-repeat;
 }
 
+/* ── 인터랙션 피드백 유틸리티 (src/lib/motion.js 기준 7항) ──────────
+   press: 눌리는 요소의 즉각 눌림 피드백. Tailwind 4의 scale-*와 같은
+   개별 scale 프로퍼티를 쓰므로 hover:-translate-y-* 리프트와 안전하게 겹친다.
+   focus-ring: 키보드 포커스 표시. 기본 outline이 rounded-full·그림자에
+   뭉개지는 버튼·링크에 일괄 적용한다. */
+@utility press {
+  &:active {
+    scale: 97%;
+  }
+}
+
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-brand-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Activities 공모전 경로 위를 도는 점. framer의 rAF 무한 루프(cx 애니메이션)
+   대신 CSS 키프레임으로 돌린다 — hero-blob과 같은 결정(TBT + reduced-motion).
+   SVG 자식의 CSS transform은 user unit 기준이라 translateX(900px) = cx 50→950.
+   페이드 인 0.5s 후 3s 왕복 루프, reduced-motion은 아래 @media가 무력화한다. */
+.path-dot {
+  animation:
+    path-dot-fade 0.5s ease-out 0.5s backwards,
+    path-dot 3s linear infinite;
+}
+
+@keyframes path-dot {
+  from { transform: translateX(0); }
+  to { transform: translateX(900px); }
+}
+
+@keyframes path-dot-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 /* Home 히어로 blob. framer-motion의 무한 rAF 루프 대신 CSS 키프레임으로
    컴포지터에서만 돌린다(transform 전용 + will-change로 레이어 승격).
    좌표·주기·easing은 기존 framer 설정을 그대로 이식했다.
@@ -196,7 +223,7 @@
 
 /* OS '동작 줄이기' 설정 시 CSS 애니메이션·트랜지션 무력화.
    framer-motion은 App의 MotionConfig(reducedMotion="user")가 담당하고,
-   이 블록은 Tailwind transition-*, --animate-fade-up, --animate-blob 등
+   이 블록은 Tailwind transition-*, --animate-blob, .path-dot 등
    순수 CSS 기반 움직임을 커버한다. 0.01ms로 즉시 종료시키므로
    forwards 키프레임은 최종 상태(opacity 1)로 바로 도달해 콘텐츠가 가려지지 않는다. */
 @media (prefers-reduced-motion: reduce) {

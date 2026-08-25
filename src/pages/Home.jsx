@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import CountUp from 'react-countup';
 import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, Image as ImageIcon } from 'lucide-react';
@@ -10,19 +10,8 @@ import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
 import { getDocDeadlineLabel, RECRUIT_SCHEDULE } from '../lib/recruitSchedule';
 import { trackEvent } from '../lib/analytics';
-
-const fadeInUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-};
-
-const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.15 }
-    }
-};
+// 모션 값은 src/lib/motion.js 단일 소스에서 온다. 히어로만 보호 연출(hero*)을 쓴다.
+import { fadeInUp, heroFadeInUp, heroStagger, DUR, EASE_OUT, VIEWPORT_ONCE } from '../lib/motion';
 
 // OS '동작 줄이기' 설정 여부. react-countup은 MotionConfig(reducedMotion)의
 // 영향을 받지 않으므로 카운트업 애니메이션을 직접 분기한다.
@@ -194,19 +183,20 @@ const Home = () => {
 
                     {/* 타이포 스케일의 display 단계(30→36→48px, 음수 tracking은 md~).
                         정의는 index.css의 @utility text-display. */}
+                    {/* 히어로 스테이징은 오너 보호 연출 — motion.js의 hero* 값만 쓴다 */}
                     <motion.h1
-                        variants={staggerContainer}
+                        variants={heroStagger}
                         initial="hidden"
                         animate="visible"
                         className="text-display font-extrabold text-slate-900 mb-8"
                     >
-                        <motion.span variants={fadeInUp} className="block">
+                        <motion.span variants={heroFadeInUp} className="block">
                             아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">실행</span></span>으로
                         </motion.span>
-                        <motion.span variants={fadeInUp} className="block mt-2">
+                        <motion.span variants={heroFadeInUp} className="block mt-2">
                             사람을 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">연결</span></span>로
                         </motion.span>
-                        <motion.span variants={fadeInUp} className="block mt-6 text-xl md:text-2xl text-slate-900 font-bold">
+                        <motion.span variants={heroFadeInUp} className="block mt-6 text-xl md:text-2xl text-slate-900 font-bold">
                             우리가 함께 성장을 증명하는 곳
                         </motion.span>
                     </motion.h1>
@@ -242,7 +232,7 @@ const Home = () => {
                         CTA와 같은 이유로 opacity 애니메이션 없이 즉시 렌더. */}
                     <Link
                         to="/apply"
-                        className="mt-6 inline-flex items-center text-sm font-medium text-slate-500 hover:text-brand-accent transition-colors group"
+                        className="mt-6 inline-flex items-center text-sm font-medium text-slate-500 hover:text-brand-accent transition-colors group focus-ring rounded-md"
                     >
                         서류 마감 {getDocDeadlineLabel()} · 전형 일정 보기
                         <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -291,13 +281,15 @@ const Home = () => {
                         <DataNotice title="아직 등록된 지표가 없습니다" />
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
-                            {kblsNumbersData.map((stat) => (
+                            {/* 시차는 정렬 후의 배열 인덱스 기준이어야 한다. 노션 '순서' 원값을
+                                그대로 곱하면 오너가 10/20/30으로 매기는 순간 지연이 1~3초가 된다. */}
+                            {kblsNumbersData.map((stat, i) => (
                                 <motion.div
                                     key={stat.id}
-                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    initial={{ opacity: 0, scale: 0.95 }}
                                     whileInView={{ opacity: 1, scale: 1 }}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: stat.order * 0.1 }}
+                                    transition={{ duration: DUR.reveal, delay: i * 0.08, ease: EASE_OUT }}
                                     className="text-center"
                                 >
                                     <div className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500 mb-4 inline-flex items-center">
@@ -321,7 +313,7 @@ const Home = () => {
                         <details>/<summary>는 네이티브 지원이라 별도 ARIA가 필요 없다. */}
                     {!metricsError && kblsNumbersData.some((s) => s.basis || s.asOf) && (
                         <details className="mt-12 max-w-[68ch] mx-auto">
-                            <summary className="min-h-11 flex items-center cursor-pointer text-label font-semibold text-slate-600 hover:text-slate-800 transition-colors">
+                            <summary className="min-h-11 flex items-center cursor-pointer text-label font-semibold text-slate-600 hover:text-slate-800 transition-colors focus-ring rounded-md">
                                 지표 산출 기준
                             </summary>
                             <ul className="mt-2 space-y-3">
@@ -370,10 +362,10 @@ const Home = () => {
 
                         {/* Left: Typography — Pretendard 명시 */}
                         <motion.div
-                            initial={{ opacity: 0, x: -40 }}
+                            initial={{ opacity: 0, x: -24 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                            transition={{ duration: DUR.reveal, ease: EASE_OUT }}
                             className="relative z-10 lg:pr-16"
                         >
 
@@ -401,10 +393,10 @@ const Home = () => {
                             없으면 타이포·그래픽으로 대체. 실제 사진이 확보되면 이 자리를
                             사진 패널로 되돌린다. */}
                         <motion.div
-                            initial={{ opacity: 0, x: 40 }}
+                            initial={{ opacity: 0, x: 24 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                            transition={{ duration: DUR.reveal, delay: 0.08, ease: EASE_OUT }}
                             className="relative lg:pl-8"
                         >
                             <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border border-slate-100 p-8 md:p-12 overflow-hidden">
@@ -474,10 +466,10 @@ const Home = () => {
                         ].map((item, i) => (
                             <motion.div
                                 key={i}
-                                initial={{ opacity: 0, y: 30 }}
+                                initial={{ opacity: 0, y: 24 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.6, delay: i * 0.1 }}
+                                viewport={VIEWPORT_ONCE}
+                                transition={{ duration: DUR.reveal, ease: EASE_OUT, delay: i * 0.08 }}
                                 className="group"
                             >
                                 <div className="w-14 h-14 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -485,12 +477,15 @@ const Home = () => {
                                 </div>
                                 <h3 className="text-subhead font-bold mb-4 text-slate-900">{item.title}</h3>
                                 <p className="text-slate-500 text-copy">{item.desc}</p>
-                                <div className="mt-6 h-px w-12 bg-slate-200 group-hover:w-20 group-hover:bg-brand-accent transition-all duration-500" />
+                                {/* 밑줄 확장은 width 대신 scale-x — layout 속성은 애니메이트하지
+                                    않는다(motion.js 기준 4항). w-20에서 60%로 접어두고 hover에 편다. */}
+                                <div className="mt-6 h-px w-20 origin-left scale-x-[0.6] bg-slate-200 group-hover:scale-x-100 group-hover:bg-brand-accent transition-[scale,background-color] duration-300" />
                             </motion.div>
                         ))}
                     </div>
 
-                    <Link to="/activities" className="md:hidden mt-12 w-full min-h-11 py-3 inline-flex justify-center items-center text-brand-accent font-semibold group">
+                    {/* 모바일 전용 링크는 hover가 없으므로 press가 유일한 탭 피드백이다 */}
+                    <Link to="/activities" className="md:hidden mt-12 w-full min-h-11 py-3 inline-flex justify-center items-center text-brand-accent font-semibold group press focus-ring rounded-xl">
                         우리의 활동 방식 자세히 보기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
@@ -541,10 +536,10 @@ const Home = () => {
                             {featuredProjects.map((project, i) => (
                                 <motion.div
                                     key={project.id}
-                                    initial={{ opacity: 0, y: 30 }}
+                                    initial={{ opacity: 0, y: 24 }}
                                     whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true, margin: "-50px" }}
-                                    transition={{ duration: 0.6, delay: i * 0.15 }}
+                                    viewport={VIEWPORT_ONCE}
+                                    transition={{ duration: DUR.reveal, ease: EASE_OUT, delay: i * 0.08 }}
                                     onClick={() => navigate(`/portfolio/${project.id}`, { state: { project } })}
                                     className="cursor-pointer group block"
                                 >
@@ -580,7 +575,7 @@ const Home = () => {
                         </div>
                     )}
 
-                    <Link to="/portfolio" className="md:hidden mt-8 w-full min-h-11 py-3 inline-flex justify-center items-center text-brand-accent font-semibold group">
+                    <Link to="/portfolio" className="md:hidden mt-8 w-full min-h-11 py-3 inline-flex justify-center items-center text-brand-accent font-semibold group press focus-ring rounded-xl">
                         전체 포트폴리오 확인하기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
@@ -602,6 +597,9 @@ const Home = () => {
                         <p className="text-lg text-slate-600">완벽하지 않아도 좋습니다. KBLs는 이런 열정을 가진 분을 기다립니다.</p>
                     </motion.div>
 
+                    {/* 태그 필: scale 차이는 5% 이내, 스프링 없이(기준 2·3항). hover
+                        그림자는 제거 — 그림자는 클릭 가능 요소의 단서인데 이 태그는
+                        장식이다(히어로 배지의 그림자 금지와 같은 규칙). */}
                     <div className="flex flex-wrap justify-center gap-6 mb-16">
                         {[
                             { tag: "#실행력", icon: <Rocket className="w-6 h-6 mr-3 text-brand-accent" /> },
@@ -610,11 +608,11 @@ const Home = () => {
                         ].map((item, i) => (
                             <motion.div
                                 key={i}
-                                initial={{ opacity: 0, scale: 0.8 }}
+                                initial={{ opacity: 0, scale: 0.95 }}
                                 whileInView={{ opacity: 1, scale: 1 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: i * 0.1, type: "spring" }}
-                                className="flex items-center bg-white px-8 py-4 rounded-full shadow-sm hover:shadow-md transition-shadow text-xl font-bold text-slate-800 border border-slate-100"
+                                transition={{ duration: DUR.base, ease: EASE_OUT, delay: i * 0.08 }}
+                                className="flex items-center bg-white px-8 py-4 rounded-full shadow-sm text-xl font-bold text-slate-800 border border-slate-100"
                             >
                                 {item.icon}
                                 {item.tag}
@@ -623,14 +621,15 @@ const Home = () => {
                     </div>
 
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
                         viewport={{ once: true }}
                         className="mt-8"
                     >
                         <Link
                             to="/organization?tab=vision"
-                            className="inline-flex items-center text-lg text-slate-500 hover:text-brand-accent font-bold transition-all group"
+                            className="inline-flex items-center text-lg text-slate-500 hover:text-brand-accent font-bold transition-colors group focus-ring rounded-md"
                         >
                             내가 KBLs가 찾는 인재일까? <span className="text-brand-accent ml-2 border-b-2 border-brand-accent/30 pb-0.5">핏(Fit) 확인하기</span>
                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -654,7 +653,7 @@ const Home = () => {
                         <h2 className="text-3xl md:text-5xl font-extrabold mb-8 leading-tight text-slate-900">
                             스스로 문제를 정의하고<br />해결하고 싶다면,<br />KBLs와 함께하세요
                         </h2>
-                        <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'home_bottom' })} className="transform hover:-translate-y-1">
+                        <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'home_bottom' })} className="transform hover:-translate-y-0.5">
                             지원하기
                         </Button>
                     </motion.div>

@@ -31,7 +31,10 @@ const SIZE_CLASSES = {
 
 const Button = ({ variant = 'primary', size = 'lg', to, className = '', children, ...rest }) => {
     const classes = [
-        'inline-flex items-center justify-center rounded-full transition-all',
+        // press·focus-ring은 index.css 유틸리티(motion.js 기준 7항) —
+        // 터치에서는 hover가 없어 active 눌림이 유일한 피드백이고,
+        // rounded-full + 그림자가 브라우저 기본 outline을 뭉개므로 링을 직접 그린다.
+        'inline-flex items-center justify-center rounded-full transition-all duration-200 press focus-ring',
         VARIANT_CLASSES[variant],
         SIZE_CLASSES[size],
         className,
