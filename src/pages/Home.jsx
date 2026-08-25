@@ -311,7 +311,30 @@ const Home = () => {
                             ))}
                         </div>
                     )}
-                    {/* 산출 기준·기준일 병기는 페이지 끝의 '지표 산출 기준' 각주 섹션으로 옮겼다 */}
+                    {/* 산출 기준은 수치 바로 아래에 둔다 — 페이지 끝에 두면 "무슨 기준이지?"
+                        하는 사람이 끝까지 스크롤해 항목을 눈으로 맞춰야 한다.
+                        기본 접힘으로 시각 무게만 덜어내고, 펼친 내용은 줄이지 않는다.
+                        (등록 이슈 '산출 기준 미비로 인한 신뢰도 훼손' + PRD '각 수치에
+                        산출 기준이 명시된다'가 근거라 없애거나 숨기면 안 된다.)
+                        값이 하나도 없으면 아예 렌더하지 않는다 — 빈 토글이 남으면 안 되고,
+                        오너가 노션을 채우면 배포 없이 나타나는 하위 호환도 그대로다.
+                        <details>/<summary>는 네이티브 지원이라 별도 ARIA가 필요 없다. */}
+                    {!metricsError && kblsNumbersData.some((s) => s.basis || s.asOf) && (
+                        <details className="mt-12 max-w-[68ch] mx-auto">
+                            <summary className="min-h-11 flex items-center cursor-pointer text-label font-semibold text-slate-600 hover:text-slate-800 transition-colors">
+                                지표 산출 기준
+                            </summary>
+                            <ul className="mt-2 space-y-3">
+                                {kblsNumbersData.filter((s) => s.basis || s.asOf).map((stat) => (
+                                    <li key={stat.id} className="text-label text-slate-600 leading-relaxed break-keep">
+                                        <span className="font-semibold text-slate-700">{stat.title}</span>
+                                        {stat.basis && <> — {stat.basis}</>}
+                                        {stat.asOf && <span className="text-slate-500"> (기준일 {stat.asOf})</span>}
+                                    </li>
+                                ))}
+                            </ul>
+                        </details>
+                    )}
                 </div>
             </section>
 
@@ -637,34 +660,6 @@ const Home = () => {
                     </motion.div>
                 </div>
             </section>
-
-            {/* ═══════════════════════════════════════════
-                8. 지표 산출 기준 (각주)
-            ═══════════════════════════════════════════ */}
-            {/* 노션 metrics의 '산출 기준'·'기준일'을 모아 보여주는 각주.
-                값이 하나도 없으면 섹션 자체를 렌더하지 않는다 — 오너가 노션을
-                채우면 배포 없이 자동으로 나타난다('산출 기준' 병기와 같은
-                하위 호환 패턴). 수치 본문(Numbers)에서는 병기를 걷어냈다. */}
-            {!metricsError && kblsNumbersData.some((s) => s.basis || s.asOf) && (
-                <section className="py-12 md:py-24 bg-slate-50 border-t border-slate-100">
-                    <div className="container mx-auto px-6">
-                        <div className="max-w-[68ch] mx-auto">
-                            <h2 className="text-subhead font-bold text-slate-700 mb-6">지표 산출 기준</h2>
-                            <ul className="space-y-3">
-                                {/* bg-slate-50 위 대비: slate-600 7.24:1, slate-500 4.55:1 (AA).
-                                    slate-400은 2.45:1로 미달이라 쓰지 않는다. */}
-                                {kblsNumbersData.filter((s) => s.basis || s.asOf).map((stat) => (
-                                    <li key={stat.id} className="text-label text-slate-600 leading-relaxed break-keep">
-                                        <span className="font-semibold text-slate-700">{stat.title}</span>
-                                        {stat.basis && <> — {stat.basis}</>}
-                                        {stat.asOf && <span className="text-slate-500"> (기준일 {stat.asOf})</span>}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-            )}
         </div>
     );
 };
