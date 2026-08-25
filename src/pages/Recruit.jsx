@@ -150,7 +150,7 @@ const Recruit = () => {
                 {/* 1. Header (공통 상단 - Left Aligned) */}
                 <header className="mb-12 text-left">
                     <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug mb-4 break-keep">
-                        2026학년도 상반기 KBLs 신입 회원 모집<br />
+                        {RECRUIT_SCHEDULE.semesterLabel} KBLs 신입 회원 모집<br />
                         <span className="text-lg md:text-2xl text-slate-500 font-bold block mt-3">(학사 신입/재학생)</span>
                     </h1>
                     <p className="text-base text-slate-600 font-medium mt-6 break-keep">
@@ -343,7 +343,7 @@ const Recruit = () => {
                             >
                                 <div className="w-full bg-white rounded-[2rem] border border-slate-200 shadow-sm mb-12 p-8 md:p-12">
                                     <div className="mb-10 text-center">
-                                        <h2 className="text-subhead font-bold text-slate-900 mb-3">2026학년도 상반기 KBLs 지원서</h2>
+                                        <h2 className="text-subhead font-bold text-slate-900 mb-3">{RECRUIT_SCHEDULE.semesterLabel} KBLs 지원서</h2>
                                         <p className="text-slate-500 font-medium">아래 항목을 꼼꼼히 작성한 후 제출해주세요.</p>
                                     </div>
 

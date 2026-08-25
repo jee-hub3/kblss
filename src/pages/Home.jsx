@@ -8,7 +8,7 @@ import DataNotice from '../components/DataNotice';
 import Seo from '../components/Seo';
 import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
-import { getDocDeadlineLabel } from '../lib/recruitSchedule';
+import { getDocDeadlineLabel, RECRUIT_SCHEDULE } from '../lib/recruitSchedule';
 import { trackEvent } from '../lib/analytics';
 
 const fadeInUp = {
@@ -189,7 +189,7 @@ const Home = () => {
                         // 상태 태그가 이를 흉내내면 안 된다. 링크·버튼으로도 만들지 말 것.
                         className="mb-10 inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50"
                     >
-                        <span className="text-sm font-semibold text-brand-800">2026학년도 상반기 신입 회원 모집중</span>
+                        <span className="text-sm font-semibold text-brand-800">{RECRUIT_SCHEDULE.semesterLabel} 신입 회원 모집중</span>
                     </motion.div>
 
                     {/* 타이포 스케일의 display 단계(30→36→48px, 음수 tracking은 md~).
