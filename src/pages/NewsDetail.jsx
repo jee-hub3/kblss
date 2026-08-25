@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { fetchBlockChildren, fetchPage, mapNewsPage } from '../lib/notion';
+import { buildHeadingTagMap, groupNotionBlocks, headingTagFor } from '../lib/notionBlocks';
 import DataNotice from '../components/DataNotice';
 import NotFound from './NotFound';
 import Seo from '../components/Seo';
@@ -21,6 +22,8 @@ const NewsDetail = () => {
     const [postError, setPostError] = useState(null);
 
     const [blocks, setBlocks] = useState([]);
+    // 블록 하나만 봐서는 태그 레벨을 정할 수 없어 배열 전체로 한 번 계산한다.
+    const headingTagMap = useMemo(() => buildHeadingTagMap(blocks), [blocks]);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState(false);
 
@@ -118,12 +121,22 @@ const NewsDetail = () => {
         switch (type) {
             case 'paragraph':
                 return <p key={id} className="mb-5 text-slate-700 leading-loose min-h-[1.5rem] tracking-wide">{renderRichText(value.rich_text)}</p>;
-            case 'heading_1':
-                return <h1 key={id} className="text-heading font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</h1>;
-            case 'heading_2':
-                return <h2 key={id} className="text-2xl md:text-3xl font-bold text-slate-900 mt-12 mb-6 pb-3 border-b border-slate-100">{renderRichText(value.rich_text)}</h2>;
-            case 'heading_3':
-                return <h3 key={id} className="text-xl md:text-2xl font-bold text-slate-800 mt-10 mb-4">{renderRichText(value.rich_text)}</h3>;
+            // 헤딩 태그 레벨은 문서별로 정규화한다(lib/notionHeadings.js).
+            // 태그는 그 문서에서 쓰인 레벨을 h2부터 순서대로, 시각 클래스는
+            // 블록 타입 그대로 — 둘을 분리해 화면은 그대로 두면서
+            // h1 중복과 레벨 건너뜀을 코드가 보장한다.
+            case 'heading_1': {
+                const H1Tag = headingTagFor(headingTagMap, type);
+                return <H1Tag key={id} className="text-heading font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</H1Tag>;
+            }
+            case 'heading_2': {
+                const H2Tag = headingTagFor(headingTagMap, type);
+                return <H2Tag key={id} className="text-2xl md:text-3xl font-bold text-slate-900 mt-12 mb-6 pb-3 border-b border-slate-100">{renderRichText(value.rich_text)}</H2Tag>;
+            }
+            case 'heading_3': {
+                const H3Tag = headingTagFor(headingTagMap, type);
+                return <H3Tag key={id} className="text-xl md:text-2xl font-bold text-slate-800 mt-10 mb-4">{renderRichText(value.rich_text)}</H3Tag>;
+            }
             case 'bulleted_list_item':
                 return <li key={id} className="mb-2.5 text-slate-700 ml-6 list-disc marker:text-brand-accent/50 pl-2 leading-relaxed">{renderRichText(value.rich_text)}</li>;
             case 'numbered_list_item':
@@ -219,20 +232,20 @@ const NewsDetail = () => {
                     ) : (
                         <div className="notion-renderer text-lg">
                             <div className="space-y-1">
-                                {blocks.map((block, idx) => {
-                                    const isBullet = block.type === 'bulleted_list_item';
-                                    const isNumbered = block.type === 'numbered_list_item';
-                                    const prevIsSame = idx > 0 && blocks[idx - 1].type === block.type;
-                                    const nextIsSame = idx < blocks.length - 1 && blocks[idx + 1].type === block.type;
-
-                                    let mt = prevIsSame ? 'mt-1.5' : 'mt-6';
-                                    let mb = nextIsSame ? 'mb-1.5' : 'mb-8';
-
-                                    if (isBullet || isNumbered) {
-                                        const content = renderBlock(block);
-                                        return React.cloneElement(content, { className: `${content.props.className} ${mt} ${mb}` });
-                                    }
-                                    return renderBlock(block);
+                                {groupNotionBlocks(blocks).map((group) => {
+                                    if (group.kind !== 'list') return renderBlock(group.block);
+                                    // 목록 항목이 연속한 구간만 ul/ol로 감싼다 — 본문 전체를 감싸면
+                                    // h2·p가 목록의 직계 자식이 되고, 아무것도 감싸지 않으면
+                                    // li가 목록 부모를 잃는다.
+                                    const ListTag = group.tag;
+                                    return (
+                                        <ListTag key={group.key}>
+                                            {group.items.map(({ block, mt, mb }) => {
+                                                const content = renderBlock(block);
+                                                return React.cloneElement(content, { className: `${content.props.className} ${mt} ${mb}` });
+                                            })}
+                                        </ListTag>
+                                    );
                                 })}
                             </div>
                         </div>
