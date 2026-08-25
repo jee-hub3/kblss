@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
-import { fadeInUp, gridItem } from '../lib/motion';
+import { gridItem } from '../lib/motion';
 
 const defaultCategories = ["전체보기"];
 
@@ -199,14 +199,14 @@ const News = () => {
 
                         {/* 2. Text Bridge Section (Formerly Hero) */}
                         <section className="mb-24 py-12 border-y border-slate-200/60 bg-slate-50/50">
-                            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }} variants={fadeInUp} className="max-w-4xl mx-auto text-center px-4">
+                            <div className="max-w-4xl mx-auto text-center px-4">
                                 <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight leading-[1.4] mb-6 break-keep">
                                     KBLs의 생생한 <span className="text-brand-accent">발자취</span>와 <span className="text-brand-accent">인사이트</span>를 전합니다
                                 </h2>
                                 <p className="text-base md:text-lg text-slate-500 leading-relaxed font-medium break-keep">
                                     치열했던 프로젝트 회고부터 스터디 노트, 랩실의 일상까지 KBLs의 모든 기록을 확인하세요
                                 </p>
-                            </motion.div>
+                            </div>
                         </section>
 
                         {/* 3. Category Filter & Content Grid */}

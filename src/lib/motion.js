@@ -73,6 +73,45 @@ export const tabPanel = (dir = 1) => ({
 /** 아코디언 height:auto 전환. 셰브론 회전은 CSS transition-transform duration-200 */
 export const ACCORDION_TRANSITION = { duration: DUR.base, ease: EASE_OUT }
 
+/* ── 증거 연출 (진행 → 완료) ──────────────────────────────────
+   2026-08 비주얼 개편 ①: KBLs의 지표는 완주율이다 — 시작이 아니라
+   끝까지 간 것을 센다. 그래서 스크롤 리빌(fadeInUp류 일괄 페이드업)은
+   걷어내고, "증거를 보여주는 자리"(홈 Numbers·연혁·공모전 사이클)에만
+   끝점에 도달하는 모션을 남긴다: 선이 끝까지 그려지고, 노드가 순서대로
+   켜지고, 숫자가 목표에 닿는다. 색은 slate=아직 / brand-accent=완료.
+
+   CSS animation-timeline: view()를 검토했으나 쓰지 않는다 —
+   (1) 스크럽 방식은 스크롤을 멈추면 선이 중간에 멈춰 '완료에 도달'
+       원칙과 상충하고, (2) Firefox 스테이블이 플래그 뒤라 폴백 경로가
+       이중화되며, (3) 조직도 pathLength(보호 연출)와 같은 whileInView
+       트리거 방식이 이미 있어 그 수법의 확장이 일관적이다.
+
+   점등(색 전환)은 framer가 아니라 CSS transition-colors + 상태 클래스로
+   한다 — 기준 4항(키프레임·framer는 transform·opacity 한정)을 지키면서
+   탭·hover의 기존 색 전환 관례와 같은 계열에 둔다. */
+
+/** 증거 연출의 선 그리기 duration — 조직도 pathLength(0.8s)와 같은 값 */
+export const DRAW_DURATION = 0.8
+
+/** 세로 선이 위→아래로 그려진다 — whileInView="visible" 부모 아래에서 쓴다 */
+export const drawLineY = {
+    hidden: { scaleY: 0 },
+    visible: { scaleY: 1, transition: { duration: DRAW_DURATION, ease: EASE_OUT } },
+}
+
+/**
+ * i번째 노드 점등(opacity 크로스페이드 — 켜진 상태를 겹쳐 올린다).
+ * cap: 목록이 길어도 점등 대기가 무한히 길어지지 않게 시차 누적을 자른다
+ * (첫 화면에 보이는 노드까지만 순서를 연출하고, 그 뒤는 함께 켜진 채 남는다).
+ */
+export const igniteIn = (i, { base = 0.2, step = 0.08, cap = 8 } = {}) => ({
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { duration: DUR.base, ease: EASE_OUT, delay: base + Math.min(i, cap) * step },
+    },
+})
+
 /* ── 오너 보호 연출 (변경 금지) ────────────────────────────────
    홈 히어로 스테이징은 성능(LCP)보다 연출을 우선한다는 오너 확정 결정으로,
    위 기준 1·3항의 명시적 예외다. 아래 값은 사용자 승인 없이 바꾸지 않는다.

@@ -7,7 +7,7 @@ import { ORG_INFO } from '../lib/orgInfo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircleQuestion } from 'lucide-react';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
-import { fadeInUp, staggerContainer, ACCORDION_TRANSITION, VIEWPORT_ONCE } from '../lib/motion';
+import { fadeInUp, staggerContainer, ACCORDION_TRANSITION } from '../lib/motion';
 
 const faqs = [
     {
@@ -81,17 +81,15 @@ const FAQ = () => {
                     </motion.div>
                 </section>
 
-                {/* FAQ Accordion */}
+                {/* FAQ Accordion — 스크롤 리빌은 걷어냈다(증거 연출 원칙, motion.js 참조).
+                    카드는 정보이지 증거가 아니다. 아코디언 열림/닫힘 전환만 남는다. */}
                 <section>
-                    {/* 마운트 즉시(animate)가 아니라 뷰포트 진입 시 재생 — 첫 화면 밖
-                        카드의 등장이 보이기 전에 끝나 버리는 문제를 막는다(기준 3항). */}
-                    <motion.div initial="hidden" whileInView="visible" viewport={VIEWPORT_ONCE} variants={staggerContainer} className="space-y-4">
+                    <div className="space-y-4">
                         {faqs.map((faq, index) => {
                             const isOpen = openIndex === index;
                             return (
-                                <motion.div
+                                <div
                                     key={index}
-                                    variants={fadeInUp}
                                     className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden ${isOpen ? 'border-brand-accent shadow-md' : 'border-slate-200 shadow-sm hover:border-slate-300'}`}
                                 >
                                     <button
@@ -128,10 +126,10 @@ const FAQ = () => {
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
-                                </motion.div>
+                                </div>
                             );
                         })}
-                    </motion.div>
+                    </div>
                 </section>
 
                 {/* 하단 CTA — FAQ를 끝까지 읽은 사람이 지원 의사가 가장 높다 */}

@@ -8,7 +8,7 @@ import { ROUTE_META } from '../lib/routeMeta';
 import { ORG_INFO, getLeadsByTier } from '../lib/orgInfo';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 // 조직도 선 그리기(pathLength)의 duration·delay는 연출이라 로컬 값을 유지한다.
-import { fadeInUp, staggerContainer, scaleIn, tabPanel } from '../lib/motion';
+import { staggerContainer, scaleIn, tabPanel } from '../lib/motion';
 
 /**
  * 역할별 한 줄 설명. 이름·직함은 orgInfo.js가 소유하고, 설명문은 이 페이지의
@@ -133,20 +133,14 @@ const Organization = () => {
                         <div>
                             <div className="container mx-auto px-6">
                                 {/* Title Section */}
-                                <motion.div
-                                    initial="hidden"
-                                    whileInView="visible"
-                                    viewport={{ once: true }}
-                                    variants={fadeInUp}
-                                    className="text-center mb-20 max-w-4xl mx-auto"
-                                >
+                                <div className="text-center mb-20 max-w-4xl mx-auto">
                                     <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-[1.3] mb-6 break-keep">
                                         더 나은 환경과 문화를 만들기 위해<br className="hidden md:block" /> 고민하고 실행하는 <span className="text-brand-accent">운영진</span>을 소개합니다
                                     </h1>
                                     <p className="text-sm md:text-base text-slate-600 leading-relaxed font-medium break-keep">
                                         우리는 수평적인 관계 속에서 각자의 전문성을 발휘합니다.
                                     </p>
-                                </motion.div>
+                                </div>
 
                                 {/* Organization Tree Container */}
                                 <div className="max-w-7xl mx-auto relative pb-32 pt-8">
@@ -330,13 +324,7 @@ const Organization = () => {
                             <div className="absolute top-0 right-[-10%] w-[40%] pt-[40%] bg-brand-100 rounded-full mix-blend-multiply filter blur-[100px] opacity-60 animate-blob"></div>
 
                             <div className="container mx-auto px-6 relative z-10 text-center">
-                                <motion.div
-                                    initial="hidden"
-                                    whileInView="visible"
-                                    viewport={{ once: true }}
-                                    variants={fadeInUp}
-                                    className="max-w-2xl mx-auto"
-                                >
+                                <div className="max-w-2xl mx-auto">
                                     <h2 className="text-2xl md:text-4xl font-extrabold mb-10 leading-snug tracking-tight">
                                         이들이 모여 어떤 방식으로<br className="md:hidden" /> 일하는지 궁금하신가요?
                                     </h2>
@@ -347,7 +335,7 @@ const Organization = () => {
                                     >
                                         KBLs 활동 방식 보기
                                     </Link>
-                                </motion.div>
+                                </div>
                             </div>
                         </section>
                     </motion.div>

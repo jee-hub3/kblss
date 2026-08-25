@@ -11,12 +11,34 @@ import { ROUTE_META } from '../lib/routeMeta';
 import { getDocDeadlineLabel, RECRUIT_SCHEDULE } from '../lib/recruitSchedule';
 import { trackEvent } from '../lib/analytics';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다. 히어로만 보호 연출(hero*)을 쓴다.
-import { fadeInUp, heroFadeInUp, heroStagger, DUR, EASE_OUT, VIEWPORT_ONCE } from '../lib/motion';
+import { heroFadeInUp, heroStagger } from '../lib/motion';
 
 // OS '동작 줄이기' 설정 여부. react-countup은 MotionConfig(reducedMotion)의
 // 영향을 받지 않으므로 카운트업 애니메이션을 직접 분기한다.
 const prefersReducedMotion = typeof window !== 'undefined'
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* 증거 연출(motion.js 참조): 이 섹션의 유일한 모션은 숫자가 목표에 닿는 것이다.
+   카드 페이드·시차는 걷어냈다 — 세는 동안 slate(아직), 목표에 닿는 순간
+   기존 그라디언트(완료)로 켜진다. reduced-motion은 처음부터 완료 상태로 렌더. */
+const NumberStat = ({ stat }) => {
+    const [done, setDone] = useState(prefersReducedMotion);
+    return (
+        <div className="text-center">
+            <div
+                className={`text-4xl md:text-6xl font-extrabold mb-4 inline-flex items-center transition-colors duration-300 ${done
+                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500'
+                    : 'text-slate-500'}`}
+            >
+                {prefersReducedMotion
+                    ? <span>{stat.num}</span>
+                    : <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce onEnd={() => setDone(true)} />}
+                <span>{stat.suffix}</span>
+            </div>
+            <div className="text-base text-slate-500 font-medium">{stat.title}</div>
+        </div>
+    );
+};
 
 const Home = () => {
     const navigate = useNavigate();
@@ -256,16 +278,10 @@ const Home = () => {
                 <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="container mx-auto px-6 relative z-10">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeInUp}
-                        className="text-center mb-20"
-                    >
+                    <div className="text-center mb-20">
                         <h2 className="text-heading font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
                         <p className="text-lg text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 몰입</p>
-                    </motion.div>
+                    </div>
 
                     {isLoadingMetrics ? (
                         <div className="w-full py-20 flex justify-center">
@@ -281,25 +297,8 @@ const Home = () => {
                         <DataNotice title="아직 등록된 지표가 없습니다" />
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
-                            {/* 시차는 정렬 후의 배열 인덱스 기준이어야 한다. 노션 '순서' 원값을
-                                그대로 곱하면 오너가 10/20/30으로 매기는 순간 지연이 1~3초가 된다. */}
-                            {kblsNumbersData.map((stat, i) => (
-                                <motion.div
-                                    key={stat.id}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: DUR.reveal, delay: i * 0.08, ease: EASE_OUT }}
-                                    className="text-center"
-                                >
-                                    <div className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500 mb-4 inline-flex items-center">
-                                        {prefersReducedMotion
-                                            ? <span>{stat.num}</span>
-                                            : <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce />}
-                                        <span>{stat.suffix}</span>
-                                    </div>
-                                    <div className="text-base text-slate-500 font-medium">{stat.title}</div>
-                                </motion.div>
+                            {kblsNumbersData.map((stat) => (
+                                <NumberStat key={stat.id} stat={stat} />
                             ))}
                         </div>
                     )}
@@ -343,13 +342,7 @@ const Home = () => {
             ═══════════════════════════════════════════ */}
             <section className="py-12 md:py-24 bg-gradient-to-b from-indigo-50/30 via-white to-white">
                 <div className="container mx-auto px-6">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, margin: "-100px" }}
-                        variants={fadeInUp}
-                        className="max-w-4xl mx-auto text-center"
-                    >
+                    <div className="max-w-4xl mx-auto text-center">
 
                         <h2 className="text-heading font-bold mb-10 text-slate-900">
                             <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
@@ -357,7 +350,7 @@ const Home = () => {
                         <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight max-w-[68ch] mx-auto">
                             KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 랩실입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
                         </p>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
@@ -369,13 +362,7 @@ const Home = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-0 items-center">
 
                         {/* Left: Typography — Pretendard 명시 */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -24 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: DUR.reveal, ease: EASE_OUT }}
-                            className="relative z-10 lg:pr-16"
-                        >
+                        <div className="relative z-10 lg:pr-16">
 
                             <h2
                                 className="text-heading font-bold text-slate-900 leading-[1.2] tracking-tight"
@@ -394,19 +381,13 @@ const Home = () => {
                                 <div className="h-px w-16 bg-slate-300" />
                                 <span className="text-sm font-semibold text-slate-500 tracking-wider uppercase" style={{ fontFamily: "'Pretendard Variable', Pretendard, sans-serif" }}>Connecting People, Growing Together.</span>
                             </div>
-                        </motion.div>
+                        </div>
 
                         {/* Right: 타이포 그래픽 — 스톡 일러스트를 제거했다.
                             기획서 원칙: 양산형 AI 이미지·스톡 금지, 실제 활동 사진 우선,
                             없으면 타이포·그래픽으로 대체. 실제 사진이 확보되면 이 자리를
                             사진 패널로 되돌린다. */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 24 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: DUR.reveal, delay: 0.08, ease: EASE_OUT }}
-                            className="relative lg:pl-8"
-                        >
+                        <div className="relative lg:pl-8">
                             <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border border-slate-100 p-8 md:p-12 overflow-hidden">
                                 {/* 장식 배경 이니셜 — 읽히지 않는 순수 장식 */}
                                 <span aria-hidden="true" className="absolute -top-4 right-2 text-[110px] md:text-[150px] font-black leading-none text-brand-accent/5 select-none pointer-events-none">B</span>
@@ -437,7 +418,7 @@ const Home = () => {
 
                                 <p className="mt-10 text-label font-semibold text-slate-500 tracking-wider uppercase">The Bridge We Build</p>
                             </div>
-                        </motion.div>
+                        </div>
 
                     </div>
                 </div>
@@ -448,13 +429,7 @@ const Home = () => {
             ═══════════════════════════════════════════ */}
             <section className="py-12 md:py-24 bg-gradient-to-b from-white via-slate-50/70 to-slate-50">
                 <div className="container mx-auto px-6">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, margin: "-100px" }}
-                        variants={fadeInUp}
-                        className="flex flex-col md:flex-row justify-between items-end mb-20"
-                    >
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-20">
                         <div className="max-w-2xl">
                             <h2 className="text-heading font-bold mb-6 text-slate-900">What We Do</h2>
                             <p className="text-lg text-slate-600 leading-relaxed">
@@ -464,7 +439,7 @@ const Home = () => {
                         <Link to="/activities" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-blue-800 transition-colors group">
                             우리의 활동 방식 자세히 보기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                    </motion.div>
+                    </div>
 
                     <div className="grid md:grid-cols-3 gap-16 md:gap-12">
                         {[
@@ -472,12 +447,8 @@ const Home = () => {
                             { icon: <Lightbulb className="w-8 h-8" />, title: "자체 프로젝트", desc: "아이디어 발제부터 MVP 개발까지 우리만의 서비스를 만듭니다." },
                             { icon: <Users className="w-8 h-8" />, title: "성장 스터디", desc: "서로의 지식을 나누고 함께 성장하는 심도 깊은 스터디를 진행합니다." }
                         ].map((item, i) => (
-                            <motion.div
+                            <div
                                 key={i}
-                                initial={{ opacity: 0, y: 24 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={VIEWPORT_ONCE}
-                                transition={{ duration: DUR.reveal, ease: EASE_OUT, delay: i * 0.08 }}
                                 className="group"
                             >
                                 <div className="w-14 h-14 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -488,7 +459,7 @@ const Home = () => {
                                 {/* 밑줄 확장은 width 대신 scale-x — layout 속성은 애니메이트하지
                                     않는다(motion.js 기준 4항). w-20에서 60%로 접어두고 hover에 편다. */}
                                 <div className="mt-6 h-px w-20 origin-left scale-x-[0.6] bg-slate-200 group-hover:scale-x-100 group-hover:bg-brand-accent transition-[scale,background-color] duration-300" />
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
 
@@ -505,13 +476,7 @@ const Home = () => {
             {/* Numbers가 위로 이동해 이전 섹션이 What We Do(to-slate-50)가 됐다 */}
             <section className="py-12 md:py-24 bg-gradient-to-b from-slate-50 via-white to-white">
                 <div className="container mx-auto px-6">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeInUp}
-                        className="flex flex-col md:flex-row justify-between items-end mb-16"
-                    >
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-16">
                         <div className="max-w-2xl">
                             <h2 className="text-heading font-bold mb-6 text-slate-900">Featured Portfolio</h2>
                             <p className="text-lg text-slate-600 leading-relaxed">
@@ -521,7 +486,7 @@ const Home = () => {
                         <Link to="/portfolio" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-blue-800 transition-colors group">
                             전체 포트폴리오 확인하기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                    </motion.div>
+                    </div>
 
                     {isLoadingPortfolios ? (
                         <div className="w-full py-20 flex justify-center">
@@ -541,13 +506,9 @@ const Home = () => {
                         />
                     ) : (
                         <div className="grid md:grid-cols-3 gap-6 lg:gap-10">
-                            {featuredProjects.map((project, i) => (
-                                <motion.div
+                            {featuredProjects.map((project) => (
+                                <div
                                     key={project.id}
-                                    initial={{ opacity: 0, y: 24 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={VIEWPORT_ONCE}
-                                    transition={{ duration: DUR.reveal, ease: EASE_OUT, delay: i * 0.08 }}
                                     onClick={() => navigate(`/portfolio/${project.id}`, { state: { project } })}
                                     className="cursor-pointer group block"
                                 >
@@ -578,7 +539,7 @@ const Home = () => {
                                             {project.category}
                                         </p>
                                     </div>
-                                </motion.div>
+                                </div>
                             ))}
                         </div>
                     )}
@@ -594,16 +555,10 @@ const Home = () => {
             ═══════════════════════════════════════════ */}
             <section id="fit-section" className="py-12 md:py-24 bg-gradient-to-b from-white to-slate-50">
                 <div className="container mx-auto px-6 text-center">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeInUp}
-                        className="mb-16"
-                    >
+                    <div className="mb-16">
                         <h2 className="text-heading font-bold mb-6 text-slate-900">Who We Are Looking For</h2>
                         <p className="text-lg text-slate-600">완벽하지 않아도 좋습니다. KBLs는 이런 열정을 가진 분을 기다립니다.</p>
-                    </motion.div>
+                    </div>
 
                     {/* 태그 필: scale 차이는 5% 이내, 스프링 없이(기준 2·3항). hover
                         그림자는 제거 — 그림자는 클릭 가능 요소의 단서인데 이 태그는
@@ -614,27 +569,17 @@ const Home = () => {
                             { tag: "#협업", icon: <Users className="w-6 h-6 mr-3 text-brand-accent" /> },
                             { tag: "#주도성", icon: <Lightbulb className="w-6 h-6 mr-3 text-brand-accent" /> }
                         ].map((item, i) => (
-                            <motion.div
+                            <div
                                 key={i}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: DUR.base, ease: EASE_OUT, delay: i * 0.08 }}
                                 className="flex items-center bg-white px-8 py-4 rounded-full shadow-sm text-xl font-bold text-slate-800 border border-slate-100"
                             >
                                 {item.icon}
                                 {item.tag}
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
 
-                    <motion.div
-                        variants={fadeInUp}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        className="mt-8"
-                    >
+                    <div className="mt-8">
                         <Link
                             to="/organization?tab=vision"
                             className="inline-flex items-center text-lg text-slate-500 hover:text-brand-accent font-bold transition-colors group focus-ring rounded-md"
@@ -642,7 +587,7 @@ const Home = () => {
                             내가 KBLs가 찾는 인재일까? <span className="text-brand-accent ml-2 border-b-2 border-brand-accent/30 pb-0.5">핏(Fit) 확인하기</span>
                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
@@ -651,20 +596,14 @@ const Home = () => {
             ═══════════════════════════════════════════ */}
             <section className="py-12 md:py-24 bg-gradient-to-b from-white to-brand-50 relative overflow-hidden">
                 <div className="container mx-auto px-6 relative z-10 text-center">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeInUp}
-                        className="max-w-3xl mx-auto"
-                    >
+                    <div className="max-w-3xl mx-auto">
                         <h2 className="text-3xl md:text-5xl font-extrabold mb-8 leading-tight text-slate-900">
                             스스로 문제를 정의하고<br />해결하고 싶다면,<br />KBLs와 함께하세요
                         </h2>
                         <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'home_bottom' })} className="transform hover:-translate-y-0.5">
                             지원하기
                         </Button>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
         </div>

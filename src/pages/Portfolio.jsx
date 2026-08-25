@@ -7,7 +7,7 @@ import { Trophy, Award, Medal, ExternalLink, Sparkles, Filter, ChevronLeft, Chev
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
-import { fadeInUp, staggerContainer, gridItem, DUR, EASE_OUT } from '../lib/motion';
+import { fadeInUp, gridItem, drawLineY, igniteIn } from '../lib/motion';
 
 const getHistoryIconProps = (iconTag) => {
     switch (iconTag) {
@@ -212,19 +212,40 @@ const Portfolio = () => {
                         ) : (
                             <>
                                 <div className="max-h-[500px] overflow-y-auto pr-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] relative z-0">
+                                    {/* 증거 연출(motion.js 참조): 항목 페이드업 대신, 타임라인
+                                        선이 위→아래로 그려지고 노드가 순서대로 켜진다(발자취가
+                                        쌓여 온 순서). 텍스트는 처음부터 그대로 있고, 노드만
+                                        slate(아직)에서 카테고리 색(기록됨)으로 점등한다 —
+                                        여기서는 카테고리 색이 정보(대상·수상·연혁·활동)라
+                                        완료 색을 accent 하나로 뭉개지 않는다. 점등은 opacity
+                                        크로스페이드(기준 4항), 시차는 igniteIn(cap)으로
+                                        첫 화면에 보이는 노드까지만 순서를 연출한다. */}
                                     <motion.div
-                                        variants={staggerContainer}
                                         initial="hidden"
                                         whileInView="visible"
                                         viewport={{ once: true, margin: "-50px" }}
-                                        className="relative border-l-2 border-slate-200 ml-4 md:ml-6 space-y-12 pb-40"
+                                        className="relative ml-4 md:ml-6 pb-40"
                                     >
-                                        {historyData.map((award) => {
+                                        {/* 선은 흐름 밖(absolute)에 두고 목록만 space-y로 띄운다 —
+                                            선이 형제로 끼면 space-y가 첫 항목에 여백을 얹는다. */}
+                                        <motion.div
+                                            variants={drawLineY}
+                                            aria-hidden="true"
+                                            className="absolute -left-0.5 top-1 bottom-0 w-0.5 bg-slate-200 origin-top"
+                                        />
+                                        <div className="space-y-12">
+                                        {historyData.map((award, i) => {
                                             const { icon: IconElement, color, bg } = getHistoryIconProps(award.iconTag);
                                             return (
-                                                <motion.div key={award.id} variants={fadeInUp} className="relative pl-8 md:pl-12">
-                                                    <div className={`absolute -left-[21px] top-1 w-10 h-10 ${bg} rounded-full border-4 border-slate-50 flex items-center justify-center shadow-sm z-10`}>
-                                                        <IconElement className={`w-4 h-4 ${color}`} />
+                                                <div key={award.id} className="relative pl-8 md:pl-12">
+                                                    <div className="absolute -left-[21px] top-1 w-10 h-10 bg-slate-100 rounded-full border-4 border-slate-50 flex items-center justify-center shadow-sm z-10">
+                                                        <IconElement className="w-4 h-4 text-slate-400" aria-hidden="true" />
+                                                        <motion.div
+                                                            variants={igniteIn(i)}
+                                                            className={`absolute inset-0 ${bg} rounded-full flex items-center justify-center`}
+                                                        >
+                                                            <IconElement className={`w-4 h-4 ${color}`} aria-hidden="true" />
+                                                        </motion.div>
                                                     </div>
                                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-8">
                                                         <div>
@@ -235,9 +256,10 @@ const Portfolio = () => {
                                                             {award.dateBadge}
                                                         </div>
                                                     </div>
-                                                </motion.div>
+                                                </div>
                                             );
                                         })}
+                                        </div>
                                     </motion.div>
                                 </div>
                                 {/* Bottom Fade Out Gradient Overlay */}
@@ -368,20 +390,13 @@ const Portfolio = () => {
 
                 {/* News CTA */}
                 <section className="mt-24 text-center pb-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: DUR.reveal, ease: EASE_OUT }}
+                    {/* hover 색은 하드코딩(blue-700) 대신 브랜드 토큰 — Button.jsx와 동일 */}
+                    <button
+                        onClick={() => navigate('/news')}
+                        className="group inline-flex items-center bg-brand-accent hover:bg-brand-accent-hover text-white font-bold px-10 py-5 rounded-full text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 press focus-ring"
                     >
-                        {/* hover 색은 하드코딩(blue-700) 대신 브랜드 토큰 — Button.jsx와 동일 */}
-                        <button
-                            onClick={() => navigate('/news')}
-                            className="group inline-flex items-center bg-brand-accent hover:bg-brand-accent-hover text-white font-bold px-10 py-5 rounded-full text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 press focus-ring"
-                        >
-                            KBLs의 새로운 소식을 확인해보세요
-                        </button>
-                    </motion.div>
+                        KBLs의 새로운 소식을 확인해보세요
+                    </button>
                 </section>
             </div>
         </div>
