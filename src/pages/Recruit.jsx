@@ -35,6 +35,18 @@ const FIELD_LABELS = {
     privacyAgreement: '개인정보 수집·이용 동의',
 };
 
+/**
+ * 진행 표시가 세는 필수 항목 — 폼의 required와 1:1이어야 한다.
+ * 폼 항목의 required를 바꾸면 여기도 함께 고칠 것(FIELD_LABELS와 같은 규약).
+ * 선택 항목(tools)은 세지 않는다 — 진행률이 100%인데 제출이 막히거나,
+ * 다 채웠는데 100%가 안 되는 순간 표시는 거짓말이 된다.
+ */
+const REQUIRED_FIELDS = [
+    'name', 'studentId', 'grade', 'major', 'phone',
+    'motivation', 'interest', 'experience', 'participation', 'futurePlan',
+    'agreement', 'privacyAgreement',
+];
+
 // 서술형 4개 항목이 공유하는 입력 상한. 노션 rich_text 한 항목의 상한(2,000자)보다
 // 크지만 api/submitNotion.js가 2,000자 단위로 나눠 담으므로 저장은 실패하지 않는다.
 // 안내 문구와 실제 제한이 갈리지 않도록 값은 여기 한 곳에서만 정한다.
@@ -240,6 +252,13 @@ const Recruit = () => {
     // 개발 중 접수 완료 화면 확인용(?submitted=1) — 프로덕션 번들에는 남지 않는다.
     const showReceipt = isSubmitted || (import.meta.env.DEV && searchParams.get('submitted') === '1');
 
+    // 채운 필수 항목 수 — 문자열은 공백만 친 것을 '작성'으로 치지 않는다.
+    const filledCount = REQUIRED_FIELDS.reduce((n, key) => {
+        const value = formData[key];
+        const filled = typeof value === 'string' ? value.trim() !== '' : Boolean(value);
+        return n + (filled ? 1 : 0);
+    }, 0);
+
     const goToInfoTab = () => {
         setActiveTab("info");
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -354,8 +373,8 @@ const Recruit = () => {
                 {/* 2. Tab Navigation (탭 메뉴 - Sticky, Left Aligned) */}
                 {/* z-30: 페이지 sticky는 전역 오버레이(z-40)·GNB(z-50)보다 아래 —
                     GNB.jsx의 층 규약 참고. z-40이면 모바일 메뉴가 탭바에 뚫린다. */}
-                <div className="sticky top-[80px] bg-slate-50 z-30 flex border-b border-slate-200 mb-10 pt-4">
-                    <div className="flex space-x-8">
+                <div className="sticky top-[80px] bg-slate-50 z-30 mb-10 pt-4">
+                    <div className="flex space-x-8 border-b border-slate-200">
                         <button
                             onClick={() => setActiveTab("info")}
                             className={`pb-4 font-bold text-lg transition-colors press focus-ring relative ${activeTab === "info" ? "text-slate-900" : "text-slate-500 hover:text-slate-700"
@@ -383,6 +402,44 @@ const Recruit = () => {
                             )}
                         </button>
                     </div>
+
+                    {/* 지원서 진행 표시 — 폼이 실제로 열려 있을 때만 스티키 탭바에 붙는다.
+                        ★ 진행률은 스크롤 위치가 아니라 "채운 필수 항목 수 / 12"다 —
+                        스크롤은 내려도 안 채웠으면 진행이 아니다. 지원자가 자기
+                        완주율을 보며 쓰게 한다.
+                        "3/4단계"식 표기는 금지 — 이 폼은 한 페이지라 단계가 실재하지
+                        않고, 그렇게 쓰면 사용자가 없는 '다음' 버튼을 찾는다.
+                        색은 slate 트랙=아직 / brand-accent 채움=완료(사이트 색 규칙).
+                        채움은 scaleX(transform 전용 — motion.js 기준 4항. width
+                        애니메이션 금지), reduced-motion은 index.css 가드가 즉시 전환. */}
+                    {activeTab === 'form' && docPhase === 'open' && !showReceipt && (
+                        <div className="pt-3 pb-3">
+                            <div className="flex items-baseline justify-between mb-1.5">
+                                <span
+                                    aria-live="polite"
+                                    className={`text-label font-semibold tabular-nums transition-colors duration-300 ${filledCount === REQUIRED_FIELDS.length ? 'text-brand-accent' : 'text-slate-500'}`}
+                                >
+                                    {filledCount === REQUIRED_FIELDS.length
+                                        ? '필수 항목을 모두 작성했습니다 — 제출만 남았습니다'
+                                        : `필수 ${REQUIRED_FIELDS.length}개 항목 중 ${filledCount}개 작성`}
+                                </span>
+                            </div>
+                            <div
+                                role="progressbar"
+                                aria-valuemin={0}
+                                aria-valuemax={REQUIRED_FIELDS.length}
+                                aria-valuenow={filledCount}
+                                aria-valuetext={`필수 ${REQUIRED_FIELDS.length}개 항목 중 ${filledCount}개 작성`}
+                                aria-label="지원서 필수 항목 작성 진행"
+                                className="h-1.5 rounded-full bg-slate-200 overflow-hidden"
+                            >
+                                <div
+                                    className="h-full w-full origin-left rounded-full bg-brand-accent transition-transform duration-300"
+                                    style={{ transform: `scaleX(${filledCount / REQUIRED_FIELDS.length})` }}
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* 3. Tab Content Area */}
