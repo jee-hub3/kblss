@@ -174,6 +174,77 @@
   to { opacity: 1; }
 }
 
+/* ── 히어로 진입 연출 (2026-08-26 오너 지시) ─────────────────
+   버튼이 빠진 히어로에서 배경·카피가 연출을 이어받는다. 전부 CSS 전용
+   (기준 4·5항: transform·opacity 한정, 무한 루프는 CSS 키프레임만),
+   reduced-motion은 아래 @media가 일괄 무력화한다. */
+
+/* 모집 배지의 라이브 점 — '진행 중' 신호. 기본 ping(1s)보다 느린 2s 주기로
+   소음을 줄인다. 유일하게 무한인 신규 루프 — hero-blob과 같은 결정. */
+.badge-live-ping {
+  animation: badge-live-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes badge-live-ping {
+  75%, 100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* 첫 진입 시 blob이 조명 켜지듯 하나씩 블룸(밝아지며 커짐)한다 — 오너 후속
+   지시(2026-08-26). 등장(opacity+scale)은 래퍼가, 상시 드리프트(transform)는
+   내부 blob이 맡아 transform 애니메이션이 충돌하지 않는다.
+   배경은 LCP 후보가 아니라 지연 등장 금지(ADR)와 무관하다. */
+.hero-light {
+  animation: hero-light-in 1.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  will-change: transform, opacity;
+}
+
+.hero-light-1 { animation-delay: 0.05s; }
+.hero-light-2 { animation-delay: 0.4s; }
+.hero-light-3 { animation-delay: 0.7s; }
+.hero-light-4 { animation-delay: 0.95s; }
+.hero-light-5 { animation-delay: 1.2s; }
+
+@keyframes hero-light-in {
+  from { opacity: 0; transform: scale(0.72); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* 홈 전체를 잇는 단일 연속 배경 — 섹션마다 자체 그라디언트를 갖고 리셋되던
+   것을 걷어냈다(오너: "섹션별로 너무 딱 구분되어 있다·배경이 이어지지 않는다").
+   색 이야기는 기존 체인 그대로(slate-50 히어로 → white → 옅은 slate →
+   blue·indigo 힌트(Numbers 대역) → brand-50 마감)이되, 한 장의 그라디언트라
+   이음새가 원천적으로 없다. 섹션 배경은 전부 투명 — 콘텐츠 길이가 변해도
+   배경이 뚝 끊기지 않고, 섹션 순서를 다시 바꿔도 배경은 손댈 필요가 없다. */
+.home-flow-bg {
+  background: linear-gradient(
+    180deg,
+    #f8fafc 0%,
+    #fdfdfe 16%,
+    #ffffff 26%,
+    #f8fafc 42%,
+    #fcfdfe 56%,
+    #ffffff 64%,
+    #eff6ff 76%,
+    #eef2ff 84%,
+    #f6f8fc 92%,
+    #f0f4f8 100%
+  );
+}
+
+/* 카피 강조어(실행·연결) 밑줄 스윕 — 히어로 스테이징(h1 stagger 0.15×3 +
+   0.8s)이 끝나는 시점 뒤에 왼→오로 1회 그어진다. transform 전용. */
+.hero-underline {
+  transform: scaleX(0);
+  animation: hero-underline 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-underline-1 { animation-delay: 1.15s; }
+.hero-underline-2 { animation-delay: 1.4s; }
+
+@keyframes hero-underline {
+  to { transform: scaleX(1); }
+}
+
 /* Home 히어로 blob. framer-motion의 무한 rAF 루프 대신 CSS 키프레임으로
    컴포지터에서만 돌린다(transform 전용 + will-change로 레이어 승격).
    좌표·주기·easing은 기존 framer 설정을 그대로 이식했다.
