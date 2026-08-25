@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Loader2, Calendar, Users, Wrench, Trophy } from 'lucide-react';
 import { fetchBlockChildren, fetchPage, mapPortfolioPage } from '../lib/notion';
+import { buildHeadingTagMap, headingTagFor } from '../lib/notionHeadings';
 import DataNotice from '../components/DataNotice';
 import NotFound from './NotFound';
 import Seo from '../components/Seo';
@@ -27,6 +28,8 @@ const PortfolioDetail = () => {
     const [projectError, setProjectError] = useState(null);
 
     const [blocks, setBlocks] = useState([]);
+    // 블록 하나만 봐서는 태그 레벨을 정할 수 없어 배열 전체로 한 번 계산한다.
+    const headingTagMap = useMemo(() => buildHeadingTagMap(blocks), [blocks]);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState(false);
 
@@ -126,19 +129,22 @@ const PortfolioDetail = () => {
         switch (type) {
             case 'paragraph':
                 return <p key={id} className="mb-5 text-slate-700 leading-loose min-h-[1.5rem] tracking-wide">{renderRichText(value.rich_text)}</p>;
-            // 노션 본문 헤딩은 페이지 제목 h1 아래로 한 단계 오프셋한다.
-            // heading_1을 h1로 두면 페이지에 h1이 둘이 되고(axe의
-            // page-has-heading-one은 "하나 이상"만 봐서 안 잡힌다),
-            // 작성자가 제목1부터 쓰는 일반적인 경우에 h1 다음이 h1이 된다.
-            // 클래스는 그대로 두므로 시각 변화는 없다.
-            // 작성자가 제목3만 쓰는 경우는 코드로 재번호를 매기지 않는다 —
-            // 화면과 작성자 의도가 어긋난다. 운영 가이드의 작성 규칙으로 닫는다.
-            case 'heading_1':
-                return <h2 key={id} className="text-heading font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</h2>;
-            case 'heading_2':
-                return <h3 key={id} className="text-2xl md:text-3xl font-bold text-slate-900 mt-12 mb-6 pb-3 border-b border-slate-100">{renderRichText(value.rich_text)}</h3>;
-            case 'heading_3':
-                return <h4 key={id} className="text-xl md:text-2xl font-bold text-slate-800 mt-10 mb-4">{renderRichText(value.rich_text)}</h4>;
+            // 헤딩 태그 레벨은 문서별로 정규화한다(lib/notionHeadings.js).
+            // 태그는 그 문서에서 쓰인 레벨을 h2부터 순서대로, 시각 클래스는
+            // 블록 타입 그대로 — 둘을 분리해 화면은 그대로 두면서
+            // h1 중복과 레벨 건너뜀을 코드가 보장한다.
+            case 'heading_1': {
+                const H1Tag = headingTagFor(headingTagMap, type);
+                return <H1Tag key={id} className="text-heading font-extrabold text-slate-900 mt-16 mb-8 tracking-tight leading-tight">{renderRichText(value.rich_text)}</H1Tag>;
+            }
+            case 'heading_2': {
+                const H2Tag = headingTagFor(headingTagMap, type);
+                return <H2Tag key={id} className="text-2xl md:text-3xl font-bold text-slate-900 mt-12 mb-6 pb-3 border-b border-slate-100">{renderRichText(value.rich_text)}</H2Tag>;
+            }
+            case 'heading_3': {
+                const H3Tag = headingTagFor(headingTagMap, type);
+                return <H3Tag key={id} className="text-xl md:text-2xl font-bold text-slate-800 mt-10 mb-4">{renderRichText(value.rich_text)}</H3Tag>;
+            }
             case 'bulleted_list_item':
                 return <li key={id} className="mb-2.5 text-slate-700 ml-6 list-disc marker:text-brand-accent/50 pl-2 leading-relaxed">{renderRichText(value.rich_text)}</li>;
             case 'numbered_list_item':
