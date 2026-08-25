@@ -145,8 +145,10 @@ const Home = () => {
                     framer-motion(JS 구동) 대신 CSS 키프레임으로 컴포지터에서만 돌린다
                     (키프레임 좌표·주기·easing은 index.css에 동일하게 이식).
                     무한 rAF 구동이 메인스레드 TBT에 얹히는 것을 막기 위한 조치로,
-                    reduced-motion 분기도 index.css의 @media 가드가 담당한다. */}
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    reduced-motion 분기도 index.css의 @media 가드가 담당한다.
+                    hero-backdrop-in: 첫 진입 시 배경이 서서히 차오르는 1회 페이드 —
+                    배경은 LCP 후보가 아니라 지연 등장 금지(ADR)와 무관하다. */}
+                <div className="hero-backdrop-in absolute inset-0 z-0 pointer-events-none overflow-hidden">
                     <div
                         className="hero-blob hero-blob-1 absolute w-[600px] h-[600px] rounded-full opacity-20 bg-blue-400 blur-[120px]"
                         style={{ top: '-10%', left: '10%' }}
@@ -176,8 +178,15 @@ const Home = () => {
                         transition={{ duration: 0.6, ease: "easeOut" }}
                         // 배지에는 그림자를 두지 않는다 — 그림자는 버튼(클릭 가능)의 시각 단서라
                         // 상태 태그가 이를 흉내내면 안 된다. 링크·버튼으로도 만들지 말 것.
-                        className="mb-10 inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50"
+                        className="mb-10 inline-flex items-center gap-2.5 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/50"
                     >
+                        {/* 모집이 '진행 중'임을 알리는 라이브 점(오너 지시 2026-08-26).
+                            무한 루프는 CSS 키프레임 전용(모션 기준 5항) — 주기 2s로
+                            기본 ping(1s)보다 낮춰 소음을 줄였다. 순수 장식이라 aria-hidden. */}
+                        <span aria-hidden="true" className="relative flex w-2 h-2 shrink-0">
+                            <span className="badge-live-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-60" />
+                            <span className="relative inline-flex w-2 h-2 rounded-full bg-brand-accent" />
+                        </span>
                         <span className="text-sm font-semibold text-brand-800">{RECRUIT_SCHEDULE.semesterLabel} 신입 회원 모집중</span>
                     </motion.div>
 
@@ -190,11 +199,14 @@ const Home = () => {
                         animate="visible"
                         className="text-display font-extrabold text-slate-900 mb-8"
                     >
+                        {/* 강조어 밑줄 스윕 — 스테이징이 끝난 뒤 왼→오로 그어진다
+                            (transform 전용, 1회. 딜레이·키프레임은 index.css hero-underline).
+                            버튼이 빠진 히어로에서 카피가 연출을 이어받는 장치다. */}
                         <motion.span variants={heroFadeInUp} className="block">
-                            아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">실행</span></span>으로
+                            아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">실행</span><span aria-hidden="true" className="hero-underline hero-underline-1 absolute left-0 right-0 bottom-[0.08em] h-[0.14em] rounded-full bg-brand-accent/25 origin-left" /></span>으로
                         </motion.span>
                         <motion.span variants={heroFadeInUp} className="block mt-2">
-                            사람을 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">연결</span></span>로
+                            사람을 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">연결</span><span aria-hidden="true" className="hero-underline hero-underline-2 absolute left-0 right-0 bottom-[0.08em] h-[0.14em] rounded-full bg-brand-accent/25 origin-left" /></span>로
                         </motion.span>
                         <motion.span variants={heroFadeInUp} className="block mt-6 text-xl md:text-2xl text-slate-900 font-bold">
                             우리가 함께 성장을 증명하는 곳
@@ -213,26 +225,19 @@ const Home = () => {
                         중요한 것은, 행동하고 실천하며 해결책을 만들어가는 것입니다.
                     </motion.p>
 
-                    {/* ★ CTA에는 opacity 초기값·delay를 절대 걸지 않는다 (ADR).
-                        위 문단이 delay 0.6s 때문에 LCP 후보에서 빠져 LCP가 1.4초
-                        밀린 전력이 있다. 버튼이 새 LCP 후보가 될 수 있으므로
-                        처음부터 보이게 렌더한다. 움직임이 필요하면 transform만. */}
-                    <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'home_hero' })}>
-                            지원하기
-                        </Button>
-                        <Button to="/activities" variant="secondary" size="lg">
-                            활동 둘러보기
-                        </Button>
-                    </div>
-
+                    {/* '지원하기'·'활동 둘러보기' 버튼은 오너 결정(2026-08-26)으로 제거 —
+                        히어로는 서사 1장(문제를 만난다)만 맡고, 지원 전환은 서사를
+                        완주한 하단 CTA(7장)가 맡는다. GA4 location 'home_hero'는
+                        이 결정으로 소멸한다(퍼널 해석 시 참고).
+                        ★ 아래 일정 링크가 남은 유일한 상호작용 요소이자 LCP 인접
+                        요소이므로 opacity 초기값·delay를 걸지 않는다 (ADR —
+                        문단이 delay 0.6s로 LCP 후보에서 빠져 1.4초 밀린 전력). */}
                     {/* 일정 요약 한 줄. 값은 recruitSchedule.js(단일 소스)에서 파생하므로
                         /apply 타임라인과 어긋날 수 없다. 4단계 표를 여기 복제하지 말 것.
-                        연도는 쓰지 않는다 — 모집 중인 시즌이라 맥락으로 명확하다.
-                        CTA와 같은 이유로 opacity 애니메이션 없이 즉시 렌더. */}
+                        연도는 쓰지 않는다 — 모집 중인 시즌이라 맥락으로 명확하다. */}
                     <Link
                         to="/apply"
-                        className="mt-6 inline-flex items-center text-sm font-medium text-slate-500 hover:text-brand-accent transition-colors group focus-ring rounded-md"
+                        className="mt-10 inline-flex items-center text-sm font-medium text-slate-500 hover:text-brand-accent transition-colors group focus-ring rounded-md"
                     >
                         서류 마감 {getDocDeadlineLabel()} · 전형 일정 보기
                         <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -245,103 +250,12 @@ const Home = () => {
             </section>
 
             {/* ═══════════════════════════════════════════
-                2. KBLs in Numbers — 히어로 바로 다음으로 상향 (성과 선노출)
+                2. Our Identity — 서사 2장 '팀이 된다'
             ═══════════════════════════════════════════ */}
-            {/* peek 장치: 히어로 바로 다음 섹션만 상단 패딩을 48px로 고정해
-                첫 화면 하단에 제목이 실제로 걸치게 한다(1440에서 pt-24면 12px만 노출).
-                하단은 섹션 간격 체계(py-12 md:py-24)를 그대로 따른다.
-                배경은 히어로(#f8fafc)에서 이어받는다. */}
-            <section className="pt-12 pb-12 md:pb-24 bg-gradient-to-br from-[#f8fafc] via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
-                <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
-
-                <div className="container mx-auto px-6 relative z-10">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeInUp}
-                        className="text-center mb-20"
-                    >
-                        <h2 className="text-heading font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
-                        <p className="text-lg text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 몰입</p>
-                    </motion.div>
-
-                    {isLoadingMetrics ? (
-                        <div className="w-full py-20 flex justify-center">
-                            <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
-                        </div>
-                    ) : metricsError ? (
-                        <DataNotice
-                            title="데이터를 불러올 수 없습니다"
-                            description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
-                            onRetry={fetchMetrics}
-                        />
-                    ) : kblsNumbersData.length === 0 ? (
-                        <DataNotice title="아직 등록된 지표가 없습니다" />
-                    ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
-                            {/* 시차는 정렬 후의 배열 인덱스 기준이어야 한다. 노션 '순서' 원값을
-                                그대로 곱하면 오너가 10/20/30으로 매기는 순간 지연이 1~3초가 된다. */}
-                            {kblsNumbersData.map((stat, i) => (
-                                <motion.div
-                                    key={stat.id}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: DUR.reveal, delay: i * 0.08, ease: EASE_OUT }}
-                                    className="text-center"
-                                >
-                                    <div className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500 mb-4 inline-flex items-center">
-                                        {prefersReducedMotion
-                                            ? <span>{stat.num}</span>
-                                            : <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce />}
-                                        <span>{stat.suffix}</span>
-                                    </div>
-                                    <div className="text-base text-slate-500 font-medium">{stat.title}</div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    )}
-                    {/* 산출 기준은 수치 바로 아래에 둔다 — 페이지 끝에 두면 "무슨 기준이지?"
-                        하는 사람이 끝까지 스크롤해 항목을 눈으로 맞춰야 한다.
-                        기본 접힘으로 시각 무게만 덜어내고, 펼친 내용은 줄이지 않는다.
-                        (등록 이슈 '산출 기준 미비로 인한 신뢰도 훼손' + PRD '각 수치에
-                        산출 기준이 명시된다'가 근거라 없애거나 숨기면 안 된다.)
-                        값이 하나도 없으면 아예 렌더하지 않는다 — 빈 토글이 남으면 안 되고,
-                        오너가 노션을 채우면 배포 없이 나타나는 하위 호환도 그대로다.
-                        <details>/<summary>는 네이티브 지원이라 별도 ARIA가 필요 없다. */}
-                    {!metricsError && kblsNumbersData.some((s) => s.basis || s.asOf) && (
-                        // 숫자 그룹에 붙은 각주로 둔다. 전에는 mt-12에 68ch 좌측 정렬이라
-                        // 가운데 정렬된 숫자들과 축이 어긋난 채 빈 띠 위에 떠 있었고,
-                        // 그래서 "이 숫자들의 기준"이 아니라 흘린 라벨로 읽혔다.
-                        // 축을 가운데로 맞추고 위 여백을 줄여 숫자 바로 아래에 붙인다.
-                        <details className="group mt-4">
-                            <summary className="min-h-11 flex items-center justify-center gap-1.5 cursor-pointer list-none text-label font-medium text-slate-500 hover:text-slate-700 transition-colors focus-ring rounded-md">
-                                지표 산출 기준
-                                {/* 접힘 상태에서 눌리는 것임을 보이는 유일한 단서.
-                                    회전 속도는 모션 기준의 base(0.3s) — src/lib/motion.js */}
-                                <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-open:rotate-180" />
-                            </summary>
-                            {/* 펼친 내용은 문장이라 좌측 정렬로 읽는다. 축(mx-auto)만 가운데. */}
-                            <ul className="mt-3 space-y-3 max-w-[68ch] mx-auto text-left">
-                                {kblsNumbersData.filter((s) => s.basis || s.asOf).map((stat) => (
-                                    <li key={stat.id} className="text-label text-slate-600 leading-relaxed break-keep">
-                                        <span className="font-semibold text-slate-700">{stat.title}</span>
-                                        {stat.basis && <> — {stat.basis}</>}
-                                        {stat.asOf && <span className="text-slate-500"> (기준일 {stat.asOf})</span>}
-                                    </li>
-                                ))}
-                            </ul>
-                        </details>
-                    )}
-                </div>
-            </section>
-
-            {/* ═══════════════════════════════════════════
-                3. Our Identity
-            ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-indigo-50/30 via-white to-white">
+            {/* peek 장치(Numbers에서 이관): 히어로 바로 다음 섹션만 상단 패딩을
+                48px로 고정해 첫 화면 하단에 제목이 실제로 걸치게 한다(false bottom
+                방지). 배경도 히어로(#f8fafc)를 이 섹션이 이어받는다. */}
+            <section className="pt-12 pb-12 md:pb-24 bg-gradient-to-b from-[#f8fafc] via-white to-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -362,7 +276,7 @@ const Home = () => {
             </section>
 
             {/* ═══════════════════════════════════════════
-                ★ Bridge Section — Pretendard + Split Layout 이미지
+                3. Bridge — 서사 2장 '팀이 된다' 계속 (Pretendard + Split Layout)
             ═══════════════════════════════════════════ */}
             <section className="relative py-12 md:py-24 bg-white overflow-hidden border-y border-slate-50">
                 <div className="container mx-auto px-6">
@@ -444,7 +358,7 @@ const Home = () => {
             </section>
 
             {/* ═══════════════════════════════════════════
-                3. What We Do
+                4. What We Do — 서사 3장 '만든다'
             ═══════════════════════════════════════════ */}
             <section className="py-12 md:py-24 bg-gradient-to-b from-white via-slate-50/70 to-slate-50">
                 <div className="container mx-auto px-6">
@@ -500,9 +414,8 @@ const Home = () => {
             </section>
 
             {/* ═══════════════════════════════════════════
-                5. Featured Portfolio
+                5. Featured Portfolio — 서사 3장 '만든다' (산출물)
             ═══════════════════════════════════════════ */}
-            {/* Numbers가 위로 이동해 이전 섹션이 What We Do(to-slate-50)가 됐다 */}
             <section className="py-12 md:py-24 bg-gradient-to-b from-slate-50 via-white to-white">
                 <div className="container mx-auto px-6">
                     <motion.div
@@ -590,9 +503,113 @@ const Home = () => {
             </section>
 
             {/* ═══════════════════════════════════════════
-                6. Who We Are Looking For
+                6. KBLs in Numbers — 서사 4장 '완주한다'
             ═══════════════════════════════════════════ */}
-            <section id="fit-section" className="py-12 md:py-24 bg-gradient-to-b from-white to-slate-50">
+            {/* ★ 2026-08-26 오너 결정: '히어로 직후 상향(성과 선노출, PR #18/271d347)'을
+                뒤집어 서사 4장으로 내린다 — 맥락 없는 숫자는 "그래서 뭐"가 되고,
+                팀(2장)·활동·산출물(3장)을 본 뒤에는 같은 숫자가 결론으로 읽힌다.
+                근거 조사·되돌릴 조건: docs/adr/2026-08-26-numbers-demotion.md.
+                peek 장치(pt-12)는 Identity로 이관했고, 배경은 Featured(to-white)에서
+                이어받아 브랜드 톤(indigo)으로 넘어간다. */}
+            <section className="py-12 md:py-24 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
+                <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="container mx-auto px-6 relative z-10">
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={fadeInUp}
+                        className="text-center mb-20"
+                    >
+                        <h2 className="text-heading font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
+                        <p className="text-lg text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 몰입</p>
+                    </motion.div>
+
+                    {isLoadingMetrics ? (
+                        <div className="w-full py-20 flex justify-center">
+                            <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
+                        </div>
+                    ) : metricsError ? (
+                        <DataNotice
+                            title="데이터를 불러올 수 없습니다"
+                            description="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+                            onRetry={fetchMetrics}
+                        />
+                    ) : kblsNumbersData.length === 0 ? (
+                        <DataNotice title="아직 등록된 지표가 없습니다" />
+                    ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
+                            {/* 시차는 정렬 후의 배열 인덱스 기준이어야 한다. 노션 '순서' 원값을
+                                그대로 곱하면 오너가 10/20/30으로 매기는 순간 지연이 1~3초가 된다. */}
+                            {kblsNumbersData.map((stat, i) => (
+                                <motion.div
+                                    key={stat.id}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: DUR.reveal, delay: i * 0.08, ease: EASE_OUT }}
+                                    className="text-center"
+                                >
+                                    <div className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500 mb-4 inline-flex items-center">
+                                        {prefersReducedMotion
+                                            ? <span>{stat.num}</span>
+                                            : <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce />}
+                                        <span>{stat.suffix}</span>
+                                    </div>
+                                    <div className="text-base text-slate-500 font-medium">{stat.title}</div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    )}
+                    {/* 산출 기준은 수치 바로 아래에 둔다 — 페이지 끝에 두면 "무슨 기준이지?"
+                        하는 사람이 끝까지 스크롤해 항목을 눈으로 맞춰야 한다.
+                        기본 접힘으로 시각 무게만 덜어내고, 펼친 내용은 줄이지 않는다.
+                        (등록 이슈 '산출 기준 미비로 인한 신뢰도 훼손' + PRD '각 수치에
+                        산출 기준이 명시된다'가 근거라 없애거나 숨기면 안 된다.)
+                        값이 하나도 없으면 아예 렌더하지 않는다 — 빈 토글이 남으면 안 되고,
+                        오너가 노션을 채우면 배포 없이 나타나는 하위 호환도 그대로다.
+                        <details>/<summary>는 네이티브 지원이라 별도 ARIA가 필요 없다. */}
+                    {!metricsError && kblsNumbersData.some((s) => s.basis || s.asOf) && (
+                        // 숫자 그룹에 붙은 각주로 둔다. 전에는 mt-12에 68ch 좌측 정렬이라
+                        // 가운데 정렬된 숫자들과 축이 어긋난 채 빈 띠 위에 떠 있었고,
+                        // 그래서 "이 숫자들의 기준"이 아니라 흘린 라벨로 읽혔다.
+                        // 축을 가운데로 맞추고 위 여백을 줄여 숫자 바로 아래에 붙인다.
+                        <details className="group mt-4">
+                            <summary className="min-h-11 flex items-center justify-center gap-1.5 cursor-pointer list-none text-label font-medium text-slate-500 hover:text-slate-700 transition-colors focus-ring rounded-md">
+                                지표 산출 기준
+                                {/* 접힘 상태에서 눌리는 것임을 보이는 유일한 단서.
+                                    회전 속도는 모션 기준의 base(0.3s) — src/lib/motion.js */}
+                                <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-open:rotate-180" />
+                            </summary>
+                            {/* 펼친 내용은 문장이라 좌측 정렬로 읽는다. 축(mx-auto)만 가운데. */}
+                            <ul className="mt-3 space-y-3 max-w-[68ch] mx-auto text-left">
+                                {kblsNumbersData.filter((s) => s.basis || s.asOf).map((stat) => (
+                                    <li key={stat.id} className="text-label text-slate-600 leading-relaxed break-keep">
+                                        <span className="font-semibold text-slate-700">{stat.title}</span>
+                                        {stat.basis && <> — {stat.basis}</>}
+                                        {stat.asOf && <span className="text-slate-500"> (기준일 {stat.asOf})</span>}
+                                    </li>
+                                ))}
+                            </ul>
+                        </details>
+                    )}
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════
+                7. Who We Are Looking For + Bottom CTA — 서사 5장 '다음은 당신 차례'
+            ═══════════════════════════════════════════ */}
+            {/* 인재상과 마감 CTA를 한 섹션으로 병합(오너 지시 2026-08-26) —
+                "이런 사람을 찾는다 → 그게 당신이라면 지원하라"가 한 호흡이 된다.
+                #fit-section id는 섹션을 따라온다(2026-08-26 기준 저장소 내 사용처
+                0곳 — e3c7290에서 인재상 탭 뒤로가기가 제거되며 소비자가 사라졌다.
+                외부 공유 링크 대비로 유지).
+                GA4 apply_cta_click location은 'home_bottom' 유지 — 병합 후에도
+                홈 최하단 CTA라는 의미가 같아 기존 데이터와 연속 비교 가능하다.
+                배경은 Numbers(to-indigo-50/30)에서 이어받아 brand-50으로 닫는다. */}
+            <section id="fit-section" className="py-12 md:py-24 bg-gradient-to-b from-indigo-50/30 via-white to-brand-50">
                 <div className="container mx-auto px-6 text-center">
                     <motion.div
                         initial="hidden"
@@ -643,20 +660,16 @@ const Home = () => {
                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </motion.div>
-                </div>
-            </section>
 
-            {/* ═══════════════════════════════════════════
-                7. Bottom CTA
-            ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-white to-brand-50 relative overflow-hidden">
-                <div className="container mx-auto px-6 relative z-10 text-center">
+                    {/* 마감 CTA — 인재상을 소화한 바로 다음 줄에서 전환한다.
+                        기존 whileInView 리빌(fadeInUp)은 그대로 유지.
+                        location 'home_bottom' 유지(위 병합 주석 참조). */}
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeInUp}
-                        className="max-w-3xl mx-auto"
+                        className="mt-20 md:mt-28 max-w-3xl mx-auto"
                     >
                         <h2 className="text-3xl md:text-5xl font-extrabold mb-8 leading-tight text-slate-900">
                             스스로 문제를 정의하고<br />해결하고 싶다면,<br />KBLs와 함께하세요
