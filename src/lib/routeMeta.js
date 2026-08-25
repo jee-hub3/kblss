@@ -21,7 +21,9 @@ export const ROUTE_META = {
     '/organization': {
         path: '/organization',
         title: 'Organization | KBLs',
-        description: '지도교수부터 랩실장, 공모전·스터디·일정 담당까지. KBLs를 움직이는 조직 구성과 각 역할을 소개합니다.',
+        // 개별 역할을 열거하지 않는다 — 명단은 orgInfo.js가 소유하고, 여기 옮겨 적으면
+        // 개편 때마다 어긋난다(실제로 '공모전·스터디·일정 담당'이 옛 직함으로 남아 있었다).
+        description: '지도교수와 랩실장·부랩실장, 기능별 임원까지. KBLs를 움직이는 조직 구성과 각 역할을 소개합니다.',
     },
     '/activities': {
         path: '/activities',
