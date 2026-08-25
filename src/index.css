@@ -174,6 +174,19 @@
   to { opacity: 1; }
 }
 
+/* 히어로 그래프 레이어(HeroBackdrop L1~L3)의 뒤따른 등장 — 레이어가
+   idle에 마운트되므로(LCP 방어) 갑자기 나타나지 않게 짧게 페이드인.
+   opacity 전용이라 컴포지터에서만 돌고, reduced-motion은 아래 @media가
+   0.01ms로 끝내 정지 배경만 남긴다. */
+.hero-graph-in {
+  animation: hero-graph-in 0.8s ease-out backwards;
+}
+
+@keyframes hero-graph-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 /* Home 히어로 blob. framer-motion의 무한 rAF 루프 대신 CSS 키프레임으로
    컴포지터에서만 돌린다(transform 전용 + will-change로 레이어 승격).
    좌표·주기·easing은 기존 framer 설정을 그대로 이식했다.

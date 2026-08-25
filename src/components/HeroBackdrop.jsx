@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * 홈 히어로 배경 — Bridge(점=사람, 선=연결) 노드-엣지 그래프의 4-레이어 깊이 무대.
@@ -24,6 +24,12 @@ import React, { useEffect, useRef } from 'react';
  *
  * 그래프 좌표는 손으로 박은 정적 배열이다 — 런타임 난수를 쓰면 리렌더·SSR마다
  * 배경이 달라지고, 시각 결과를 리뷰로 고정할 수 없다.
+ *
+ * ★ LCP 방어: 그래프 레이어(L1~L3)는 첫 페인트에 넣지 않고 idle에 마운트한다.
+ *   전 레이어를 즉시 그리면 히어로 스테이징 창의 프레임이 밀려 LCP(히어로
+ *   문단)가 로컬 측정에서 +0.4~0.5s 늦어졌다(2026-08-26, 8런 비교).
+ *   첫 페인트는 main과 같은 blob(L0)만 지고, 그래프는 뒤따라 페이드인한다
+ *   (배경 장식이라 LCP 후보가 아니므로 지연 등장 금지 규칙(ADR)과 무관).
  */
 
 const MAX_TILT = 3.5; // deg
@@ -71,13 +77,16 @@ const MID_EDGES = [
     [8, 13], [9, 14], [10, 15], [13, 14], [14, 15],
 ];
 
-/* 근경(L3) — 큰 점 몇 개만. 초점 밖(blur)이라 흐릿한 accent 계열. */
+/* 근경(L3) — 큰 점 몇 개만. 초점 밖(blur)이라 흐릿한 accent 계열.
+   전면 SVG에 filter를 걸면 뷰포트 크기의 오프스크린 버퍼가 생기므로,
+   점 하나짜리 div에 각각 blur를 건다(버퍼가 점 크기로 준다).
+   좌표는 무대 기준 %. */
 const NEAR_DOTS = [
-    { x: 180, y: 260, r: 9, c: 'rgba(37,99,235,0.28)' },
-    { x: 1230, y: 210, r: 7, c: 'rgba(99,102,241,0.24)' },
-    { x: 380, y: 700, r: 11, c: 'rgba(37,99,235,0.20)' },
-    { x: 1050, y: 660, r: 8, c: 'rgba(20,184,166,0.22)' },
-    { x: 720, y: 120, r: 6, c: 'rgba(99,102,241,0.20)' },
+    { left: '12.5%', top: '28.9%', size: 18, c: 'rgba(37,99,235,0.28)' },
+    { left: '85.4%', top: '23.3%', size: 14, c: 'rgba(99,102,241,0.24)' },
+    { left: '26.4%', top: '77.8%', size: 22, c: 'rgba(37,99,235,0.20)' },
+    { left: '72.9%', top: '73.3%', size: 16, c: 'rgba(20,184,166,0.22)' },
+    { left: '50.0%', top: '13.3%', size: 12, c: 'rgba(99,102,241,0.20)' },
 ];
 
 const GraphSvg = ({ children, className, style }) => (
@@ -96,8 +105,19 @@ const HeroBackdrop = () => {
     const stageRef = useRef(null);
     const layerRefs = useRef([]);
 
+    // 그래프 레이어는 첫 페인트 이후(idle)에 올린다 — 헤더 주석 'LCP 방어' 참조.
+    const [graphReady, setGraphReady] = useState(false);
     useEffect(() => {
-        if (typeof window === 'undefined') return undefined;
+        if (typeof window.requestIdleCallback === 'function') {
+            const id = window.requestIdleCallback(() => setGraphReady(true), { timeout: 2500 });
+            return () => window.cancelIdleCallback(id);
+        }
+        const id = window.setTimeout(() => setGraphReady(true), 800);
+        return () => window.clearTimeout(id);
+    }, []);
+
+    useEffect(() => {
+        if (!graphReady) return undefined;
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (reduced) return undefined;
         const coarse = window.matchMedia('(pointer: coarse)').matches;
@@ -189,7 +209,7 @@ const HeroBackdrop = () => {
             window.removeEventListener('scroll', onScroll);
             if (rafId !== null) cancelAnimationFrame(rafId);
         };
-    }, []);
+    }, [graphReady]);
 
     return (
         <div
@@ -215,10 +235,11 @@ const HeroBackdrop = () => {
                     <div className="hero-blob hero-blob-5 absolute w-[400px] h-[400px] rounded-full opacity-10 bg-cyan-300 blur-[100px]" style={{ top: '10%', right: '30%' }} />
                 </div>
 
+                {graphReady && (<>
                 {/* L1 — 원경 그래프: 작고 옅다 */}
                 <div
                     ref={(el) => { layerRefs.current[1] = el; }}
-                    className="absolute inset-0"
+                    className="absolute inset-0 hero-graph-in"
                     style={{ transform: layerBase(LAYERS[1]) }}
                 >
                     <GraphSvg className="opacity-45">
@@ -238,7 +259,7 @@ const HeroBackdrop = () => {
                 {/* L2 — 중경 주 그래프: 선명. 허브만 accent */}
                 <div
                     ref={(el) => { layerRefs.current[2] = el; }}
-                    className="absolute inset-0"
+                    className="absolute inset-0 hero-graph-in"
                     style={{ transform: layerBase(LAYERS[2]) }}
                 >
                     <GraphSvg className="opacity-70">
@@ -253,18 +274,28 @@ const HeroBackdrop = () => {
                     </GraphSvg>
                 </div>
 
-                {/* L3 — 근경 큰 점: ★ 1.1px blur가 원근의 핵심 */}
+                {/* L3 — 근경 큰 점: ★ 1.1px blur가 원근의 핵심 (점 단위로 건다) */}
                 <div
                     ref={(el) => { layerRefs.current[3] = el; }}
-                    className="absolute inset-0"
-                    style={{ transform: layerBase(LAYERS[3]), filter: `blur(${LAYERS[3].blur}px)` }}
+                    className="absolute inset-0 hero-graph-in"
+                    style={{ transform: layerBase(LAYERS[3]) }}
                 >
-                    <GraphSvg>
-                        {NEAR_DOTS.map((d, i) => (
-                            <circle key={i} cx={d.x} cy={d.y} r={d.r} fill={d.c} />
-                        ))}
-                    </GraphSvg>
+                    {NEAR_DOTS.map((d, i) => (
+                        <div
+                            key={i}
+                            className="absolute rounded-full"
+                            style={{
+                                left: d.left,
+                                top: d.top,
+                                width: d.size,
+                                height: d.size,
+                                backgroundColor: d.c,
+                                filter: `blur(${LAYERS[3].blur}px)`,
+                            }}
+                        />
+                    ))}
                 </div>
+                </>)}
             </div>
         </div>
     );
