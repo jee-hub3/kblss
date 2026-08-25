@@ -16,10 +16,9 @@ export const ORG_INFO = {
     /** 대표 이메일 — 방침·푸터·FAQ·지원 안내가 모두 이 값을 쓴다 */
     email: 'keybridgeleaders@gmail.com',
 
-    instagram: {
-        handle: '@koreatech_kbls',
-        url: 'https://www.instagram.com/koreatech_kbls',
-    },
+    /* 인스타그램 항목은 두지 않는다 — 계정 URL이 없어서가 아니라
+       2026-08 운영진이 SNS 채널 자체를 폐기하기로 결정했다.
+       새 채널을 열기로 결정하기 전에는 복원하지 말 것. */
 
     location: {
         campus: '한국기술교육대학교 제1캠퍼스',
@@ -33,6 +32,21 @@ export const ORG_INFO = {
     },
 
     professor: { role: '지도교수', name: '이상곤' },
+
+    /**
+     * 경고 규정 — 오너 확정(2026-08). /apply Rules & Duties와 FAQ가 함께 읽는다.
+     * 확정된 사유는 이 둘뿐이다. 여기 없는 조건("기여도 5% 미만",
+     * "경고 2회 누적 시 논의" 등)은 실제 규정이 아니므로 어디에도 고지하지 않는다.
+     * 각 사유는 "~한 경우"로 끝나야 한다 — FAQ가 문장으로 이어 붙인다.
+     */
+    warning: {
+        /** 부여 방식 */
+        method: '사전 면담을 거쳐 경고 1회를 부여',
+        reasons: [
+            '공모전 또는 스터디 등 활동에 참여하지 않는 경우',
+            '사전 협의 없는 중도 이탈 또는 무단 결석이 2회 이상 발생한 경우',
+        ],
+    },
 
     /** 운영진 — 순서 유지: [랩실장, 부랩실장, 공모전, 스터디, 일정·행사] */
     leads: [
