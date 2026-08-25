@@ -2,12 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import CountUp from 'react-countup';
-import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, ChevronDown, Image as ImageIcon } from 'lucide-react';
+import { ArrowRight, Loader2, ChevronDown, Image as ImageIcon } from 'lucide-react';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 import Seo from '../components/Seo';
 import Button from '../components/Button';
 import HeroBackdrop from '../components/HeroBackdrop';
+import Waveform from '../components/Waveform';
+// 아이콘 크기·매핑은 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON, ACTIVITY_ICONS, VALUE_ICONS } from '../lib/iconography';
 import { ROUTE_META } from '../lib/routeMeta';
 import { getDocDeadlineLabel, RECRUIT_SCHEDULE } from '../lib/recruitSchedule';
 import { trackEvent } from '../lib/analytics';
@@ -235,7 +238,7 @@ const Home = () => {
                         className="mt-6 inline-flex items-center text-sm font-medium text-slate-500 hover:text-brand-accent transition-colors group focus-ring rounded-md"
                     >
                         서류 마감 {getDocDeadlineLabel()} · 전형 일정 보기
-                        <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className={`ml-1 ${ICON.meta} group-hover:translate-x-1 transition-transform`} />
                     </Link>
                 </div>
 
@@ -263,7 +266,7 @@ const Home = () => {
 
                     {isLoadingMetrics ? (
                         <div className="w-full py-20 flex justify-center">
-                            <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
+                            <Loader2 className={`${ICON.display} text-brand-accent animate-spin`} />
                         </div>
                     ) : metricsError ? (
                         <DataNotice
@@ -298,7 +301,7 @@ const Home = () => {
                                 지표 산출 기준
                                 {/* 접힘 상태에서 눌리는 것임을 보이는 유일한 단서.
                                     회전 속도는 모션 기준의 base(0.3s) — src/lib/motion.js */}
-                                <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-open:rotate-180" />
+                                <ChevronDown className={`${ICON.meta} transition-transform duration-300 group-open:rotate-180`} />
                             </summary>
                             {/* 펼친 내용은 문장이라 좌측 정렬로 읽는다. 축(mx-auto)만 가운데. */}
                             <ul className="mt-3 space-y-3 max-w-[68ch] mx-auto text-left">
@@ -322,9 +325,12 @@ const Home = () => {
                 <div className="container mx-auto px-6">
                     <div className="max-w-4xl mx-auto text-center">
 
-                        <h2 className="text-heading font-bold mb-10 text-slate-900">
+                        <h2 className="text-heading font-bold mb-6 text-slate-900">
                             <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
                         </h2>
+                        {/* 로고 5-bar 웨이브폼 — 브랜드 이름 바로 아래라 정보(정체성)를
+                            더하는 자리다. 반복은 3자리 이내(Waveform.jsx 헤더 참조). */}
+                        <Waveform className="h-5 w-auto mx-auto mb-8 text-brand-accent/50" />
                         <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight max-w-[68ch] mx-auto">
                             KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 랩실입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
                         </p>
@@ -415,22 +421,25 @@ const Home = () => {
                             </p>
                         </div>
                         <Link to="/activities" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-blue-800 transition-colors group">
-                            우리의 활동 방식 자세히 보기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            우리의 활동 방식 자세히 보기 <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
                         </Link>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-16 md:gap-12">
+                        {/* 활동 축 ↔ 아이콘은 iconography.js ACTIVITY_ICONS 단일 소스 */}
                         {[
-                            { icon: <Trophy className="w-8 h-8" />, title: "실전 공모전", desc: "실제 기업의 과제를 해결하며 실무 역량과 기획력을 기릅니다." },
-                            { icon: <Lightbulb className="w-8 h-8" />, title: "자체 프로젝트", desc: "아이디어 발제부터 MVP 개발까지 우리만의 서비스를 만듭니다." },
-                            { icon: <Users className="w-8 h-8" />, title: "성장 스터디", desc: "서로의 지식을 나누고 함께 성장하는 심도 깊은 스터디를 진행합니다." }
-                        ].map((item, i) => (
+                            { axis: "공모전", title: "실전 공모전", desc: "실제 기업의 과제를 해결하며 실무 역량과 기획력을 기릅니다." },
+                            { axis: "프로젝트", title: "자체 프로젝트", desc: "아이디어 발제부터 MVP 개발까지 우리만의 서비스를 만듭니다." },
+                            { axis: "스터디", title: "성장 스터디", desc: "서로의 지식을 나누고 함께 성장하는 심도 깊은 스터디를 진행합니다." }
+                        ].map((item, i) => {
+                            const AxisIcon = ACTIVITY_ICONS[item.axis];
+                            return (
                             <div
                                 key={i}
                                 className="group"
                             >
                                 <div className="w-14 h-14 text-brand-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                                    {item.icon}
+                                    <AxisIcon className={ICON.display} />
                                 </div>
                                 <h3 className="text-subhead font-bold mb-4 text-slate-900">{item.title}</h3>
                                 <p className="text-slate-500 text-copy">{item.desc}</p>
@@ -438,12 +447,13 @@ const Home = () => {
                                     않는다(motion.js 기준 4항). w-20에서 60%로 접어두고 hover에 편다. */}
                                 <div className="mt-6 h-px w-20 origin-left scale-x-[0.6] bg-slate-200 group-hover:scale-x-100 group-hover:bg-brand-accent transition-[scale,background-color] duration-300" />
                             </div>
-                        ))}
+                            );
+                        })}
                     </div>
 
                     {/* 모바일 전용 링크는 hover가 없으므로 press가 유일한 탭 피드백이다 */}
                     <Link to="/activities" className="md:hidden mt-12 w-full min-h-11 py-3 inline-flex justify-center items-center text-brand-accent font-semibold group press focus-ring rounded-xl">
-                        우리의 활동 방식 자세히 보기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        우리의 활동 방식 자세히 보기 <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
                     </Link>
                 </div>
             </section>
@@ -462,13 +472,13 @@ const Home = () => {
                             </p>
                         </div>
                         <Link to="/portfolio" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-blue-800 transition-colors group">
-                            전체 포트폴리오 확인하기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            전체 포트폴리오 확인하기 <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
                         </Link>
                     </div>
 
                     {isLoadingPortfolios ? (
                         <div className="w-full py-20 flex justify-center">
-                            <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
+                            <Loader2 className={`${ICON.display} text-brand-accent animate-spin`} />
                         </div>
                     ) : portfolioError ? (
                         <DataNotice
@@ -500,7 +510,7 @@ const Home = () => {
                                             />
                                         ) : (
                                             <div className={`w-full h-full flex flex-col items-center justify-center bg-gradient-to-br ${project.imageGrad} text-white/50 group-hover:scale-105 transition-transform duration-700 ease-out`}>
-                                                <ImageIcon className="w-8 h-8 mb-2" />
+                                                <ImageIcon className={`${ICON.ui} mb-2`} />
                                                 <span className="text-sm font-bold">이미지가 없습니다</span>
                                             </div>
                                         )}
@@ -523,7 +533,7 @@ const Home = () => {
                     )}
 
                     <Link to="/portfolio" className="md:hidden mt-8 w-full min-h-11 py-3 inline-flex justify-center items-center text-brand-accent font-semibold group press focus-ring rounded-xl">
-                        전체 포트폴리오 확인하기 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        전체 포트폴리오 확인하기 <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
                     </Link>
                 </div>
             </section>
@@ -542,19 +552,20 @@ const Home = () => {
                         그림자는 제거 — 그림자는 클릭 가능 요소의 단서인데 이 태그는
                         장식이다(히어로 배지의 그림자 금지와 같은 규칙). */}
                     <div className="flex flex-wrap justify-center gap-6 mb-16">
-                        {[
-                            { tag: "#실행력", icon: <Rocket className="w-6 h-6 mr-3 text-brand-accent" /> },
-                            { tag: "#협업", icon: <Users className="w-6 h-6 mr-3 text-brand-accent" /> },
-                            { tag: "#주도성", icon: <Lightbulb className="w-6 h-6 mr-3 text-brand-accent" /> }
-                        ].map((item, i) => (
-                            <div
-                                key={i}
-                                className="flex items-center bg-white px-8 py-4 rounded-full shadow-sm text-xl font-bold text-slate-800 border border-slate-100"
-                            >
-                                {item.icon}
-                                {item.tag}
-                            </div>
-                        ))}
+                        {/* 핵심 가치 ↔ 아이콘은 iconography.js VALUE_ICONS 단일 소스 —
+                            조직 인재상 탭과 같은 아이콘을 쓴다 */}
+                        {['실행력', '협업', '주도성'].map((value) => {
+                            const ValueIcon = VALUE_ICONS[value];
+                            return (
+                                <div
+                                    key={value}
+                                    className="flex items-center bg-white px-8 py-4 rounded-full shadow-sm text-xl font-bold text-slate-800 border border-slate-100"
+                                >
+                                    <ValueIcon className={`${ICON.ui} mr-3 text-brand-accent`} />
+                                    #{value}
+                                </div>
+                            );
+                        })}
                     </div>
 
                     <div className="mt-8">
@@ -563,7 +574,7 @@ const Home = () => {
                             className="inline-flex items-center text-lg text-slate-500 hover:text-brand-accent font-bold transition-colors group focus-ring rounded-md"
                         >
                             내가 KBLs가 찾는 인재일까? <span className="text-brand-accent ml-2 border-b-2 border-brand-accent/30 pb-0.5">핏(Fit) 확인하기</span>
-                            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
                         </Link>
                     </div>
                 </div>

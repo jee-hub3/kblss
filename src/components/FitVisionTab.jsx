@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { Rocket, Search, Users, Sparkles, ChevronRight } from 'lucide-react';
 import Button from './Button';
 import { trackEvent } from '../lib/analytics';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
 /* ── Animation Variants ── */
 const fadeInUp = {
@@ -148,7 +150,7 @@ const FitVisionTab = () => {
                             >
                                 <div className="flex-1 w-full lg:pr-8">
                                     <div className="flex items-center gap-3 mb-4">
-                                        <v.icon className={`w-6 h-6 text-brand-accent`} />
+                                        <v.icon className={`${ICON.ui} text-brand-accent`} />
                                         <span className="text-sm font-extrabold tracking-widest uppercase text-slate-500">{v.title}</span>
                                     </div>
                                     <h3 className="text-2xl md:text-4xl lg:text-4xl font-extrabold text-slate-900 mb-6 leading-tight tracking-tight break-keep">{v.headline}</h3>

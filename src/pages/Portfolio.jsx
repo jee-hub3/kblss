@@ -3,26 +3,13 @@ import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Award, Medal, ExternalLink, Sparkles, Filter, ChevronLeft, ChevronRight, Loader2, Info, Image as ImageIcon, Plus, Flag, Star, Circle, Rocket, Pin } from 'lucide-react';
+import { Trophy, ChevronLeft, ChevronRight, Loader2, Image as ImageIcon, Plus } from 'lucide-react';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { fadeInUp, gridItem, drawLineY, igniteIn } from '../lib/motion';
-
-const getHistoryIconProps = (iconTag) => {
-    switch (iconTag) {
-        case '대상':
-            return { icon: Trophy, color: "text-yellow-500", bg: "bg-yellow-50" };
-        case '수상(대상 제외)':
-            return { icon: Medal, color: "text-blue-500", bg: "bg-blue-50" };
-        case '연혁':
-            return { icon: Flag, color: "text-emerald-500", bg: "bg-emerald-50" };
-        case '활동':
-            return { icon: Rocket, color: "text-purple-500", bg: "bg-purple-50" };
-        default:
-            return { icon: Sparkles, color: "text-slate-400", bg: "bg-slate-100" };
-    }
-};
+// 연혁 아이콘태그 매핑·아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON, getHistoryIconProps } from '../lib/iconography';
 
 const defaultCategories = ["전체보기"];
 const ITEMS_PER_PAGE = 6;
@@ -189,12 +176,12 @@ const Portfolio = () => {
                 <section className="mb-32">
                     <div className="max-w-4xl mx-auto bg-transparent rounded-[2rem] p-8 md:p-12 shadow-sm border border-slate-100 relative">
                         <h2 className="text-subhead font-bold text-slate-900 mb-10 flex items-center">
-                            <Trophy className="w-6 h-6 mr-3 text-brand-accent" /> History & Awards
+                            <Trophy className={`${ICON.ui} mr-3 text-brand-accent`} /> History & Awards
                         </h2>
 
                         {isLoadingHistory ? (
                             <div className="py-20 flex flex-col items-center justify-center">
-                                <Loader2 className="w-8 h-8 text-brand-accent animate-spin mb-4" />
+                                <Loader2 className={`${ICON.display} text-brand-accent animate-spin mb-4`} />
                                 <p className="text-slate-500 font-medium text-sm">연혁 및 수상 내역을 불러오는 중입니다...</p>
                             </div>
                         ) : historyError ? (
@@ -239,12 +226,12 @@ const Portfolio = () => {
                                             return (
                                                 <div key={award.id} className="relative pl-8 md:pl-12">
                                                     <div className="absolute -left-[21px] top-1 w-10 h-10 bg-slate-100 rounded-full border-4 border-slate-50 flex items-center justify-center shadow-sm z-10">
-                                                        <IconElement className="w-4 h-4 text-slate-400" aria-hidden="true" />
+                                                        <IconElement className={`${ICON.meta} text-slate-400`} aria-hidden="true" />
                                                         <motion.div
                                                             variants={igniteIn(i)}
                                                             className={`absolute inset-0 ${bg} rounded-full flex items-center justify-center`}
                                                         >
-                                                            <IconElement className={`w-4 h-4 ${color}`} aria-hidden="true" />
+                                                            <IconElement className={`${ICON.meta} ${color}`} aria-hidden="true" />
                                                         </motion.div>
                                                     </div>
                                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-8">
@@ -290,7 +277,7 @@ const Portfolio = () => {
 
                     {isLoading ? (
                         <div className="w-full py-32 flex flex-col items-center justify-center">
-                            <Loader2 className="w-12 h-12 text-brand-accent animate-spin mb-4" />
+                            <Loader2 className={`${ICON.display} text-brand-accent animate-spin mb-4`} />
                             <p className="text-slate-500 font-medium">노션(Notion) 서버에서 데이터를 무사히 모셔오는 중입니다...</p>
                         </div>
                     ) : portfolioError ? (
@@ -326,7 +313,7 @@ const Portfolio = () => {
                                                 <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-white/50">
-                                                    <ImageIcon className="w-8 h-8 mb-2" />
+                                                    <ImageIcon className={`${ICON.ui} mb-2`} />
                                                     <span className="text-sm font-bold">이미지가 없습니다</span>
                                                 </div>
                                             )}
@@ -335,7 +322,7 @@ const Portfolio = () => {
                                                 md 이상에서만 hover로 드러나게 한다 */}
                                             <div className="absolute inset-0 bg-black/20 md:bg-black/0 md:group-hover:bg-black/20 flex items-center justify-center transition-all duration-300">
                                                 <div className="opacity-100 translate-y-0 md:opacity-0 md:translate-y-4 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-300 flex items-center font-bold text-white bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
-                                                    자세히 보기 <Plus className="w-4 h-4 ml-2" />
+                                                    자세히 보기 <Plus className={`${ICON.meta} ml-2`} />
                                                 </div>
                                             </div>
                                         </div>
@@ -371,7 +358,7 @@ const Portfolio = () => {
                             <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
                                 aria-label="이전 페이지"
                                 className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
-                                <ChevronLeft className="w-4 h-4" />
+                                <ChevronLeft className={ICON.ui} />
                             </button>
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                                 <button key={page} onClick={() => setCurrentPage(page)}
@@ -382,7 +369,7 @@ const Portfolio = () => {
                             <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
                                 aria-label="다음 페이지"
                                 className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
-                                <ChevronRight className="w-4 h-4" />
+                                <ChevronRight className={ICON.ui} />
                             </button>
                         </div>
                     )}

@@ -6,6 +6,8 @@ import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { fadeInUp } from '../lib/motion';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
 const NotFound = () => {
     return (
@@ -27,7 +29,7 @@ const NotFound = () => {
                         to="/"
                         className="inline-flex items-center justify-center min-h-11 w-full sm:w-auto px-6 py-3 rounded-full bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold transition-all press focus-ring shadow-md"
                     >
-                        <Home className="w-4 h-4 mr-2" />
+                        <Home className={`${ICON.ui} mr-2`} />
                         홈으로
                     </Link>
                     <Link
@@ -35,7 +37,7 @@ const NotFound = () => {
                         className="inline-flex items-center justify-center min-h-11 w-full sm:w-auto px-6 py-3 rounded-full bg-brand-accent hover:bg-brand-accent-hover text-white text-sm font-semibold transition-all press focus-ring shadow-md"
                     >
                         지원하기
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                        <ArrowRight className={`${ICON.ui} ml-2`} />
                     </Link>
                 </div>
             </motion.div>

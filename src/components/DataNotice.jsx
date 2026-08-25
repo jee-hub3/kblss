@@ -1,5 +1,7 @@
 import React from 'react';
 import { RotateCw } from 'lucide-react';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
 /**
  * 노션 데이터를 못 불러왔거나 결과가 비었을 때 보여주는 안내 블록.
@@ -23,7 +25,7 @@ const DataNotice = ({ title, description, onRetry, className = '' }) => (
                 onClick={onRetry}
                 className="mt-6 inline-flex items-center justify-center min-h-11 px-5 py-2.5 rounded-full border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-colors"
             >
-                <RotateCw className="w-4 h-4 mr-2" />
+                <RotateCw className={`${ICON.meta} mr-2`} />
                 다시 시도
             </button>
         )}

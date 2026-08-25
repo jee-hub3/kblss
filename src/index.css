@@ -72,6 +72,13 @@
    ───────────────────────────────────────────── */
 
 @layer base {
+  /* 아이콘 규격(src/lib/iconography.js) 2항 — lucide 아이콘의 stroke 1.75 통일.
+     개별 strokeWidth prop을 흩뿌리는 대신 여기 한 곳에서 덮는다
+     (CSS가 SVG presentation attribute보다 우선한다). */
+  svg.lucide {
+    stroke-width: 1.75;
+  }
+
   body {
     @apply antialiased text-slate-900 bg-slate-50 overflow-x-hidden break-keep;
     /* 이모지 계열은 sans-serif 뒤에 남겨둔다. 폰트 폴백은 글리프 단위로 동작해

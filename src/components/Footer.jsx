@@ -4,6 +4,7 @@ import { Mail, MapPin } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
 import { ORG_INFO } from '../lib/orgInfo';
 import { NAV_LINKS } from '../lib/navLinks';
+import Waveform from './Waveform';
 
 const Footer = () => {
     return (
@@ -13,8 +14,11 @@ const Footer = () => {
 
                     {/* 1. Logo & Intro */}
                     <div className="md:col-span-2">
-                        <Link to="/" className="inline-block mb-6">
+                        {/* 5-bar 웨이브폼 모티프 ② — 사이트 마감의 브랜드 서명.
+                            장식이라 slate-500(어두운 배경 위 허용 톤)로 눕힌다. */}
+                        <Link to="/" className="inline-flex items-center gap-3 mb-6">
                             <span className="text-2xl font-black tracking-tighter text-white">KBLs</span>
+                            <Waveform className="h-4 w-auto text-slate-500" />
                         </Link>
                         <p className="text-slate-400 leading-relaxed max-w-sm">
                             단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 실전형 비즈니스 IT 랩실입니다.

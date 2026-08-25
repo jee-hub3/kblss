@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircleQuestion } from 'lucide-react';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { fadeInUp, staggerContainer, ACCORDION_TRANSITION } from '../lib/motion';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
 const faqs = [
     {
@@ -65,7 +67,7 @@ const FAQ = () => {
                 <section className="mb-20 text-center">
                     <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="max-w-2xl mx-auto flex flex-col items-center">
                         <motion.div variants={fadeInUp} className="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-6">
-                            <MessageCircleQuestion className="w-8 h-8 text-brand-accent" />
+                            <MessageCircleQuestion className={`${ICON.display} text-brand-accent`} />
                         </motion.div>
                         <motion.h1 variants={fadeInUp} className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6 mt-4">
                             자주 묻는 질문

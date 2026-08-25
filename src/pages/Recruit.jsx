@@ -17,6 +17,9 @@ import { trackEvent } from '../lib/analytics';
 import { ORG_INFO, getLeadsByTier } from '../lib/orgInfo';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { tabPanel, ACCORDION_TRANSITION } from '../lib/motion';
+import Waveform from '../components/Waveform';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
 // 서버가 돌려준 필드명을 화면 라벨로 바꿔 보여주기 위한 표.
 // 폼 항목을 추가·변경하면 여기도 함께 고쳐야 안내가 어긋나지 않는다.
@@ -85,8 +88,8 @@ const DocWindowNotice = ({ phase, onBackToInfo }) => {
         <div className="w-full bg-white rounded-[2rem] border border-slate-200 shadow-sm mb-12 p-8 md:p-12 text-center">
             <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
                 {isBefore
-                    ? <CalendarClock className="w-7 h-7 text-brand-600" aria-hidden="true" />
-                    : <CalendarX2 className="w-7 h-7 text-slate-500" aria-hidden="true" />}
+                    ? <CalendarClock className={`${ICON.display} text-brand-600`} aria-hidden="true" />
+                    : <CalendarX2 className={`${ICON.display} text-slate-500`} aria-hidden="true" />}
             </div>
             <h2 className="text-subhead font-bold text-slate-900 mb-3 break-keep">
                 {isBefore
@@ -131,7 +134,7 @@ const ApplyReceipt = ({ onBackToInfo }) => {
         <div className="w-full bg-white rounded-[2rem] border border-slate-200 shadow-sm mb-12 p-8 md:p-12">
             <div className="text-center">
                 <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-brand-50">
-                    <CheckCircle2 className="w-8 h-8 text-brand-accent" aria-hidden="true" />
+                    <CheckCircle2 className={`${ICON.display} text-brand-accent`} aria-hidden="true" />
                 </div>
                 <h2 ref={headingRef} tabIndex={-1} className="text-subhead font-bold text-slate-900 mb-3 break-keep focus-ring">
                     지원서 접수가 완료되었습니다
@@ -140,6 +143,9 @@ const ApplyReceipt = ({ onBackToInfo }) => {
                     {RECRUIT_SCHEDULE.semesterLabel} KBLs 신입 회원 모집에 지원해 주셔서 감사합니다.
                     작성하신 지원서는 정상적으로 접수되었습니다.
                 </p>
+                {/* 5-bar 웨이브폼 모티프 ③ — 지원서 완주의 도장.
+                    완료 자리라 accent(사이트 색 규칙: accent=완료). */}
+                <Waveform className="h-4 w-auto mx-auto mt-8 text-brand-accent/60" />
             </div>
 
             {/* 다음 일정 — 접수 이후 단계만. 값은 recruitSchedule.js 단일 소스 */}
@@ -548,7 +554,7 @@ const Recruit = () => {
                                             {/* 마감일과 남은 일수 — recruitSchedule.js docWindow에서 파생한다.
                                                 이 블록은 접수 중에만 렌더되므로 daysLeft는 항상 0 이상이다. */}
                                             <p className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-1.5 mb-3 text-sm font-bold text-brand-700">
-                                                <CalendarClock className="w-4 h-4" aria-hidden="true" />
+                                                <CalendarClock className={ICON.meta} aria-hidden="true" />
                                                 서류 마감 {getDocCloseLabel()} ({daysLeft > 0 ? `D-${daysLeft}` : 'D-day'})
                                             </p>
                                             <p className="text-slate-500 font-medium">아래 항목을 꼼꼼히 작성한 후 제출해주세요.</p>
@@ -886,7 +892,7 @@ const Recruit = () => {
                                                     className="w-full py-4 bg-brand-accent hover:bg-brand-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold rounded-xl text-base shadow-md transition-all press focus-ring flex items-center justify-center"
                                                 >
                                                     {isSubmitting ? (
-                                                        <><Loader2 className="w-6 h-6 mr-3 animate-spin" /> 지원서 제출 중...</>
+                                                        <><Loader2 className={`${ICON.ui} mr-3 animate-spin`} /> 지원서 제출 중...</>
                                                     ) : "지원서 최종 제출하기"}
                                                 </button>
                                             </div>

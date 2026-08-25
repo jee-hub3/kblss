@@ -6,6 +6,8 @@ import { buildHeadingTagMap, groupNotionBlocks, headingTagFor } from '../lib/not
 import DataNotice from '../components/DataNotice';
 import NotFound from './NotFound';
 import Seo from '../components/Seo';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
 const NewsDetail = () => {
     const location = useLocation();
@@ -78,7 +80,7 @@ const NewsDetail = () => {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center pt-24">
                 <div className="flex flex-col items-center justify-center opacity-60 space-y-6">
-                    <Loader2 className="w-12 h-12 text-brand-accent animate-spin" />
+                    <Loader2 className={`${ICON.display} text-brand-accent animate-spin`} />
                     <p className="font-bold text-slate-500 tracking-wide text-lg">노션 서버에서 상세 데이터를 불러오고 있습니다...</p>
                 </div>
             </div>
@@ -185,7 +187,7 @@ const NewsDetail = () => {
                 className="fixed top-24 left-6 md:top-32 md:left-12 z-30 p-3 bg-white/50 backdrop-blur-sm border border-slate-200/50 rounded-full text-slate-500 hover:text-brand-accent hover:bg-white hover:shadow-md transition-all press focus-ring group"
                 aria-label="목록으로 돌아가기"
             >
-                <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                <ArrowLeft className={`${ICON.ui} group-hover:-translate-x-1 transition-transform`} />
             </button>
 
             {/* 헤더 영역 (수직 Flex) */}
@@ -215,7 +217,7 @@ const NewsDetail = () => {
                 <div className="container mx-auto px-6 max-w-3xl min-h-[50vh]">
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center opacity-60 space-y-6 py-20">
-                            <Loader2 className="w-10 h-10 text-brand-accent animate-spin" />
+                            <Loader2 className={`${ICON.display} text-brand-accent animate-spin`} />
                             <p className="font-bold text-slate-500 tracking-wide">내용을 불러오고 있습니다...</p>
                         </div>
                     ) : loadError ? (

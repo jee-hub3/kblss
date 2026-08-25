@@ -6,6 +6,8 @@ import { trackEvent } from '../lib/analytics';
 import Button from './Button';
 import { DUR, EASE_OUT } from '../lib/motion';
 import { HEADER_LINKS } from '../lib/navLinks';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
 /* ── z-index 층 규약 ──────────────────────────────
    페이지 콘텐츠 (sticky 포함)  ≤ z-30
@@ -129,11 +131,11 @@ const GNB = () => {
                             <AnimatePresence mode="wait" initial={false}>
                                 {isMobileMenuOpen ? (
                                     <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                                        <X className="w-6 h-6" />
+                                        <X className={ICON.ui} />
                                     </motion.div>
                                 ) : (
                                     <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                                        <Menu className="w-6 h-6" />
+                                        <Menu className={ICON.ui} />
                                     </motion.div>
                                 )}
                             </AnimatePresence>

@@ -8,6 +8,8 @@ import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { gridItem } from '../lib/motion';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
 const defaultCategories = ["전체보기"];
 
@@ -115,7 +117,7 @@ const News = () => {
 
                 {isLoading ? (
                     <div className="w-full py-32 flex flex-col items-center justify-center">
-                        <Loader2 className="w-12 h-12 text-brand-accent animate-spin mb-4" />
+                        <Loader2 className={`${ICON.display} text-brand-accent animate-spin mb-4`} />
                         <p className="text-slate-500 font-medium tracking-wide">소식을 불러오는 중입니다...</p>
                     </div>
                 ) : newsError ? (
@@ -161,8 +163,8 @@ const News = () => {
                                                         <p className="text-copy text-slate-600 mb-10 overflow-hidden line-clamp-3 break-keep font-medium">{post.summary}</p>
                                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-slate-100 mt-auto">
                                                             <div className="flex items-center gap-6">
-                                                                <div className="flex items-center text-slate-500 text-sm font-medium"><User className="w-4 h-4 mr-2 text-slate-400" />{post.author}</div>
-                                                                <div className="flex items-center text-slate-500 text-sm font-medium"><Clock className="w-4 h-4 mr-2 text-slate-400" />{post.date}</div>
+                                                                <div className="flex items-center text-slate-500 text-sm font-medium"><User className={`${ICON.meta} mr-2 text-slate-400`} />{post.author}</div>
+                                                                <div className="flex items-center text-slate-500 text-sm font-medium"><Clock className={`${ICON.meta} mr-2 text-slate-400`} />{post.date}</div>
                                                             </div>
                                                             <div className="inline-flex items-center justify-center font-bold text-brand-accent hover:text-brand-700 transition-colors group/btn">
                                                                 본문 읽기 <ArrowRight className="w-5 h-5 ml-2 group-hover/btn:translate-x-1 transition-transform" />
@@ -275,7 +277,7 @@ const News = () => {
                                 <div className="flex items-center justify-center gap-2 mt-16">
                                     <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} aria-label="이전 페이지"
                                         className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
-                                        <ChevronLeft className="w-4 h-4" />
+                                        <ChevronLeft className={ICON.ui} />
                                     </button>
                                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                                         <button key={page} onClick={() => setCurrentPage(page)}
@@ -285,7 +287,7 @@ const News = () => {
                                     ))}
                                     <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} aria-label="다음 페이지"
                                         className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
-                                        <ChevronRight className="w-4 h-4" />
+                                        <ChevronRight className={ICON.ui} />
                                     </button>
                                 </div>
                             )}

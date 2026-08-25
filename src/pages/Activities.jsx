@@ -6,17 +6,18 @@ import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { fadeInUp, staggerContainer, tabPanel } from '../lib/motion';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
+/* 배경 워터마크(같은 아이콘 w-48 반복)는 제거했다 — 아이콘 규격 3항:
+   의미 없는 반복 장식은 텍스트보다 시끄럽다. 타일의 아이콘 하나면 충분하다. */
 const DnaCard = ({ title, desc, icon: Icon }) => (
     <div
         className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100 relative group overflow-hidden"
     >
-        <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-900 group-hover:scale-150 transition-transform duration-700">
-            <Icon className="w-48 h-48" />
-        </div>
         <div className="relative z-10">
             <div className="w-16 h-16 bg-brand-50 text-brand-accent rounded-2xl flex items-center justify-center mb-8">
-                <Icon className="w-8 h-8" />
+                <Icon className={ICON.display} />
             </div>
             <h3 className="text-xl md:text-2xl font-extrabold text-slate-900 mb-4 tracking-tight">{title}</h3>
             <p className="text-copy text-slate-600 font-medium">{desc}</p>
@@ -232,7 +233,7 @@ const Activities = () => {
                                         >
                                             <step.icon
                                                 style={mvpLit ? { transitionDelay: `${igniteDelay}s` } : undefined}
-                                                className={`w-6 h-6 transition-colors duration-300 ${mvpLit ? 'text-brand-accent-on-dark' : 'text-brand-400'}`}
+                                                className={`${ICON.ui} transition-colors duration-300 ${mvpLit ? 'text-brand-accent-on-dark' : 'text-brand-400'}`}
                                             />
                                         </div>
                                         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 text-slate-400 text-sm font-bold mb-4">
@@ -270,9 +271,9 @@ const Activities = () => {
                                         ? 'bg-white shadow-md text-brand-accent border border-brand-100'
                                         : 'bg-transparent text-slate-500 hover:bg-white/50 border border-transparent hover:border-slate-200'}`}
                             >
-                                <tab.icon className={`w-5 h-5 mr-3 ${activeTab === idx ? 'text-brand-accent' : 'text-slate-400'}`} />
+                                <tab.icon className={`${ICON.ui} mr-3 ${activeTab === idx ? 'text-brand-accent' : 'text-slate-400'}`} />
                                 {tab.title}
-                                {activeTab === idx && <ChevronRight className="w-5 h-5 ml-auto hidden md:block" />}
+                                {activeTab === idx && <ChevronRight className={`${ICON.ui} ml-auto hidden md:block`} />}
                             </button>
                         ))}
                     </div>
@@ -286,7 +287,7 @@ const Activities = () => {
                                 className="bg-white w-full p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100"
                             >
                                 <div className="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-6">
-                                    {React.createElement(studyTabs[activeTab].icon, { className: "w-8 h-8 text-brand-accent" })}
+                                    {React.createElement(studyTabs[activeTab].icon, { className: `${ICON.display} text-brand-accent` })}
                                 </div>
                                 <h3 className="text-2xl font-extrabold text-slate-900 mb-4">{studyTabs[activeTab].title} 스터디</h3>
                                 <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
@@ -295,7 +296,7 @@ const Activities = () => {
                                 <div className="flex flex-wrap gap-3">
                                     {studyTabs[activeTab].keys.map((key, i) => (
                                         <span key={i} className="inline-flex items-center px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-bold tracking-wide">
-                                            <Check className="w-4 h-4 mr-2 text-brand-400" />
+                                            <Check className={`${ICON.meta} mr-2 text-brand-400`} />
                                             {key}
                                         </span>
                                     ))}

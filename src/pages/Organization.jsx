@@ -9,6 +9,8 @@ import { ORG_INFO, getLeadsByTier } from '../lib/orgInfo';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 // 조직도 선 그리기(pathLength)의 duration·delay는 연출이라 로컬 값을 유지한다.
 import { staggerContainer, scaleIn, tabPanel } from '../lib/motion';
+// 아이콘 크기는 src/lib/iconography.js 단일 소스에서 온다.
+import { ICON } from '../lib/iconography';
 
 /**
  * 역할별 한 줄 설명. 이름·직함은 orgInfo.js가 소유하고, 설명문은 이 페이지의
@@ -43,7 +45,7 @@ const GlassCard = ({ role, name, desc }) => (
 
         <div className="relative z-10 flex flex-col items-center flex-1 w-full">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300 bg-brand-50 text-brand-accent group-hover:bg-brand-100 shrink-0">
-                <User className="w-6 h-6" />
+                <User className={ICON.display} />
             </div>
             <div className="text-label font-bold tracking-[0.15em] uppercase mb-2 text-slate-500 group-hover:text-brand-accent transition-colors">
                 {role}
