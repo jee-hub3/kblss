@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import CountUp from 'react-countup';
-import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, Image as ImageIcon } from 'lucide-react';
+import { ArrowRight, Trophy, Users, Lightbulb, Rocket, Loader2, ChevronDown, Image as ImageIcon } from 'lucide-react';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 import Seo from '../components/Seo';
@@ -312,11 +312,19 @@ const Home = () => {
                         오너가 노션을 채우면 배포 없이 나타나는 하위 호환도 그대로다.
                         <details>/<summary>는 네이티브 지원이라 별도 ARIA가 필요 없다. */}
                     {!metricsError && kblsNumbersData.some((s) => s.basis || s.asOf) && (
-                        <details className="mt-12 max-w-[68ch] mx-auto">
-                            <summary className="min-h-11 flex items-center cursor-pointer text-label font-semibold text-slate-600 hover:text-slate-800 transition-colors focus-ring rounded-md">
+                        // 숫자 그룹에 붙은 각주로 둔다. 전에는 mt-12에 68ch 좌측 정렬이라
+                        // 가운데 정렬된 숫자들과 축이 어긋난 채 빈 띠 위에 떠 있었고,
+                        // 그래서 "이 숫자들의 기준"이 아니라 흘린 라벨로 읽혔다.
+                        // 축을 가운데로 맞추고 위 여백을 줄여 숫자 바로 아래에 붙인다.
+                        <details className="group mt-4">
+                            <summary className="min-h-11 flex items-center justify-center gap-1.5 cursor-pointer list-none text-label font-medium text-slate-500 hover:text-slate-700 transition-colors focus-ring rounded-md">
                                 지표 산출 기준
+                                {/* 접힘 상태에서 눌리는 것임을 보이는 유일한 단서.
+                                    회전 속도는 모션 기준의 base(0.3s) — src/lib/motion.js */}
+                                <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-open:rotate-180" />
                             </summary>
-                            <ul className="mt-2 space-y-3">
+                            {/* 펼친 내용은 문장이라 좌측 정렬로 읽는다. 축(mx-auto)만 가운데. */}
+                            <ul className="mt-3 space-y-3 max-w-[68ch] mx-auto text-left">
                                 {kblsNumbersData.filter((s) => s.basis || s.asOf).map((stat) => (
                                     <li key={stat.id} className="text-label text-slate-600 leading-relaxed break-keep">
                                         <span className="font-semibold text-slate-700">{stat.title}</span>
