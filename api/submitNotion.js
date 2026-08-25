@@ -1,5 +1,25 @@
 import { getDocWindowPhase } from '../src/lib/recruitSchedule.js';
 
+// 노션 rich_text는 한 항목의 text.content가 2,000자를 넘으면 요청 전체를 400으로
+// 거절한다. 긴 서술형 답변을 한 항목에 통째로 담으면 지원서 제출 자체가 실패하므로
+// 2,000자 단위로 잘라 여러 항목으로 나눠 담는다. 노션은 이어진 항목을 한 문단으로
+// 보여주므로 화면상 결과는 같다. (항목 수 상한은 100개 — 클라이언트가 5,000자로
+// 막고 있어 최대 3개다.)
+const NOTION_TEXT_LIMIT = 2000;
+
+const toRichText = (value) => {
+    const text = String(value ?? '');
+    if (text.length <= NOTION_TEXT_LIMIT) {
+        return [{ text: { content: text } }];
+    }
+
+    const chunks = [];
+    for (let i = 0; i < text.length; i += NOTION_TEXT_LIMIT) {
+        chunks.push({ text: { content: text.slice(i, i + NOTION_TEXT_LIMIT) } });
+    }
+    return chunks;
+};
+
 export default async function handler(request, response) {
     if (request.method !== 'POST') {
         return response.status(405).json({ error: 'Method Not Allowed' });
@@ -55,6 +75,15 @@ export default async function handler(request, response) {
             return response.status(400).json({ error: '모든 필수 항목을 입력해주세요.', missingFields: ['phone'] });
         }
 
+        // 학번 입력은 type="text" + inputMode="numeric"이다(휠·스피너로 값이 바뀌는
+        // type="number"를 피했다). 숫자가 아닌 값이 들어오면 Number()가 NaN이 되어
+        // 노션이 400을 돌려주는데, 그러면 사용자는 어디가 틀렸는지 알 수 없다.
+        // 여기서 먼저 걸러 다른 필수 항목과 같은 방식(missingFields)으로 안내한다.
+        const numericStudentId = Number(studentId);
+        if (!Number.isInteger(numericStudentId)) {
+            return response.status(400).json({ error: '학번은 숫자만 입력해주세요.', missingFields: ['studentId'] });
+        }
+
         const NOTION_API_KEY = process.env.NOTION_API_KEY;
         const NOTION_DATABASE_ID = process.env.NOTION_RECRUIT_DB_ID;
 
@@ -77,13 +106,13 @@ export default async function handler(request, response) {
                         title: [{ text: { content: name } }]
                     },
                     "학번": {
-                        number: Number(studentId)
+                        number: numericStudentId
                     },
                     "학년": {
                         select: { name: grade }
                     },
                     "학과": {
-                        rich_text: [{ text: { content: major } }]
+                        rich_text: toRichText(major)
                     },
                     "전화번호": {
                         phone_number: normalizedPhone
@@ -92,19 +121,19 @@ export default async function handler(request, response) {
                         multi_select: Array.isArray(tools) ? tools.map(tool => ({ name: tool })) : []
                     },
                     "지원 동기 · 목적": {
-                        rich_text: [{ text: { content: motivation } }]
+                        rich_text: toRichText(motivation)
                     },
                     "관심 분야 · 관심 직무": {
-                        rich_text: [{ text: { content: interest } }]
+                        rich_text: toRichText(interest)
                     },
                     "공모전·프로젝트 경험": {
-                        rich_text: [{ text: { content: experience } }]
+                        rich_text: toRichText(experience)
                     },
                     "랩실 활동 참여": {
                         select: { name: participation }
                     },
                     "하고 싶은 활동": {
-                        rich_text: [{ text: { content: futurePlan } }]
+                        rich_text: toRichText(futurePlan)
                     },
                     "랩실 활동 참여 및 운영 규정 확인": {
                         checkbox: Boolean(agreement)

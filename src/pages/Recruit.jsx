@@ -35,6 +35,26 @@ const FIELD_LABELS = {
     privacyAgreement: '개인정보 수집·이용 동의',
 };
 
+// 서술형 4개 항목이 공유하는 입력 상한. 노션 rich_text 한 항목의 상한(2,000자)보다
+// 크지만 api/submitNotion.js가 2,000자 단위로 나눠 담으므로 저장은 실패하지 않는다.
+// 안내 문구와 실제 제한이 갈리지 않도록 값은 여기 한 곳에서만 정한다.
+const TEXTAREA_MAX_LENGTH = 5000;
+
+// 남은 글자수 안내 — 서술형 4곳이 같은 문구와 임계값을 써야 해서 한 곳에 둔다.
+// 매 입력마다 값이 바뀌므로 aria-live는 붙이지 않는다(키 입력마다 읽어 주면 방해가 된다).
+// 상한 자체는 textarea의 maxLength가 네이티브로 막는다.
+// 색은 slate-500 — 이 저장소에서 slate-400은 어두운 배경과 아이콘 전용이고,
+// 흰 배경 위 12px 본문으로 쓰면 대비 4.5:1에 못 미친다(Lighthouse color-contrast 실패).
+// 바로 위 안내 문구 <p>와 같은 톤이기도 하다.
+const RemainingChars = ({ value }) => {
+    const remaining = TEXTAREA_MAX_LENGTH - value.length;
+    return (
+        <p className={`text-xs text-right tabular-nums ${remaining <= 100 ? 'text-brand-accent font-bold' : 'text-slate-500'}`}>
+            {remaining.toLocaleString()}자 남음
+        </p>
+    );
+};
+
 /**
  * 개발 중 시계 주입 — /apply?tab=form&now=2026-09-10 처럼 붙이면
  * 시스템 시계를 건드리지 않고 접수 전/중/후 세 상태를 모두 확인할 수 있다.
@@ -194,7 +214,6 @@ const Recruit = () => {
         tools: [],
         motivation: '',
         interest: '',
-        // 초기값이 없으면 첫 입력에서 uncontrolled → controlled 전환 경고가 뜬다
         experience: '',
         participation: '',
         futurePlan: '',
@@ -539,8 +558,9 @@ const Recruit = () => {
 
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                     <div className="space-y-2">
-                                                        <label className="block text-sm font-bold text-slate-700">1. 이름 <span className="text-brand-accent">*</span></label>
+                                                        <label htmlFor="apply-name" className="block text-sm font-bold text-slate-700">1. 이름 <span className="text-brand-accent">*</span></label>
                                                         <input
+                                                            id="apply-name"
                                                             type="text" name="name" required
                                                             value={formData.name} onChange={handleInputChange}
                                                             className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all font-medium"
@@ -548,9 +568,13 @@ const Recruit = () => {
                                                         />
                                                     </div>
                                                     <div className="space-y-2">
-                                                        <label className="block text-sm font-bold text-slate-700">2. 학번 <span className="text-brand-accent">*</span></label>
+                                                        <label htmlFor="apply-studentId" className="block text-sm font-bold text-slate-700">2. 학번 <span className="text-brand-accent">*</span></label>
+                                                        {/* type="number"는 휠·스피너로 값이 바뀌고 앞자리 0이 잘리거나 지수 표기가
+                                                            끼어들 수 있다. 학번은 계산하는 수가 아니라 숫자로 된 식별자이므로 text로
+                                                            두고 숫자 키패드만 띄운다. 서버는 그대로 Number(studentId)로 저장한다. */}
                                                         <input
-                                                            type="number" name="studentId" required
+                                                            id="apply-studentId"
+                                                            type="text" inputMode="numeric" pattern="[0-9]+" name="studentId" required
                                                             value={formData.studentId} onChange={handleInputChange}
                                                             className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all font-medium"
                                                             placeholder="202612345"
@@ -560,12 +584,10 @@ const Recruit = () => {
 
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                     <div className="space-y-2">
-                                                        {/* select는 placeholder가 없어 이름을 label에서만 받을 수 있다.
-                                                            htmlFor/id로 묶지 않으면 스크린리더가 "선택 항목"으로만 읽는다
-                                                            (Lighthouse select-name 실패 항목이었다). */}
                                                         <label htmlFor="apply-grade" className="block text-sm font-bold text-slate-700">3. 학년 <span className="text-brand-accent">*</span></label>
                                                         <select
-                                                            id="apply-grade" name="grade" required
+                                                            id="apply-grade"
+                                                            name="grade" required
                                                             value={formData.grade} onChange={handleInputChange}
                                                             className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all font-medium appearance-none"
                                                         >
@@ -576,8 +598,9 @@ const Recruit = () => {
                                                         </select>
                                                     </div>
                                                     <div className="space-y-2">
-                                                        <label className="block text-sm font-bold text-slate-700">4. 학과(전공) <span className="text-brand-accent">*</span></label>
+                                                        <label htmlFor="apply-major" className="block text-sm font-bold text-slate-700">4. 학과(전공) <span className="text-brand-accent">*</span></label>
                                                         <input
+                                                            id="apply-major"
                                                             type="text" name="major" required
                                                             value={formData.major} onChange={handleInputChange}
                                                             className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all font-medium"
@@ -587,8 +610,9 @@ const Recruit = () => {
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <label className="block text-sm font-bold text-slate-700">5. 전화번호 <span className="text-brand-accent">*</span></label>
+                                                    <label htmlFor="apply-phone" className="block text-sm font-bold text-slate-700">5. 전화번호 <span className="text-brand-accent">*</span></label>
                                                     <input
+                                                        id="apply-phone"
                                                         type="tel" name="phone" required
                                                         value={formData.phone} onChange={handleInputChange}
                                                         className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all font-medium"
@@ -600,16 +624,25 @@ const Recruit = () => {
                                             {/* 역량 확인 */}
                                             <div className="space-y-6">
                                                 <div className="space-y-3">
-                                                    <label className="block text-sm font-bold text-slate-700">6. 사용 가능한 툴 <span className="text-slate-500 font-medium">(선택)</span></label>
-                                                    <p className="text-xs text-slate-500 mb-2">본인이 다룰 줄 알거나 경험해본 툴을 모두 선택해주세요.</p>
-                                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                                    {/* 항목 이름이 개별 체크박스가 아니라 묶음 전체를 가리킨다. for 대상이 없는
+                                                        <label>은 어디에도 연결되지 않으므로 role="group" + aria-labelledby로 묶는다. */}
+                                                    <span id="apply-tools-label" className="block text-sm font-bold text-slate-700">6. 사용 가능한 툴 <span className="text-slate-500 font-medium">(선택)</span></span>
+                                                    <p id="apply-tools-hint" className="text-xs text-slate-500 mb-2">본인이 다룰 줄 알거나 경험해본 툴을 모두 선택해주세요.</p>
+                                                    <div
+                                                        role="group"
+                                                        aria-labelledby="apply-tools-label"
+                                                        aria-describedby="apply-tools-hint"
+                                                        className="grid grid-cols-2 sm:grid-cols-3 gap-3"
+                                                    >
                                                         {['Excel', 'Python', 'R', 'Notion', 'Figma', '기타(커서 등)', '없음(배워보고싶음)'].map((tool) => (
-                                                            <label key={tool} className="flex items-center space-x-2 cursor-pointer group">
+                                                            // min-h-11 = 44px. 라벨 전체가 터치 타깃이므로 높이는 라벨에서 확보하고,
+                                                            // shrink-0으로 좁은 화면에서도 컨트롤이 20px 아래로 찌그러지지 않게 한다.
+                                                            <label key={tool} className="flex items-center space-x-2 cursor-pointer group min-h-11">
                                                                 <input
                                                                     type="checkbox" value={tool}
                                                                     checked={formData.tools.includes(tool)}
                                                                     onChange={handleCheckboxChange}
-                                                                    className="w-4 h-4 text-brand-500 border-slate-300 rounded focus:ring-brand-500"
+                                                                    className="w-5 h-5 shrink-0 text-brand-500 border-slate-300 rounded focus:ring-brand-500"
                                                                 />
                                                                 <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">{tool}</span>
                                                             </label>
@@ -621,49 +654,69 @@ const Recruit = () => {
                                             {/* 상세 서술 영역 */}
                                             <div className="space-y-8">
                                                 <div className="space-y-2">
-                                                    <label className="block text-sm font-bold text-slate-700">7. 지원 동기 · 목적 <span className="text-brand-accent">*</span></label>
-                                                    <p className="text-xs text-slate-500 mb-2">KBLs에 지원하게 된 계기와 이를 통해 이루고자 하는 개인적인 목표를 서술해주세요.</p>
+                                                    <label htmlFor="apply-motivation" className="block text-sm font-bold text-slate-700">7. 지원 동기 · 목적 <span className="text-brand-accent">*</span></label>
+                                                    <p id="apply-motivation-hint" className="text-xs text-slate-500 mb-2">KBLs에 지원하게 된 계기와 이를 통해 이루고자 하는 개인적인 목표를 서술해주세요.</p>
                                                     <textarea
+                                                        id="apply-motivation"
+                                                        aria-describedby="apply-motivation-hint"
+                                                        maxLength={TEXTAREA_MAX_LENGTH}
                                                         name="motivation" required rows={4}
                                                         value={formData.motivation} onChange={handleInputChange}
                                                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all resize-none font-medium leading-relaxed"
                                                         placeholder="내용을 입력해주세요."
                                                     />
+                                                    <RemainingChars value={formData.motivation} />
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <label className="block text-sm font-bold text-slate-700">8. 관심 분야 · 관심 직무 <span className="text-brand-accent">*</span></label>
-                                                    <p className="text-xs text-slate-500 mb-2">데이터 분석, 개발, 디자인, 기획 등 평소 관심 있는 분야나 희망 직무를 알려주세요.</p>
+                                                    <label htmlFor="apply-interest" className="block text-sm font-bold text-slate-700">8. 관심 분야 · 관심 직무 <span className="text-brand-accent">*</span></label>
+                                                    <p id="apply-interest-hint" className="text-xs text-slate-500 mb-2">데이터 분석, 개발, 디자인, 기획 등 평소 관심 있는 분야나 희망 직무를 알려주세요.</p>
                                                     <textarea
+                                                        id="apply-interest"
+                                                        aria-describedby="apply-interest-hint"
+                                                        maxLength={TEXTAREA_MAX_LENGTH}
                                                         name="interest" required rows={3}
                                                         value={formData.interest} onChange={handleInputChange}
                                                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all resize-none font-medium leading-relaxed"
                                                         placeholder="내용을 입력해주세요."
                                                     />
+                                                    <RemainingChars value={formData.interest} />
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <label className="block text-sm font-bold text-slate-700">9. 공모전·프로젝트 경험 <span className="text-brand-accent">*</span></label>
-                                                    <p className="text-xs text-slate-500 mb-2">과거 진행했던 팀 프로젝트나 교내외 공모전 경험이 있다면 자유롭게 서술해주세요. (없으면 '없음'으로 기재)</p>
+                                                    <label htmlFor="apply-experience" className="block text-sm font-bold text-slate-700">9. 공모전·프로젝트 경험 <span className="text-brand-accent">*</span></label>
+                                                    <p id="apply-experience-hint" className="text-xs text-slate-500 mb-2">과거 진행했던 팀 프로젝트나 교내외 공모전 경험이 있다면 자유롭게 서술해주세요. (없으면 '없음'으로 기재)</p>
                                                     <textarea
+                                                        id="apply-experience"
+                                                        aria-describedby="apply-experience-hint"
+                                                        maxLength={TEXTAREA_MAX_LENGTH}
                                                         name="experience" required rows={4}
                                                         value={formData.experience} onChange={handleInputChange}
                                                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all resize-none font-medium leading-relaxed"
                                                         placeholder="내용을 입력해주세요."
                                                     />
+                                                    <RemainingChars value={formData.experience} />
                                                 </div>
 
                                                 <div className="space-y-3">
-                                                    <label className="block text-sm font-bold text-slate-700">10. 랩실 활동 참여 <span className="text-brand-accent">*</span></label>
-                                                    <p className="text-xs text-slate-500 mb-2">{ORG_INFO.meeting.day} 정기 모임 및 오프라인 랩실 활동 참여가 가능하신가요?</p>
-                                                    <div className="flex space-x-6">
+                                                    {/* 6번 툴 묶음과 같은 이유 — 항목 이름이 라디오 묶음 전체를 가리킨다. */}
+                                                    <span id="apply-participation-label" className="block text-sm font-bold text-slate-700">10. 랩실 활동 참여 <span className="text-brand-accent">*</span></span>
+                                                    <p id="apply-participation-hint" className="text-xs text-slate-500 mb-2">{ORG_INFO.meeting.day} 정기 모임 및 오프라인 랩실 활동 참여가 가능하신가요?</p>
+                                                    <div
+                                                        role="radiogroup"
+                                                        aria-labelledby="apply-participation-label"
+                                                        aria-describedby="apply-participation-hint"
+                                                        className="flex space-x-6"
+                                                    >
                                                         {['예', '어려울 것 같다'].map((opt) => (
-                                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer group">
+                                                            // 라벨 폭이 글자 수를 따라가므로 짧은 선택지("예")는 min-h-11만으로 40x44에 그친다.
+                                                            // min-w-11로 가로도 44px를 채운다.
+                                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer group min-h-11 min-w-11">
                                                                 <input
                                                                     type="radio" name="participation" value={opt} required
                                                                     checked={formData.participation === opt}
                                                                     onChange={handleInputChange}
-                                                                    className="w-4 h-4 text-brand-500 border-slate-300 focus:ring-brand-500"
+                                                                    className="w-5 h-5 shrink-0 text-brand-500 border-slate-300 focus:ring-brand-500"
                                                                 />
                                                                 {/* 같은 폼의 툴 체크박스 라벨과 동일한 hover 피드백 */}
                                                                 <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">{opt}</span>
@@ -673,14 +726,18 @@ const Recruit = () => {
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <label className="block text-sm font-bold text-slate-700">11. 하고 싶은 활동 <span className="text-brand-accent">*</span></label>
-                                                    <p className="text-xs text-slate-500 mb-2">KBLs 합격 시 가장 주도적으로 참여해보고 싶은 스터디나 프로젝트 아이디어를 적어주세요.</p>
+                                                    <label htmlFor="apply-futurePlan" className="block text-sm font-bold text-slate-700">11. 하고 싶은 활동 <span className="text-brand-accent">*</span></label>
+                                                    <p id="apply-futurePlan-hint" className="text-xs text-slate-500 mb-2">KBLs 합격 시 가장 주도적으로 참여해보고 싶은 스터디나 프로젝트 아이디어를 적어주세요.</p>
                                                     <textarea
+                                                        id="apply-futurePlan"
+                                                        aria-describedby="apply-futurePlan-hint"
+                                                        maxLength={TEXTAREA_MAX_LENGTH}
                                                         name="futurePlan" required rows={3}
                                                         value={formData.futurePlan} onChange={handleInputChange}
                                                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all resize-none font-medium leading-relaxed"
                                                         placeholder="내용을 입력해주세요."
                                                     />
+                                                    <RemainingChars value={formData.futurePlan} />
                                                 </div>
                                             </div>
 
@@ -844,7 +901,15 @@ const Recruit = () => {
                                         <span className="text-slate-800">{ORG_INFO.location.room} KBLs 연구실</span>
                                     </p>
                                     <div className="pt-4 flex justify-end">
-                                        <a href="/faq" className="inline-flex items-center text-brand-accent hover:text-brand-600 font-bold transition-colors group">
+                                        {/* 폼 탭 안의 링크는 새 탭으로 연다 — SPA 밖으로 전체 리로드되어 나갔다가
+                                            돌아오면 작성 중이던 지원서가 통째로 사라진다(위 개인정보처리방침 링크와 같은 이유). */}
+                                        <a
+                                            href="/faq"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label="자주 묻는 질문(FAQ) 확인하기 (새 탭에서 열림)"
+                                            className="inline-flex items-center text-brand-accent hover:text-brand-600 font-bold transition-colors group"
+                                        >
                                             자주 묻는 질문(FAQ) 확인하기 <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
                                         </a>
                                     </div>
