@@ -5,6 +5,7 @@ import { ArrowRight, User } from 'lucide-react';
 import FitVisionTab from '../components/FitVisionTab';
 import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
+import { ORG_INFO } from '../lib/orgInfo';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -50,13 +51,16 @@ const GlassCard = ({ role, name, desc }) => (
 );
 
 const Organization = () => {
-    const professor = { role: "지도교수", name: "이상곤 교수", desc: '"데이터와 기획력을 바탕으로 세상을 변화시킬 실무형 인재들의 요람"' };
-    const labLead = { role: "랩실장", name: "김예진", desc: "운영 총괄 및 방향 설정, 회계 투명성 유지" };
+    // 이름·직함은 orgInfo.js 단일 소스에서 온다(지원 페이지 문의처와 공유).
+    // desc는 이 페이지의 표현이라 여기 남긴다 — 사실과 표현의 분리.
+    const [leadInfo, viceInfo, contestInfo, studyInfo, eventsInfo] = ORG_INFO.leads;
+    const professor = { role: ORG_INFO.professor.role, name: `${ORG_INFO.professor.name} 교수`, desc: '"데이터와 기획력을 바탕으로 세상을 변화시킬 실무형 인재들의 요람"' };
+    const labLead = { ...leadInfo, desc: "운영 총괄 및 방향 설정, 회계 투명성 유지" };
     const members = [
-        { role: "부랩실장", name: "지근학", desc: "구성원 소통, 갈등 관리 및 홈페이지 운영" },
-        { role: "공모전 담당", name: "김태우", desc: "팀 매칭, 일정 파악 및 공모전 완주율 관리" },
-        { role: "스터디 담당", name: "송재호", desc: "주제 기획, 리더 배정 및 산출물 완성도 관리" },
-        { role: "일정·행사 담당", name: "김나경", desc: "네트워킹 일정 기획, 회의록 작성" }
+        { ...viceInfo, desc: "구성원 소통, 갈등 관리 및 홈페이지 운영" },
+        { ...contestInfo, desc: "팀 매칭, 일정 파악 및 공모전 완주율 관리" },
+        { ...studyInfo, desc: "주제 기획, 리더 배정 및 산출물 완성도 관리" },
+        { ...eventsInfo, desc: "네트워킹 일정 기획, 회의록 작성" }
     ];
 
     const location = useLocation();

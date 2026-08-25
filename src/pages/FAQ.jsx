@@ -3,6 +3,7 @@ import Seo from '../components/Seo';
 import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
 import { trackEvent } from '../lib/analytics';
+import { ORG_INFO } from '../lib/orgInfo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircleQuestion } from 'lucide-react';
 
@@ -30,7 +31,7 @@ const faqs = [
     },
     {
         question: "Q. 정기 회의 및 주요 활동 시간은 언제인가요?",
-        answer: "랩실 정기 회의는 주로 화요일 오후 6시 이후에 진행됩니다. 그 외 스터디나 공모전 팀 회의는 각 팀원들의 일정에 맞춰 자율적으로 진행됩니다."
+        answer: `랩실 정기 회의는 주로 ${ORG_INFO.meeting.day} ${ORG_INFO.meeting.time}에 진행됩니다. 그 외 스터디나 공모전 팀 회의는 각 팀원들의 일정에 맞춰 자율적으로 진행됩니다.`
     },
     {
         question: "Q. 활동하면서 반드시 지켜야 할 의무가 있나요?",
@@ -38,7 +39,10 @@ const faqs = [
     },
     {
         question: "Q. 스터디는 어떤 방식으로 진행되나요?",
-        answer: "스터디는 1~2주에 1회 진행을 원칙으로 하며 학기당 약 8회 진행됩니다. 전공 심화 학업, 자격증(빅데이터, 컴활 등), 툴(Python, Notion, Figma 등), 취업 준비 등 다양한 주제로 운영됩니다."
+        // 주제 "목록"은 여기 두지 않는다 — Activities의 4개 주제 영역과 같은
+        // 사실이 두 곳에 있으면 동기화는 반드시 실패한다(실제로 어긋났었다).
+        // 운영 방식(주기·횟수)만 여기서 답하고, 영역은 Activities로 보낸다.
+        answer: `스터디는 1~2주에 1회 진행을 원칙으로 하며 학기당 약 8회 진행됩니다. 주제는 고정 커리큘럼이 아니라 매 학기 부원 수요조사를 통해 개설됩니다. 어떤 주제 영역을 다루는지는 Activities 페이지에서 확인해 보세요.`
     },
     {
         question: "Q. 학년별로 권장하는 활동 가이드라인이 있나요?",
@@ -75,7 +79,7 @@ const FAQ = () => {
                             {/* "오른쪽 아래" 같은 위치 설명은 모바일 레이아웃에서 어긋난다.
                                 위치를 설명하는 대신 그 자리에서 바로 보낼 수 있게 mailto를 둔다. */}
                             해결되지 않은 궁금증은{' '}
-                            <a href="mailto:keybridgeleaders@gmail.com" className="text-brand-accent font-semibold hover:underline break-all">keybridgeleaders@gmail.com</a>
+                            <a href={`mailto:${ORG_INFO.email}`} className="text-brand-accent font-semibold hover:underline break-all">{ORG_INFO.email}</a>
                             으로 문의 바랍니다.
                         </motion.p>
                     </motion.div>
