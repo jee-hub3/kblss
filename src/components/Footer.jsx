@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Mail, MapPin } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
 import { ORG_INFO } from '../lib/orgInfo';
 
@@ -61,20 +61,9 @@ const Footer = () => {
                                 <Mail className="w-5 h-5 mr-3 text-slate-500 shrink-0" />
                                 <a href={`mailto:${ORG_INFO.email}`} className="hover:text-brand-400 transition-colors min-w-0 break-all">{ORG_INFO.email}</a>
                             </li>
-                            {/* 공유 링크의 igsi= 추적 파라미터는 떼고 정규 프로필 주소만 쓴다.
-                                링크 텍스트는 계정 핸들 — "인스타그램"만 쓰면 어디로 가는지 안 보인다. */}
-                            <li className="flex items-center mt-4">
-                                <Instagram className="w-5 h-5 mr-3 text-slate-500 shrink-0" />
-                                <a
-                                    href={ORG_INFO.instagram.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={`KBLs 인스타그램 ${ORG_INFO.instagram.handle} (새 탭에서 열림)`}
-                                    className="hover:text-brand-400 transition-colors min-w-0 break-all"
-                                >
-                                    {ORG_INFO.instagram.handle}
-                                </a>
-                            </li>
+                            {/* 인스타그램 링크는 두지 않는다 — 계정 URL이 없어서가 아니라
+                                2026-08 운영진이 SNS 채널 자체를 폐기하기로 결정했다.
+                                새 채널을 열기로 결정하기 전에는 복원하지 말 것. */}
                         </ul>
                     </div>
                 </div>
