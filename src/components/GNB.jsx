@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { trackEvent } from '../lib/analytics';
 import Button from './Button';
 import { DUR, EASE_OUT } from '../lib/motion';
-import { NAV_LINKS } from '../lib/navLinks';
+import { HEADER_LINKS } from '../lib/navLinks';
 
 /* ── z-index 층 규약 ──────────────────────────────
    페이지 콘텐츠 (sticky 포함)  ≤ z-30
@@ -15,8 +15,9 @@ import { NAV_LINKS } from '../lib/navLinks';
    페이지 요소가 z-40 이상이면 모바일 메뉴 오버레이를 뚫는다 —
    /apply 탭바(z-40)와 상세 페이지 뒤로가기(z-50)에서 실제로 났던 충돌이다.
    ───────────────────────────────────────────── */
-/* 메뉴 항목·순서는 src/lib/navLinks.js 단일 소스 — 푸터가 같은 값을 읽는다 */
-const navLinks = NAV_LINKS;
+/* 메뉴 항목·순서는 src/lib/navLinks.js 단일 소스 — 푸터가 같은 값을 읽는다.
+   헤더는 inHeader가 true인 것만 그린다(FAQ는 푸터에만 — 사유는 navLinks.js 주석). */
+const navLinks = HEADER_LINKS;
 
 const GNB = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -56,8 +57,12 @@ const GNB = () => {
                     }`}
             >
                 {/* gap-6: 로고·내비·CTA 세 덩어리의 최소 간격을 보장한다.
-                    로고 영역은 콘텐츠 폭(min-content)으로 고정돼 있어 내비를 좁혀도
-                    그 여유가 전부 오른쪽으로 흘러간다 — 간격은 여기서 만들어야 한다. */}
+                    md(768px)에서는 로고 영역이 콘텐츠 폭(min-content)까지 차 있어
+                    이게 없으면 로고와 첫 메뉴가 0px로 붙는다(겹치진 않지만 로고가
+                    메뉴의 일부처럼 읽힌다). 내비를 좁혀도 그 여유는 전부 오른쪽
+                    CTA 쪽으로 흘러가므로 간격은 여기서 만들어야 한다.
+                    ★ 메뉴가 4개로 줄어든 뒤 실측해도 gap 없이는 여전히 0px다 —
+                      항목 수와 무관한 문제라 그대로 둔다. 지우지 말 것. */}
                 <div className="container mx-auto px-6 md:px-12 flex items-center gap-6">
                     {/* Left: Logo */}
                     <div className="flex-1">
@@ -79,11 +84,10 @@ const GNB = () => {
                     </div>
 
                     {/* Center: Desktop Navigation */}
-                    {/* FAQ가 5번째로 붙으면서 md(768px)에서 내비가 넓어져 로고와 간격이
-                        0px까지 붙었다(겹치진 않지만 로고가 메뉴의 일부처럼 읽힌다).
-                        좁은 구간에서만 항목 간격을 줄이고 lg 이상은 기존 32px를 유지한다 —
-                        항목 간(20px)보다 로고↔내비(24px)가 넓어야 그룹이 구분된다. */}
-                    <nav className="hidden md:flex space-x-5 lg:space-x-8 items-center justify-center">
+                    {/* 항목 간격은 32px 하나로 둔다. FAQ가 5번째로 붙었을 때 md에서만
+                        20px로 줄였었는데, FAQ가 헤더에서 빠져 4개가 된 뒤로는 불필요해
+                        원래 값으로 되돌렸다(폭 압박은 위 gap-6이 해결한다). */}
+                    <nav className="hidden md:flex space-x-8 items-center justify-center">
                         {navLinks.map((item) => (
                             <Link
                                 key={item.name}
