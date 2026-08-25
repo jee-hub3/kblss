@@ -24,25 +24,49 @@ const prefersReducedMotion = typeof window !== 'undefined'
 
 /* 증거 연출(motion.js 참조): 이 섹션의 유일한 모션은 숫자가 목표에 닿는 것이다.
    카드 페이드·시차는 걷어냈다 — 세는 동안 slate(아직), 목표에 닿는 순간
-   기존 그라디언트(완료)로 켜진다. reduced-motion은 처음부터 완료 상태로 렌더. */
+   accent(완료)로 켜진다. 완료 색은 그라디언트가 아니라 단색 accent 하나 —
+   색 규칙(slate=아직/accent=완료)에 제3의 색을 끼우지 않는다.
+   reduced-motion은 처음부터 완료 상태로 렌더. */
 const NumberStat = ({ stat }) => {
     const [done, setDone] = useState(prefersReducedMotion);
     return (
-        <div className="text-center">
+        <div className="border-t border-slate-300 pt-6">
             <div
-                className={`text-4xl md:text-6xl font-extrabold mb-4 inline-flex items-center transition-colors duration-300 ${done
-                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500'
-                    : 'text-slate-500'}`}
+                className={`text-5xl md:text-6xl font-extrabold tracking-tight tabular-nums inline-flex items-baseline transition-colors duration-300 ${done ? 'text-brand-accent' : 'text-slate-500'}`}
             >
                 {prefersReducedMotion
                     ? <span>{stat.num}</span>
                     : <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce onEnd={() => setDone(true)} />}
                 <span>{stat.suffix}</span>
             </div>
-            <div className="text-base text-slate-500 font-medium">{stat.title}</div>
+            <div className="mt-3 text-copy text-slate-600 font-medium">{stat.title}</div>
         </div>
     );
 };
+
+/* 에디토리얼 섹션 헤더 — 홈의 모든 섹션이 같은 체계를 쓴다.
+   전에는 섹션마다 "가운데 정렬 영문 제목 + 부제 + 파스텔 그라디언트 배경"이
+   반복돼 어디서나 본 랜딩처럼 읽혔다. 영문 제목은 번호 달린 오버라인(meta)으로
+   내리고 한글 문장을 헤딩으로 승격, 좌정렬 + 헤어라인 지면으로 바꾼다
+   (Linear의 번호 인덱스 체계 참조). 오버라인 앞의 점은 히어로 그래프의
+   노드 모티프를 섹션 인덱스로 잇는 최소 단위다. */
+const SectionHeader = ({ index, overline, title, desc, link }) => (
+    <div className="mb-14 md:mb-20 md:grid md:grid-cols-12 md:gap-8 md:items-end">
+        <div className="md:col-span-7">
+            <div className="flex items-center gap-3 mb-5">
+                <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-brand-accent" />
+                <span className="text-label font-bold tracking-[0.2em] text-slate-500 uppercase">{index} · {overline}</span>
+            </div>
+            <h2 className="text-heading font-bold text-slate-900 break-keep">{title}</h2>
+        </div>
+        {(desc || link) && (
+            <div className="mt-6 md:mt-0 md:col-span-5 flex flex-col gap-4">
+                {desc && <p className="text-copy text-slate-600 break-keep">{desc}</p>}
+                {link}
+            </div>
+        )}
+    </div>
+);
 
 const Home = () => {
     const navigate = useNavigate();
@@ -110,15 +134,8 @@ const Home = () => {
         try {
             const results = await queryDatabase(NOTION_DB.portfolio);
 
-            const formattedData = results.map((item, index) => {
+            const formattedData = results.map((item) => {
                 const props = item.properties;
-                // Fallback gradients
-                const gradients = [
-                    "from-teal-400 to-emerald-600",
-                    "from-blue-500 to-indigo-600",
-                    "from-violet-500 to-purple-700",
-                    "from-rose-400 to-red-600"
-                ];
 
                 const dateProp = props['기간']?.date;
                 let dateStr = '';
@@ -138,8 +155,9 @@ const Home = () => {
                     date: dateStr,
                     participants: props['참여']?.rich_text?.map(rt => rt.plain_text).join('') || '',
                     achievement: props['성과']?.rich_text?.map(rt => rt.plain_text).join('') || '',
+                    // 무지개 그라디언트 fallback(imageGrad)은 제거 — 이미지 없는 카드는
+                    // slate 지면 하나로 통일한다(팔레트 규율).
                     isFeatured: props['메인 노출']?.checkbox || false, // Assuming checkbox property exists
-                    imageGrad: gradients[index % gradients.length]
                 };
             });
 
@@ -252,17 +270,17 @@ const Home = () => {
             ═══════════════════════════════════════════ */}
             {/* peek 장치: 히어로 바로 다음 섹션만 상단 패딩을 48px로 고정해
                 첫 화면 하단에 제목이 실제로 걸치게 한다(1440에서 pt-24면 12px만 노출).
-                하단은 섹션 간격 체계(py-12 md:py-24)를 그대로 따른다.
-                배경은 히어로(#f8fafc)에서 이어받는다. */}
-            <section className="pt-12 pb-12 md:pb-24 bg-gradient-to-br from-[#f8fafc] via-blue-50/50 to-indigo-50/30 relative overflow-hidden">
-                <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
-
-                <div className="container mx-auto px-6 relative z-10">
-                    <div className="text-center mb-20">
-                        <h2 className="text-heading font-bold mb-6 text-slate-900">KBLs in Numbers</h2>
-                        <p className="text-lg text-slate-500">단순한 스터디를 넘어, 숫자가 증명하는 우리의 몰입</p>
-                    </div>
+                배경은 히어로(#f8fafc=slate-50)를 플랫하게 이어받는다 — 색 그라디언트
+                배경과 장식 blur 원은 걷어냈다(섹션 배경은 white/slate-50 두 지면과
+                헤어라인만 쓴다, SectionHeader 주석 참조). */}
+            <section className="pt-12 pb-16 md:pb-28 bg-[#f8fafc]">
+                <div className="container mx-auto px-6">
+                    <SectionHeader
+                        index="01"
+                        overline="KBLs in Numbers"
+                        title="숫자가 증명하는 우리의 몰입"
+                        desc="단순한 스터디를 넘어, 시작이 아니라 끝까지 간 것을 셉니다."
+                    />
 
                     {isLoadingMetrics ? (
                         <div className="w-full py-20 flex justify-center">
@@ -277,7 +295,7 @@ const Home = () => {
                     ) : kblsNumbersData.length === 0 ? (
                         <DataNotice title="아직 등록된 지표가 없습니다" />
                     ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12">
                             {kblsNumbersData.map((stat) => (
                                 <NumberStat key={stat.id} stat={stat} />
                             ))}
@@ -292,19 +310,16 @@ const Home = () => {
                         오너가 노션을 채우면 배포 없이 나타나는 하위 호환도 그대로다.
                         <details>/<summary>는 네이티브 지원이라 별도 ARIA가 필요 없다. */}
                     {!metricsError && kblsNumbersData.some((s) => s.basis || s.asOf) && (
-                        // 숫자 그룹에 붙은 각주로 둔다. 전에는 mt-12에 68ch 좌측 정렬이라
-                        // 가운데 정렬된 숫자들과 축이 어긋난 채 빈 띠 위에 떠 있었고,
-                        // 그래서 "이 숫자들의 기준"이 아니라 흘린 라벨로 읽혔다.
-                        // 축을 가운데로 맞추고 위 여백을 줄여 숫자 바로 아래에 붙인다.
-                        <details className="group mt-4">
-                            <summary className="min-h-11 flex items-center justify-center gap-1.5 cursor-pointer list-none text-label font-medium text-slate-500 hover:text-slate-700 transition-colors focus-ring rounded-md">
+                        // 숫자 그룹에 붙은 각주로 둔다 — 숫자 그리드가 좌정렬로 바뀌었으므로
+                        // 각주도 같은 축(좌)에 붙인다(축이 어긋나면 흘린 라벨로 읽힌다).
+                        <details className="group mt-8">
+                            <summary className="min-h-11 inline-flex items-center gap-1.5 cursor-pointer list-none text-label font-medium text-slate-500 hover:text-slate-700 transition-colors focus-ring rounded-md">
                                 지표 산출 기준
                                 {/* 접힘 상태에서 눌리는 것임을 보이는 유일한 단서.
                                     회전 속도는 모션 기준의 base(0.3s) — src/lib/motion.js */}
                                 <ChevronDown className={`${ICON.meta} transition-transform duration-300 group-open:rotate-180`} />
                             </summary>
-                            {/* 펼친 내용은 문장이라 좌측 정렬로 읽는다. 축(mx-auto)만 가운데. */}
-                            <ul className="mt-3 space-y-3 max-w-[68ch] mx-auto text-left">
+                            <ul className="mt-3 space-y-3 max-w-[68ch]">
                                 {kblsNumbersData.filter((s) => s.basis || s.asOf).map((stat) => (
                                     <li key={stat.id} className="text-label text-slate-600 leading-relaxed break-keep">
                                         <span className="font-semibold text-slate-700">{stat.title}</span>
@@ -321,17 +336,25 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 3. Our Identity
             ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-indigo-50/30 via-white to-white">
+            <section className="py-16 md:py-28 bg-white border-t border-slate-200">
                 <div className="container mx-auto px-6">
-                    <div className="max-w-4xl mx-auto text-center">
-
-                        <h2 className="text-heading font-bold mb-6 text-slate-900">
-                            <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">K</span>ey <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">B</span>ridge <span className="font-extrabold text-brand-accent tracking-tighter mix-blend-multiply drop-shadow-[0_2px_10px_rgba(37,99,235,0.2)]">L</span>eaders
-                        </h2>
-                        {/* 로고 5-bar 웨이브폼 — 브랜드 이름 바로 아래라 정보(정체성)를
-                            더하는 자리다. 반복은 3자리 이내(Waveform.jsx 헤더 참조). */}
-                        <Waveform className="h-5 w-auto mx-auto mb-8 text-brand-accent/50" />
-                        <p className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight max-w-[68ch] mx-auto">
+                    <div className="md:grid md:grid-cols-12 md:gap-8">
+                        <div className="md:col-span-5">
+                            <div className="flex items-center gap-3 mb-5">
+                                <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-brand-accent" />
+                                <span className="text-label font-bold tracking-[0.2em] text-slate-500 uppercase">02 · Identity</span>
+                            </div>
+                            {/* 낱자 drop-shadow·mix-blend 강조는 걷어냈다 — 이름 자체가
+                                또렷하면 되고, 낱자 효과는 팔레트 규율만 흐린다.
+                                K·B·L accent는 이니셜 정보라 색만 남긴다. */}
+                            <h2 className="text-heading font-bold text-slate-900">
+                                <span className="font-extrabold text-brand-accent">K</span>ey <span className="font-extrabold text-brand-accent">B</span>ridge <span className="font-extrabold text-brand-accent">L</span>eaders
+                            </h2>
+                            {/* 로고 5-bar 웨이브폼 — 브랜드 이름 바로 아래라 정보(정체성)를
+                                더하는 자리다. 반복은 3자리 이내(Waveform.jsx 헤더 참조). */}
+                            <Waveform className="h-5 w-auto mt-6 text-brand-accent/50" />
+                        </div>
+                        <p className="mt-8 md:mt-0 md:col-span-7 text-lg md:text-xl text-slate-800 font-medium leading-relaxed tracking-tight break-keep max-w-[68ch]">
                             KBLs는 다양한 전공과 배경을 가진 사람들이 협력하며 프로젝트를 진행하는 랩실입니다. 단순한 프로젝트 팀이 아니라, 새로운 아이디어를 실현하고 실행력을 키우는 공간입니다.
                         </p>
                     </div>
@@ -341,13 +364,16 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 ★ Bridge Section — Pretendard + Split Layout 이미지
             ═══════════════════════════════════════════ */}
-            <section className="relative py-12 md:py-24 bg-white overflow-hidden border-y border-slate-50">
+            <section className="relative py-16 md:py-28 bg-white">
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-0 items-center">
 
                         {/* Left: Typography — Pretendard 명시 */}
                         <div className="relative z-10 lg:pr-16">
-
+                            <div className="flex items-center gap-3 mb-5">
+                                <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-brand-accent" />
+                                <span className="text-label font-bold tracking-[0.2em] text-slate-500 uppercase">03 · The Bridge</span>
+                            </div>
                             <h2
                                 className="text-heading font-bold text-slate-900 leading-[1.2] tracking-tight"
                                 style={{ fontFamily: "'Pretendard Variable', Pretendard, sans-serif" }}
@@ -372,28 +398,32 @@ const Home = () => {
                             없으면 타이포·그래픽으로 대체. 실제 사진이 확보되면 이 자리를
                             사진 패널로 되돌린다. */}
                         <div className="relative lg:pl-8">
-                            <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border border-slate-100 p-8 md:p-12 overflow-hidden">
-                                {/* 장식 배경 이니셜 — 읽히지 않는 순수 장식 */}
-                                <span aria-hidden="true" className="absolute -top-4 right-2 text-[110px] md:text-[150px] font-black leading-none text-brand-accent/5 select-none pointer-events-none">B</span>
-
-                                {/* '연결의 다리' — 아이디어에서 성장까지를 잇는 타이포 다이어그램 */}
+                            {/* B 워터마크·그라디언트 배경은 걷어냈다(순수 장식). 패널은
+                                플랫한 slate-50 + 헤어라인 — 다이어그램이 주인공이다. */}
+                            <div className="relative rounded-2xl bg-slate-50 border border-slate-200 p-8 md:p-12">
+                                {/* '연결의 다리' — 히어로 그래프와 같은 어휘(점=단계, 선=연결)로
+                                    아이디어에서 성장까지를 잇는다. 실행만 accent — KBLs가
+                                    켜 주는 단계가 실행이라서다. */}
                                 <ol className="relative">
                                     <li>
-                                        <div className="flex items-baseline gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
                                             <span className="text-label font-bold text-slate-500 tracking-widest">01</span>
                                             <span className="text-heading font-extrabold text-slate-900">아이디어</span>
                                         </div>
-                                        <div aria-hidden="true" className="ml-2.5 h-10 w-px bg-gradient-to-b from-brand-accent/60 to-brand-accent/15 my-2" />
+                                        <div aria-hidden="true" className="ml-[2.5px] h-10 w-px bg-slate-300 my-2" />
                                     </li>
                                     <li>
-                                        <div className="flex items-baseline gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-brand-accent shrink-0" />
                                             <span className="text-label font-bold text-slate-500 tracking-widest">02</span>
                                             <span className="text-heading font-extrabold text-brand-accent">실행</span>
                                         </div>
-                                        <div aria-hidden="true" className="ml-2.5 h-10 w-px bg-gradient-to-b from-brand-accent/60 to-brand-accent/15 my-2" />
+                                        <div aria-hidden="true" className="ml-[2.5px] h-10 w-px bg-slate-300 my-2" />
                                     </li>
                                     <li>
-                                        <div className="flex items-baseline gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-slate-900 shrink-0" />
                                             <span className="text-label font-bold text-slate-500 tracking-widest">03</span>
                                             <span className="text-heading font-extrabold text-slate-900">성장</span>
                                         </div>
@@ -411,19 +441,19 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 3. What We Do
             ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-white via-slate-50/70 to-slate-50">
+            <section className="py-16 md:py-28 bg-[#f8fafc] border-t border-slate-200">
                 <div className="container mx-auto px-6">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-20">
-                        <div className="max-w-2xl">
-                            <h2 className="text-heading font-bold mb-6 text-slate-900">What We Do</h2>
-                            <p className="text-lg text-slate-600 leading-relaxed">
-                                이론에서 멈추지 않습니다.<br />KBLs에서는 이런 실전 경험들이 당신의 일상이 됩니다.
-                            </p>
-                        </div>
-                        <Link to="/activities" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-blue-800 transition-colors group">
-                            우리의 활동 방식 자세히 보기 <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
-                        </Link>
-                    </div>
+                    <SectionHeader
+                        index="04"
+                        overline="What We Do"
+                        title="이론에서 멈추지 않습니다"
+                        desc="KBLs에서는 이런 실전 경험들이 당신의 일상이 됩니다."
+                        link={
+                            <Link to="/activities" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-brand-accent-hover transition-colors group focus-ring rounded-md">
+                                우리의 활동 방식 자세히 보기 <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
+                            </Link>
+                        }
+                    />
 
                     <div className="grid md:grid-cols-3 gap-16 md:gap-12">
                         {/* 활동 축 ↔ 아이콘은 iconography.js ACTIVITY_ICONS 단일 소스 */}
@@ -461,20 +491,19 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 5. Featured Portfolio
             ═══════════════════════════════════════════ */}
-            {/* Numbers가 위로 이동해 이전 섹션이 What We Do(to-slate-50)가 됐다 */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-slate-50 via-white to-white">
+            <section className="py-16 md:py-28 bg-white border-t border-slate-200">
                 <div className="container mx-auto px-6">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16">
-                        <div className="max-w-2xl">
-                            <h2 className="text-heading font-bold mb-6 text-slate-900">Featured Portfolio</h2>
-                            <p className="text-lg text-slate-600 leading-relaxed">
-                                치열한 고민 끝에 탄생한 산출물, <br />당신의 다음 포트폴리오가 될 수 있습니다.
-                            </p>
-                        </div>
-                        <Link to="/portfolio" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-blue-800 transition-colors group">
-                            전체 포트폴리오 확인하기 <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
-                        </Link>
-                    </div>
+                    <SectionHeader
+                        index="05"
+                        overline="Featured Portfolio"
+                        title="치열한 고민 끝에 탄생한 산출물"
+                        desc="당신의 다음 포트폴리오가 될 수 있습니다."
+                        link={
+                            <Link to="/portfolio" className="hidden md:inline-flex items-center text-brand-accent font-semibold hover:text-brand-accent-hover transition-colors group focus-ring rounded-md">
+                                전체 포트폴리오 확인하기 <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
+                            </Link>
+                        }
+                    />
 
                     {isLoadingPortfolios ? (
                         <div className="w-full py-20 flex justify-center">
@@ -500,8 +529,9 @@ const Home = () => {
                                     onClick={() => navigate(`/portfolio/${project.id}`, { state: { project } })}
                                     className="cursor-pointer group block"
                                 >
-                                    {/* Thumbnail container */}
-                                    <div className={`w-full aspect-video rounded-2xl overflow-hidden mb-4 relative flex items-center justify-center bg-slate-100`}>
+                                    {/* Thumbnail container — 이미지 없는 카드의 무지개 그라디언트
+                                        fallback은 걷어냈다. 팔레트는 slate 지면 + accent 하나다. */}
+                                    <div className={`w-full aspect-video rounded-2xl overflow-hidden mb-4 relative flex items-center justify-center bg-slate-100 border border-slate-200`}>
                                         {project.imageUrl ? (
                                             <img
                                                 src={project.imageUrl}
@@ -509,9 +539,9 @@ const Home = () => {
                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                                             />
                                         ) : (
-                                            <div className={`w-full h-full flex flex-col items-center justify-center bg-gradient-to-br ${project.imageGrad} text-white/50 group-hover:scale-105 transition-transform duration-700 ease-out`}>
-                                                <ImageIcon className={`${ICON.ui} mb-2`} />
-                                                <span className="text-sm font-bold">이미지가 없습니다</span>
+                                            <div className="w-full h-full flex flex-col items-center justify-center bg-slate-100">
+                                                <ImageIcon className={`${ICON.ui} mb-2 text-slate-400`} />
+                                                <span className="text-sm font-medium text-slate-500">이미지가 없습니다</span>
                                             </div>
                                         )}
                                         {/* Optional subtle overlay */}
@@ -541,17 +571,19 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 6. Who We Are Looking For
             ═══════════════════════════════════════════ */}
-            <section id="fit-section" className="py-12 md:py-24 bg-gradient-to-b from-white to-slate-50">
-                <div className="container mx-auto px-6 text-center">
-                    <div className="mb-16">
-                        <h2 className="text-heading font-bold mb-6 text-slate-900">Who We Are Looking For</h2>
-                        <p className="text-lg text-slate-600">완벽하지 않아도 좋습니다. KBLs는 이런 열정을 가진 분을 기다립니다.</p>
-                    </div>
+            <section id="fit-section" className="py-16 md:py-28 bg-[#f8fafc] border-t border-slate-200">
+                <div className="container mx-auto px-6">
+                    <SectionHeader
+                        index="06"
+                        overline="Who We Are Looking For"
+                        title="완벽하지 않아도 좋습니다"
+                        desc="KBLs는 이런 열정을 가진 분을 기다립니다."
+                    />
 
-                    {/* 태그 필: scale 차이는 5% 이내, 스프링 없이(기준 2·3항). hover
-                        그림자는 제거 — 그림자는 클릭 가능 요소의 단서인데 이 태그는
-                        장식이다(히어로 배지의 그림자 금지와 같은 규칙). */}
-                    <div className="flex flex-wrap justify-center gap-6 mb-16">
+                    {/* 가치 칩: 그림자·알약형은 걷어냈다 — 그림자는 클릭 가능 요소의
+                        단서인데 이 칩은 장식이고(히어로 배지 규칙), 알약+그림자 조합이
+                        양산형 랜딩의 상투였다. 헤어라인 칩으로 지면과 같은 문법을 쓴다. */}
+                    <div className="flex flex-wrap gap-4 mb-14">
                         {/* 핵심 가치 ↔ 아이콘은 iconography.js VALUE_ICONS 단일 소스 —
                             조직 인재상 탭과 같은 아이콘을 쓴다 */}
                         {['실행력', '협업', '주도성'].map((value) => {
@@ -559,7 +591,7 @@ const Home = () => {
                             return (
                                 <div
                                     key={value}
-                                    className="flex items-center bg-white px-8 py-4 rounded-full shadow-sm text-xl font-bold text-slate-800 border border-slate-100"
+                                    className="flex items-center bg-white px-6 py-3.5 rounded-xl text-lg font-bold text-slate-800 border border-slate-200"
                                 >
                                     <ValueIcon className={`${ICON.ui} mr-3 text-brand-accent`} />
                                     #{value}
@@ -568,25 +600,26 @@ const Home = () => {
                         })}
                     </div>
 
-                    <div className="mt-8">
-                        <Link
-                            to="/organization?tab=vision"
-                            className="inline-flex items-center text-lg text-slate-500 hover:text-brand-accent font-bold transition-colors group focus-ring rounded-md"
-                        >
-                            내가 KBLs가 찾는 인재일까? <span className="text-brand-accent ml-2 border-b-2 border-brand-accent/30 pb-0.5">핏(Fit) 확인하기</span>
-                            <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
-                        </Link>
-                    </div>
+                    <Link
+                        to="/organization?tab=vision"
+                        className="inline-flex items-center text-lg text-slate-500 hover:text-brand-accent font-bold transition-colors group focus-ring rounded-md"
+                    >
+                        내가 KBLs가 찾는 인재일까? <span className="text-brand-accent ml-2 border-b-2 border-brand-accent/30 pb-0.5">핏(Fit) 확인하기</span>
+                        <ArrowRight className={`ml-2 ${ICON.ui} group-hover:translate-x-1 transition-transform`} />
+                    </Link>
                 </div>
             </section>
 
             {/* ═══════════════════════════════════════════
                 7. Bottom CTA
             ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24 bg-gradient-to-b from-white to-brand-50 relative overflow-hidden">
-                <div className="container mx-auto px-6 relative z-10 text-center">
+            {/* 마감 CTA는 어두운 지면(slate-900) — 파스텔 그라디언트 마감 대신
+                푸터와 한 덩어리의 어두운 클로징으로 페이지를 닫는다(Activities의
+                다크 섹션·푸터와 같은 지면). 푸터가 border-slate-800으로 구분한다. */}
+            <section className="py-20 md:py-32 bg-slate-900">
+                <div className="container mx-auto px-6 text-center">
                     <div className="max-w-3xl mx-auto">
-                        <h2 className="text-3xl md:text-5xl font-extrabold mb-8 leading-tight text-slate-900">
+                        <h2 className="text-3xl md:text-5xl font-extrabold mb-10 leading-tight text-white break-keep">
                             스스로 문제를 정의하고<br />해결하고 싶다면,<br />KBLs와 함께하세요
                         </h2>
                         <Button to="/apply" size="lg" onClick={() => trackEvent('apply_cta_click', { location: 'home_bottom' })} className="transform hover:-translate-y-0.5">
