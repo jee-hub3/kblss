@@ -1,4 +1,5 @@
 import React from 'react';
+import { ORG_INFO } from '../lib/orgInfo';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
@@ -110,10 +111,10 @@ const Privacy = () => {
                                 <li>
                                     <span className="font-semibold text-slate-800">이메일</span> —{' '}
                                     <a
-                                        href="mailto:keybridgeleaders@gmail.com"
+                                        href={`mailto:${ORG_INFO.email}`}
                                         className="text-brand-accent font-semibold hover:underline break-all"
                                     >
-                                        keybridgeleaders@gmail.com
+                                        {ORG_INFO.email}
                                     </a>
                                 </li>
                             </ul>

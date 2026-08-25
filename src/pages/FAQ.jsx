@@ -3,6 +3,7 @@ import Seo from '../components/Seo';
 import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
 import { trackEvent } from '../lib/analytics';
+import { ORG_INFO } from '../lib/orgInfo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircleQuestion } from 'lucide-react';
 
@@ -30,7 +31,7 @@ const faqs = [
     },
     {
         question: "Q. 정기 회의 및 주요 활동 시간은 언제인가요?",
-        answer: "랩실 정기 회의는 주로 화요일 오후 6시 이후에 진행됩니다. 그 외 스터디나 공모전 팀 회의는 각 팀원들의 일정에 맞춰 자율적으로 진행됩니다."
+        answer: `랩실 정기 회의는 주로 ${ORG_INFO.meeting.day} ${ORG_INFO.meeting.time}에 진행됩니다. 그 외 스터디나 공모전 팀 회의는 각 팀원들의 일정에 맞춰 자율적으로 진행됩니다.`
     },
     {
         question: "Q. 활동하면서 반드시 지켜야 할 의무가 있나요?",
@@ -78,7 +79,7 @@ const FAQ = () => {
                             {/* "오른쪽 아래" 같은 위치 설명은 모바일 레이아웃에서 어긋난다.
                                 위치를 설명하는 대신 그 자리에서 바로 보낼 수 있게 mailto를 둔다. */}
                             해결되지 않은 궁금증은{' '}
-                            <a href="mailto:keybridgeleaders@gmail.com" className="text-brand-accent font-semibold hover:underline break-all">keybridgeleaders@gmail.com</a>
+                            <a href={`mailto:${ORG_INFO.email}`} className="text-brand-accent font-semibold hover:underline break-all">{ORG_INFO.email}</a>
                             으로 문의 바랍니다.
                         </motion.p>
                     </motion.div>

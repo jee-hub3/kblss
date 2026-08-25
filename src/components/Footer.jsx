@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Mail, MapPin } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
+import { ORG_INFO } from '../lib/orgInfo';
 
 const Footer = () => {
     return (
@@ -51,27 +52,27 @@ const Footer = () => {
                         <ul className="space-y-4">
                             <li className="flex items-start">
                                 <MapPin className="w-5 h-5 mr-3 mt-0.5 text-slate-500 shrink-0" />
-                                <span>한국기술교육대학교 제1캠퍼스<br />인문경영관 212호</span>
+                                <span>{ORG_INFO.location.campus}<br />{ORG_INFO.location.room}</span>
                             </li>
                             {/* 이메일이 md 4컬럼 폭(~170px)보다 길어 scrollWidth를 넘겼다.
                                 body overflow-x-hidden에 가려져 안 보였을 뿐 오버플로였다.
                                 min-w-0(플렉스 자식 축소 허용) + break-all로 컬럼 안에서 줄바꿈. */}
                             <li className="flex items-center mt-4">
                                 <Mail className="w-5 h-5 mr-3 text-slate-500 shrink-0" />
-                                <a href="mailto:keybridgeleaders@gmail.com" className="hover:text-brand-400 transition-colors min-w-0 break-all">keybridgeleaders@gmail.com</a>
+                                <a href={`mailto:${ORG_INFO.email}`} className="hover:text-brand-400 transition-colors min-w-0 break-all">{ORG_INFO.email}</a>
                             </li>
                             {/* 공유 링크의 igsi= 추적 파라미터는 떼고 정규 프로필 주소만 쓴다.
                                 링크 텍스트는 계정 핸들 — "인스타그램"만 쓰면 어디로 가는지 안 보인다. */}
                             <li className="flex items-center mt-4">
                                 <Instagram className="w-5 h-5 mr-3 text-slate-500 shrink-0" />
                                 <a
-                                    href="https://www.instagram.com/koreatech_kbls"
+                                    href={ORG_INFO.instagram.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    aria-label="KBLs 인스타그램 @koreatech_kbls (새 탭에서 열림)"
+                                    aria-label={`KBLs 인스타그램 ${ORG_INFO.instagram.handle} (새 탭에서 열림)`}
                                     className="hover:text-brand-400 transition-colors min-w-0 break-all"
                                 >
-                                    @koreatech_kbls
+                                    {ORG_INFO.instagram.handle}
                                 </a>
                             </li>
                         </ul>

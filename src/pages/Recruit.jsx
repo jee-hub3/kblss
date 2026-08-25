@@ -7,6 +7,7 @@ import { RECRUIT_SCHEDULE } from '../lib/recruitSchedule';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
+import { ORG_INFO } from '../lib/orgInfo';
 
 // 서버가 돌려준 필드명을 화면 라벨로 바꿔 보여주기 위한 표.
 // 폼 항목을 추가·변경하면 여기도 함께 고쳐야 안내가 어긋나지 않는다.
@@ -220,7 +221,7 @@ const Recruit = () => {
                                     <section>
                                         <h2 className="text-subhead font-bold text-slate-900 mb-5 tracking-tight">정기 활동 시간</h2>
                                         <ul className="list-disc pl-6 space-y-3 text-slate-700 font-medium text-copy">
-                                            <li>정기 회의 — 매주 화요일 오후 6시 이후</li>
+                                            <li>정기 회의 — 매주 {ORG_INFO.meeting.day} {ORG_INFO.meeting.time}</li>
                                             <li>스터디·공모전 팀 회의 — 팀원 일정에 맞춰 자율 진행</li>
                                         </ul>
                                     </section>
@@ -232,7 +233,7 @@ const Recruit = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {[
                                             { emoji: "✨", text: "유료 생성형 AI 서비스 지원" },
-                                            { emoji: "🏢", text: "인문경영관 212호 전용 학습 공간 제공" },
+                                            { emoji: "🏢", text: `${ORG_INFO.location.room} 전용 학습 공간 제공` },
                                             { emoji: "☕", text: "비품 및 간식 무제한" },
                                             { emoji: "🎓", text: "필수 자격증 취득 비용 전폭 지원" }
                                         ].map((benefit, i) => (
@@ -269,11 +270,11 @@ const Recruit = () => {
                                     {/* 핵심 의무 한 줄은 아코디언 밖에 상시 노출한다.
                                         조건 공개는 지원자를 줄이는 대신 완주율을 올린다. */}
                                     <p className="text-copy text-slate-700 font-medium mb-5 break-keep">
-                                        모든 회원은 <span className="font-bold text-slate-900">학기당 공모전 1회·스터디 1회 참여가 필수</span>이며, 화요일 정기 모임에 참여합니다.
+                                        모든 회원은 <span className="font-bold text-slate-900">학기당 공모전 1회·스터디 1회 참여가 필수</span>이며, {ORG_INFO.meeting.day} 정기 모임에 참여합니다.
                                     </p>
                                     <div className="space-y-4">
                                         {[
-                                            { title: "활동 의무", content: "학기당 공모전/스터디 1회 필수, 화요일 정기 모임" },
+                                            { title: "활동 의무", content: `학기당 공모전/스터디 1회 필수, ${ORG_INFO.meeting.day} 정기 모임` },
                                             {
                                                 title: "경고 규정", content: (
                                                     <div className="space-y-4">
@@ -467,7 +468,7 @@ const Recruit = () => {
 
                                             <div className="space-y-3">
                                                 <label className="block text-sm font-bold text-slate-700">10. 랩실 활동 참여 <span className="text-brand-accent">*</span></label>
-                                                <p className="text-xs text-slate-500 mb-2">화요일 정기 모임 및 오프라인 랩실 활동 참여가 가능하신가요?</p>
+                                                <p className="text-xs text-slate-500 mb-2">{ORG_INFO.meeting.day} 정기 모임 및 오프라인 랩실 활동 참여가 가능하신가요?</p>
                                                 <div className="flex space-x-6">
                                                     {['예', '어려울 것 같다'].map((opt) => (
                                                         <label key={opt} className="flex items-center space-x-2 cursor-pointer">
@@ -509,7 +510,7 @@ const Recruit = () => {
                                                         12. 랩실 활동 참여 및 운영 규정 확인 <span className="text-brand-accent">*</span>
                                                     </span>
                                                     <p className="text-sm text-slate-600 font-medium leading-relaxed">
-                                                        우리 랩실은 학기당 공모전 1회, 스터디 1회 참여가 필수이며 정기 모임(화요일 저녁)에 성실히 참여해야 합니다. 이를 확인하였으며 적극적으로 참여할 것을 동의합니다.
+                                                        우리 랩실은 학기당 공모전 1회, 스터디 1회 참여가 필수이며 정기 모임({ORG_INFO.meeting.day} 저녁)에 성실히 참여해야 합니다. 이를 확인하였으며 적극적으로 참여할 것을 동의합니다.
                                                     </p>
                                                 </div>
                                             </label>
@@ -619,21 +620,21 @@ const Recruit = () => {
                                     <h3 className="font-bold text-slate-900 text-base mb-4">문의 연락처</h3>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[지도교수]</span>
-                                        <span className="text-slate-800">이상곤 교수님</span>
+                                        <span className="text-slate-800">{ORG_INFO.professor.name} 교수님</span>
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[임원진]</span>
-                                        <span className="text-slate-800">김예진 랩실장 / 지근학 부랩실장</span>
+                                        <span className="text-slate-800">{ORG_INFO.leads[0].name} {ORG_INFO.leads[0].role} / {ORG_INFO.leads[1].name} {ORG_INFO.leads[1].role}</span>
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[이메일]</span>
                                         {/* 개인정보처리방침·푸터와 같은 대표 주소로 창구를 하나로 모은다.
                                             열람·정정·삭제 요구를 받을 창구가 갈리면 안 된다. */}
-                                        <span className="text-slate-800"><a href="mailto:keybridgeleaders@gmail.com" className="text-brand-accent font-semibold hover:underline break-all">keybridgeleaders@gmail.com</a></span>
+                                        <span className="text-slate-800"><a href={`mailto:${ORG_INFO.email}`} className="text-brand-accent font-semibold hover:underline break-all">{ORG_INFO.email}</a></span>
                                     </p>
                                     <p className="flex flex-col sm:flex-row sm:items-center border-b border-slate-100 pb-3">
                                         <span className="w-24 text-slate-500 font-bold mb-1 sm:mb-0">[방문 문의]</span>
-                                        <span className="text-slate-800">인문경영관 212호 KBLs 연구실</span>
+                                        <span className="text-slate-800">{ORG_INFO.location.room} KBLs 연구실</span>
                                     </p>
                                     <div className="pt-4 flex justify-end">
                                         <a href="/faq" className="inline-flex items-center text-brand-accent hover:text-brand-600 font-bold transition-colors group">
