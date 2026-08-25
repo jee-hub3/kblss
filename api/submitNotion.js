@@ -1,3 +1,5 @@
+import { getDocWindowPhase } from '../src/lib/recruitSchedule.js';
+
 // 노션 rich_text는 한 항목의 text.content가 2,000자를 넘으면 요청 전체를 400으로
 // 거절한다. 긴 서술형 답변을 한 항목에 통째로 담으면 지원서 제출 자체가 실패하므로
 // 2,000자 단위로 잘라 여러 항목으로 나눠 담는다. 노션은 이어진 항목을 한 문단으로
@@ -21,6 +23,23 @@ const toRichText = (value) => {
 export default async function handler(request, response) {
     if (request.method !== 'POST') {
         return response.status(405).json({ error: 'Method Not Allowed' });
+    }
+
+    // 접수 기간 밖의 제출은 서버에서 막는다. 화면 게이팅은 우회할 수 있고,
+    // 폼을 열어둔 채 마감을 넘긴 요청도 여기로 들어온다.
+    // 판정 기준은 화면과 같은 단일 소스(src/lib/recruitSchedule.js)이며,
+    // 경계가 KST(+09:00)로 못박혀 있어 이 함수가 UTC로 돌아도 결과가 같다.
+    // reason·phase는 클라이언트가 "아직 시작 전"과 "마감"을 구분해
+    // 알맞은 안내를 띄우기 위한 값이다(내부 정보는 싣지 않는다).
+    const docPhase = getDocWindowPhase();
+    if (docPhase !== 'open') {
+        return response.status(403).json({
+            error: docPhase === 'before'
+                ? '서류 접수 기간이 아직 시작되지 않았습니다.'
+                : '이번 학기 서류 접수가 마감되었습니다.',
+            reason: 'doc-window',
+            phase: docPhase,
+        });
     }
 
     try {
