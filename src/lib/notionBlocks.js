@@ -55,3 +55,39 @@ export function headingTagFor(map, type) {
     const level = HEADING_TYPES.indexOf(type) + 1;
     return (map && map[level]) || 'h2';
 }
+
+/**
+ * 연속한 목록 블록을 하나의 <ul>/<ol> 묶음으로 만든다.
+ *
+ * 왜 필요한가 —
+ * 본문 전체를 <ul>로 감싸면 h2·p가 ul의 직계 자식이 되어 list 규칙을 어긴다.
+ * 그렇다고 감싸는 요소를 없애면 이번엔 <li>가 목록 부모를 잃는다(listitem 위반).
+ * 둘 다 피하려면 "목록 항목이 연속한 구간만" 목록으로 감싸야 한다.
+ *
+ * 여백은 지금 규칙을 그대로 옮긴다 — 같은 종류가 앞/뒤에 붙어 있으면 좁게,
+ * 구간의 처음/끝이면 넓게. 그래서 화면은 바뀌지 않는다.
+ * (Tailwind preflight가 ul/ol의 기본 margin·padding·list-style을 지우므로
+ *  묶는 것만으로 생기는 시각 변화도 없다.)
+ */
+const LIST_TAGS = { bulleted_list_item: 'ul', numbered_list_item: 'ol' };
+
+export function groupNotionBlocks(blocks) {
+    const groups = [];
+    (blocks || []).forEach((block, idx) => {
+        const tag = LIST_TAGS[block?.type];
+        if (!tag) {
+            groups.push({ kind: 'block', block });
+            return;
+        }
+
+        const list = blocks[idx - 1]?.type === block.type ? groups[groups.length - 1] : null;
+        const spacing = {
+            mt: blocks[idx - 1]?.type === block.type ? 'mt-1.5' : 'mt-6',
+            mb: blocks[idx + 1]?.type === block.type ? 'mb-1.5' : 'mb-8',
+        };
+
+        if (list && list.kind === 'list') list.items.push({ block, ...spacing });
+        else groups.push({ kind: 'list', tag, key: block.id, items: [{ block, ...spacing }] });
+    });
+    return groups;
+}

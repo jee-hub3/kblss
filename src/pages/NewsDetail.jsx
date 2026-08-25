@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { fetchBlockChildren, fetchPage, mapNewsPage } from '../lib/notion';
-import { buildHeadingTagMap, headingTagFor } from '../lib/notionHeadings';
+import { buildHeadingTagMap, groupNotionBlocks, headingTagFor } from '../lib/notionBlocks';
 import DataNotice from '../components/DataNotice';
 import NotFound from './NotFound';
 import Seo from '../components/Seo';
@@ -232,20 +232,20 @@ const NewsDetail = () => {
                     ) : (
                         <div className="notion-renderer text-lg">
                             <div className="space-y-1">
-                                {blocks.map((block, idx) => {
-                                    const isBullet = block.type === 'bulleted_list_item';
-                                    const isNumbered = block.type === 'numbered_list_item';
-                                    const prevIsSame = idx > 0 && blocks[idx - 1].type === block.type;
-                                    const nextIsSame = idx < blocks.length - 1 && blocks[idx + 1].type === block.type;
-
-                                    let mt = prevIsSame ? 'mt-1.5' : 'mt-6';
-                                    let mb = nextIsSame ? 'mb-1.5' : 'mb-8';
-
-                                    if (isBullet || isNumbered) {
-                                        const content = renderBlock(block);
-                                        return React.cloneElement(content, { className: `${content.props.className} ${mt} ${mb}` });
-                                    }
-                                    return renderBlock(block);
+                                {groupNotionBlocks(blocks).map((group) => {
+                                    if (group.kind !== 'list') return renderBlock(group.block);
+                                    // 목록 항목이 연속한 구간만 ul/ol로 감싼다 — 본문 전체를 감싸면
+                                    // h2·p가 목록의 직계 자식이 되고, 아무것도 감싸지 않으면
+                                    // li가 목록 부모를 잃는다.
+                                    const ListTag = group.tag;
+                                    return (
+                                        <ListTag key={group.key}>
+                                            {group.items.map(({ block, mt, mb }) => {
+                                                const content = renderBlock(block);
+                                                return React.cloneElement(content, { className: `${content.props.className} ${mt} ${mb}` });
+                                            })}
+                                        </ListTag>
+                                    );
                                 })}
                             </div>
                         </div>
