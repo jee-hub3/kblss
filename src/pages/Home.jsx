@@ -7,6 +7,7 @@ import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 import Seo from '../components/Seo';
 import Button from '../components/Button';
+import HeroBackdrop from '../components/HeroBackdrop';
 import { ROUTE_META } from '../lib/routeMeta';
 import { getDocDeadlineLabel, RECRUIT_SCHEDULE } from '../lib/recruitSchedule';
 import { trackEvent } from '../lib/analytics';
@@ -163,33 +164,10 @@ const Home = () => {
             ═══════════════════════════════════════════ */}
             {/* 88dvh: 다음 섹션 윗머리가 살짝 보이게(peek) 해 false bottom을 없앤다 */}
             <section className="relative min-h-[88dvh] flex items-center justify-center pt-20 overflow-hidden bg-[#f8fafc]">
-                {/* Animated Mesh Gradient Blobs.
-                    framer-motion(JS 구동) 대신 CSS 키프레임으로 컴포지터에서만 돌린다
-                    (키프레임 좌표·주기·easing은 index.css에 동일하게 이식).
-                    무한 rAF 구동이 메인스레드 TBT에 얹히는 것을 막기 위한 조치로,
-                    reduced-motion 분기도 index.css의 @media 가드가 담당한다. */}
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                    <div
-                        className="hero-blob hero-blob-1 absolute w-[600px] h-[600px] rounded-full opacity-20 bg-blue-400 blur-[120px]"
-                        style={{ top: '-10%', left: '10%' }}
-                    />
-                    <div
-                        className="hero-blob hero-blob-2 absolute w-[500px] h-[500px] rounded-full opacity-15 bg-teal-400 blur-[120px]"
-                        style={{ top: '20%', right: '5%' }}
-                    />
-                    <div
-                        className="hero-blob hero-blob-3 absolute w-[450px] h-[450px] rounded-full opacity-15 bg-emerald-300 blur-[100px]"
-                        style={{ bottom: '5%', left: '25%' }}
-                    />
-                    <div
-                        className="hero-blob hero-blob-4 absolute w-[550px] h-[550px] rounded-full opacity-10 bg-indigo-400 blur-[130px]"
-                        style={{ top: '40%', left: '50%' }}
-                    />
-                    <div
-                        className="hero-blob hero-blob-5 absolute w-[400px] h-[400px] rounded-full opacity-10 bg-cyan-300 blur-[100px]"
-                        style={{ top: '10%', right: '30%' }}
-                    />
-                </div>
+                {/* 배경은 HeroBackdrop — Bridge 노드-엣지 그래프의 4-레이어 깊이 무대.
+                    기존 blur blob은 그 안의 L0 레이어로 들어갔다(키프레임·reduced-motion
+                    가드는 index.css 그대로). 시차 추적 규약은 컴포넌트 헤더 참조. */}
+                <HeroBackdrop />
 
                 <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
                     <motion.div
