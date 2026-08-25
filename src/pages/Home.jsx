@@ -136,13 +136,16 @@ const Home = () => {
     return (
         // home-flow-bg: 홈 전체가 한 장의 연속 그라디언트를 공유한다(index.css).
         // 섹션 배경은 전부 투명 — 배경이 섹션 경계에서 끊기지 않는다.
-        <div className="w-full home-flow-bg">
+        // overflow-x-clip: 경계 위로 번지는 글로우들의 가로 삐짐만 자른다.
+        // hidden이 아니라 clip이라 스크롤 컨테이너를 만들지 않고(sticky 유지),
+        // 세로 번짐은 그대로 살아 섹션을 잇는다(Organization과 같은 수법).
+        <div className="w-full home-flow-bg overflow-x-clip">
             <Seo {...ROUTE_META['/']} />
             {/* ═══════════════════════════════════════════
                 1. Hero Section — 최초 중앙 정렬 테마로 복구
             ═══════════════════════════════════════════ */}
             {/* 88dvh: 다음 섹션 윗머리가 살짝 보이게(peek) 해 false bottom을 없앤다 */}
-            <section className="relative min-h-[88dvh] flex items-center justify-center pt-20 overflow-hidden">
+            <section className="relative min-h-[88dvh] flex items-center justify-center pt-20">
                 {/* Animated Mesh Gradient Blobs.
                     framer-motion(JS 구동) 대신 CSS 키프레임으로 컴포지터에서만 돌린다
                     (키프레임 좌표·주기·easing은 index.css에 동일하게 이식).
@@ -150,15 +153,19 @@ const Home = () => {
                     reduced-motion 분기도 index.css의 @media 가드가 담당한다.
                     구조: hero-light 래퍼(위치 + 조명 켜지듯 순차 블룸 등장)가
                     hero-blob(크기·색 + 상시 드리프트)을 감싼다 — 등장과 드리프트가
-                    서로 다른 요소의 transform이라 충돌하지 않는다(index.css 참조). */}
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    서로 다른 요소의 transform이라 충돌하지 않는다(index.css 참조).
+                    ★ overflow-hidden을 걷어냈다(섹션·컨테이너 모두) — 글로우가
+                    섹션 경계선에서 잘리는 것이 "배경이 끊긴다"는 인상의 원인이었다.
+                    이제 아래 blob(-12%)이 Identity로 번져 경계를 잇는다.
+                    가로 삐짐은 body의 overflow-x-hidden이 막는다. */}
+                <div className="absolute inset-0 z-0 pointer-events-none">
                     <div className="hero-light hero-light-1 absolute" style={{ top: '-10%', left: '10%' }}>
                         <div className="hero-blob hero-blob-1 w-[600px] h-[600px] rounded-full opacity-20 bg-blue-400 blur-[120px]" />
                     </div>
                     <div className="hero-light hero-light-2 absolute" style={{ top: '20%', right: '5%' }}>
                         <div className="hero-blob hero-blob-2 w-[500px] h-[500px] rounded-full opacity-15 bg-teal-400 blur-[120px]" />
                     </div>
-                    <div className="hero-light hero-light-3 absolute" style={{ bottom: '5%', left: '25%' }}>
+                    <div className="hero-light hero-light-3 absolute" style={{ bottom: '-12%', left: '25%' }}>
                         <div className="hero-blob hero-blob-3 w-[450px] h-[450px] rounded-full opacity-15 bg-emerald-300 blur-[100px]" />
                     </div>
                     <div className="hero-light hero-light-4 absolute" style={{ top: '40%', left: '50%' }}>
@@ -276,7 +283,12 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 3. Bridge — 서사 2장 '팀이 된다' 계속 (Pretendard + Split Layout)
             ═══════════════════════════════════════════ */}
-            <section className="relative py-12 md:py-24 overflow-hidden">
+            <section className="relative py-12 md:py-24">
+                {/* 중간 대역의 앰비언트 글로우 — 히어로·Numbers만 장식이 있고 이
+                    구간이 플랫 화이트라 위아래와 단절돼 보였다. 히어로 blob과 같은
+                    어휘의 옅은 빛을 이어 페이지 전체를 한 대기로 묶는다.
+                    섹션 경계에 걸쳐 번지도록 클리핑하지 않는다(가로는 body가 막음). */}
+                <div aria-hidden="true" className="absolute top-1/4 -right-24 w-[480px] h-[480px] rounded-full bg-blue-100/50 blur-[110px] pointer-events-none" />
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-0 items-center">
 
@@ -414,7 +426,9 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 5. Featured Portfolio — 서사 3장 '만든다' (산출물)
             ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24">
+            <section className="relative py-12 md:py-24">
+                {/* 중간 대역 앰비언트 글로우 ② — Bridge의 것과 좌우 교차로 이어진다 */}
+                <div aria-hidden="true" className="absolute top-1/3 -left-32 w-[420px] h-[420px] rounded-full bg-teal-100/40 blur-[110px] pointer-events-none" />
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -510,7 +524,9 @@ const Home = () => {
                 peek 장치(pt-12)는 Identity로 이관했고, 배경의 blue·indigo 힌트는
                 래퍼의 home-flow-bg 연속 그라디언트가 이 대역에서 깔아 준다
                 (장식 blur 원 2개는 섹션에 남긴다). */}
-            <section className="py-12 md:py-24 relative overflow-hidden">
+            {/* overflow-hidden 없음 — 아래 장식 원(-10%)이 병합 섹션으로 번져
+                Numbers → 마지막 섹션의 경계를 잇는다(히어로와 같은 결정) */}
+            <section className="py-12 md:py-24 relative">
                 <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
 
