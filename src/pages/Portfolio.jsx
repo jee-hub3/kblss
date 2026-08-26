@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Award, Medal, ExternalLink, Sparkles, Filter, ChevronLeft, ChevronRight, Loader2, Info, Image as ImageIcon, Plus, Flag, Star, Circle, Rocket, Pin } from 'lucide-react';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
+import NotionThumb from '../components/NotionThumb';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { fadeInUp, staggerContainer, gridItem, DUR, EASE_OUT } from '../lib/motion';
 
@@ -311,7 +312,15 @@ const Portfolio = () => {
                                         {/* Image Section */}
                                         <div className={`w-full aspect-video ${project.imageUrl ? 'bg-slate-100' : `bg-gradient-to-br ${project.imageGrad}`} relative overflow-hidden`}>
                                             {project.imageUrl ? (
-                                                <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                                /* NotionThumb: lazy + 회색 자리 + 페이드인.
+                                                   전에는 맨 <img>라 loading 지정이 없어(=auto) 화면 밖 카드까지
+                                                   한꺼번에 받았고, 도착하는 순간 튀듯 나타났다. */
+                                                <NotionThumb
+                                                    src={project.imageUrl}
+                                                    alt={project.title}
+                                                    className="w-full h-full"
+                                                    imgClassName="group-hover:scale-105 transition-transform duration-700"
+                                                />
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-white/50">
                                                     <ImageIcon className="w-8 h-8 mb-2" />

@@ -6,6 +6,7 @@ import { ArrowRight, User, Loader2, Pause, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
+import NotionThumb from '../components/NotionThumb';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { fadeInUp, staggerContainer, tabPanelDirectional, VIEWPORT_ONCE } from '../lib/motion';
 
@@ -42,17 +43,23 @@ const FALLBACK_GRADIENTS = [
 ];
 
 /* 16:9 미디어 — 썸네일이 있으면 이미지, 없으면 그라데이션 위에 글 태그를 띄운다.
-   추천 카드와 그리드 카드가 같은 규격을 공유한다(오너 확정: 썸네일은 16:9 제작). */
-const PostMedia = ({ post, className = '', imgClassName = '' }) => (
-    <div className={`aspect-video overflow-hidden ${post.thumbnail ? 'bg-slate-100' : `bg-gradient-to-br ${post.imageGrad}`} ${className}`}>
-        {post.thumbnail ? (
-            <img src={post.thumbnail} alt="" loading="lazy" className={`w-full h-full object-cover ${imgClassName}`} />
-        ) : (
+   추천 카드와 그리드 카드가 같은 규격을 공유한다(오너 확정: 썸네일은 16:9 제작).
+   썸네일은 NotionThumb이 그린다 — 자리를 먼저 잡고 도착하면 페이드인한다. */
+const PostMedia = ({ post, className = '', imgClassName = '', priority = false }) => (
+    post.thumbnail ? (
+        <NotionThumb
+            src={post.thumbnail}
+            className={`aspect-video ${className}`}
+            imgClassName={imgClassName}
+            priority={priority}
+        />
+    ) : (
+        <div className={`aspect-video overflow-hidden bg-gradient-to-br ${post.imageGrad} ${className}`}>
             <div className="w-full h-full flex items-center justify-center">
                 <span className="text-white/70 font-extrabold text-lg tracking-[0.3em] uppercase drop-shadow-sm">KBLs</span>
             </div>
-        )}
-    </div>
+        </div>
+    )
 );
 
 const News = () => {
@@ -124,7 +131,7 @@ const News = () => {
     const [visibleCount, setVisibleCount] = useState(LIST_CHUNK);
 
     /* 탭 전환 방향 — 오른쪽 탭으로 가면 목록이 오른쪽에서, 왼쪽 탭으로 가면
-       왼쪽에서 들어온다(motion.js의 tabPanel). 방향을 안 주면 어느 탭을 눌러도
+       왼쪽에서 들어온다(motion.js의 tabPanelDirectional). 방향을 안 주면 어느 탭을 눌러도
        같은 쪽에서 들어와 '옆으로 넘어가는' 느낌이 나지 않는다. */
     const [slideDir, setSlideDir] = useState(1);
 
@@ -276,7 +283,9 @@ const News = () => {
                                                         className="flex flex-col lg:flex-row h-full bg-white border border-slate-100 shadow-sm rounded-[2rem] md:rounded-[2.5rem] overflow-hidden group hover:shadow-xl hover:border-brand-accent/30 transition-all duration-500 focus-ring"
                                                     >
                                                         <div className="lg:w-7/12 relative overflow-hidden">
-                                                            <PostMedia post={post} className="h-full min-h-full" imgClassName="group-hover:scale-105 transition-transform duration-700" />
+                                                            {/* 첫 슬라이드만 우선 로드 — 첫 화면에 보이는 유일한 이미지다.
+                                                                나머지 슬라이드까지 eager로 두면 화면 밖 이미지와 대역폭을 다툰다. */}
+                                                            <PostMedia post={post} priority={idx === 0} className="h-full min-h-full" imgClassName="group-hover:scale-105 transition-transform duration-700" />
                                                         </div>
                                                         <div className="lg:w-5/12 p-7 md:p-10 lg:p-12 flex flex-col justify-center">
                                                             <div className="flex items-center gap-3 mb-5">
