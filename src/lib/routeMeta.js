@@ -28,7 +28,7 @@ export const ROUTE_META = {
     '/activities': {
         path: '/activities',
         title: 'Activities | KBLs',
-        description: '투명한 공유, 시스템 기반 협업, 결과물 증명. KBLs의 3대 문화와 공모전·스터디 운영 방식을 소개합니다.',
+        description: '공모전, 자체 프로젝트, 스터디. KBLs가 실제로 하는 세 가지 활동과 각 활동이 남기는 산출물을 소개합니다.',
     },
     '/portfolio': {
         path: '/portfolio',

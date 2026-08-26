@@ -1,30 +1,98 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Share2, Users, CheckCircle, Search, LineChart, LayoutTemplate, Rocket, Check, ChevronRight, Wrench, Sparkles } from 'lucide-react';
+import { ArrowRight, Search, LineChart, LayoutTemplate, Rocket, Check, ChevronRight, Wrench, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { fadeInUp, staggerContainer, tabPanel, DUR, EASE_OUT, VIEWPORT_ONCE } from '../lib/motion';
 
-const DnaCard = ({ title, desc, icon: Icon, delay }) => (
+/* ── 이 페이지의 골격 (오너 결정 2026-08-26) ─────────────────────────
+   여기는 "문화 소개"가 아니라 "활동 소개"다. 공모전·자체 프로젝트·스터디
+   세 축이 주인공이고, 세 축은 모두 같은 순서로 답한다:
+     ① 무엇인가(정의) → ② 어떻게 진행되나(시각물) → ③ 무엇이 남나(산출물)
+     → ④ 증거(Portfolio)
+   축마다 레이아웃(밝은/어두운, 1단/탭)은 달라도 AxisHeader·AxisProcessIntro·
+   AxisOutcome 세 조각은 공유한다. 축이 늘면 이 세 조각을 같은 순서로 채울 것.
+
+   문화(구 'Our Culture DNA')는 세 축 아래 '운영 원칙' 밴드로 내려갔다 —
+   활동의 근거로는 남되 헤드라인 자리는 활동에 내준다. 카드 껍데기와 아이콘을
+   걷어낸 텍스트 밴드인 것도 같은 이유(강등의 시각적 신호)다.
+
+   축 이름은 홈 What We Do와 같은 단어를 쓴다(공모전 / 자체 프로젝트 / 스터디).
+   여기서 이름이 갈리면 홈에서 넘어온 방문자가 같은 축을 찾지 못한다. */
+
+const AXES = [
+    { id: 'activity-contest', no: '01', name: '공모전', line: '실제 기업·기관의 과제에 팀으로 도전해 완주합니다.' },
+    { id: 'activity-project', no: '02', name: '자체 프로젝트', line: '우리가 찾은 문제를 MVP까지 직접 만듭니다.' },
+    { id: 'activity-study', no: '03', name: '스터디', line: '필요한 역량을 부원이 직접 열고 함께 채웁니다.' },
+];
+
+/* ① 정의 — 축 번호·이름 / 제목 / 한 줄 정의. tone은 배경 명암만 가른다. */
+const AxisHeader = ({ no, name, title, lead, tone = 'light' }) => (
     <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
+        initial="hidden"
+        whileInView="visible"
         viewport={VIEWPORT_ONCE}
-        transition={{ duration: DUR.reveal, delay, ease: EASE_OUT }}
-        className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100 relative group overflow-hidden"
+        variants={fadeInUp}
+        className="text-center max-w-3xl mx-auto mb-12 md:mb-16"
     >
-        <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-900 group-hover:scale-150 transition-transform duration-700">
-            <Icon className="w-48 h-48" />
+        <div className="flex items-center justify-center gap-3 mb-6">
+            <span className={tone === 'dark' ? 'text-label font-extrabold tracking-widest text-brand-accent-on-dark' : 'text-label font-extrabold tracking-widest text-brand-accent'}>{no}</span>
+            <span aria-hidden="true" className={tone === 'dark' ? 'h-px w-6 bg-slate-600' : 'h-px w-6 bg-slate-300'} />
+            <span className={tone === 'dark' ? 'text-label font-bold tracking-widest text-slate-300' : 'text-label font-bold tracking-widest text-slate-500'}>{name}</span>
         </div>
-        <div className="relative z-10">
-            <div className="w-16 h-16 bg-brand-50 text-brand-accent rounded-2xl flex items-center justify-center mb-8">
-                <Icon className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl md:text-2xl font-extrabold text-slate-900 mb-4 tracking-tight">{title}</h3>
-            <p className="text-copy text-slate-600 font-medium">{desc}</p>
+        <h2 className={tone === 'dark' ? 'text-heading font-extrabold mb-6 leading-tight text-white' : 'text-heading font-extrabold mb-6 leading-tight text-slate-900'}>{title}</h2>
+        <p className={tone === 'dark' ? 'text-lg leading-relaxed break-keep text-slate-300' : 'text-lg leading-relaxed break-keep text-slate-600'}>{lead}</p>
+    </motion.div>
+);
+
+/* ② 진행 — 아래 시각물이 무엇을 보여주는지 한 줄로 먼저 말한다. */
+const AxisProcessIntro = ({ text, tone = 'light' }) => (
+    <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={VIEWPORT_ONCE}
+        variants={fadeInUp}
+        className="text-center max-w-3xl mx-auto mb-8 md:mb-10"
+    >
+        <p className={tone === 'dark' ? 'text-label font-extrabold tracking-widest mb-3 text-slate-400' : 'text-label font-extrabold tracking-widest mb-3 text-slate-500'}>이렇게 진행합니다</p>
+        <p className={tone === 'dark' ? 'text-copy break-keep text-slate-300' : 'text-copy break-keep text-slate-600'}>{text}</p>
+    </motion.div>
+);
+
+/* ③ 산출물 + ④ 증거 — 축마다 이 줄로 닫는다.
+   칩 문구에는 "약속할 수 있는 것"만 적는다. 자격증처럼 개설·취득이 보장되지
+   않는 항목은 넣지 않는다(아래 스터디 '주제 예시' 안내와 같은 기준). */
+const AxisOutcome = ({ items, linkLabel, tone = 'light', className = '' }) => (
+    <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={VIEWPORT_ONCE}
+        variants={fadeInUp}
+        className={'mt-12 pt-8 border-t flex flex-col gap-6 md:flex-row md:items-center md:justify-between '
+            + (tone === 'dark' ? 'border-slate-700 ' : 'border-slate-200 ') + className}
+    >
+        <div className="flex flex-wrap items-center gap-2.5">
+            <span className={tone === 'dark' ? 'text-label font-extrabold tracking-widest mr-1 text-slate-400' : 'text-label font-extrabold tracking-widest mr-1 text-slate-500'}>남는 것</span>
+            {items.map((item) => (
+                <span
+                    key={item}
+                    className={'inline-flex items-center rounded-lg border px-3 py-1.5 text-label font-bold '
+                        + (tone === 'dark' ? 'border-slate-700 bg-slate-800 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-700')}
+                >
+                    {item}
+                </span>
+            ))}
         </div>
+        <Link
+            to="/portfolio"
+            className={'group inline-flex items-center shrink-0 font-bold press focus-ring rounded-lg transition-colors '
+                + (tone === 'dark' ? 'text-brand-accent-on-dark hover:text-blue-300' : 'text-brand-accent hover:text-brand-accent-hover')}
+        >
+            {linkLabel}
+            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </Link>
     </motion.div>
 );
 
@@ -48,7 +116,7 @@ const AnimatedPath = () => (
     </svg>
 );
 
-const ProcessNode = ({ step, title, idx, total }) => (
+const ProcessNode = ({ title, idx }) => (
     <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -56,8 +124,23 @@ const ProcessNode = ({ step, title, idx, total }) => (
         transition={{ duration: 0.5, delay: idx * 0.3 + 0.5 }}
         className="relative z-10 flex flex-col items-center bg-white px-4 md:px-6 py-4 rounded-full border-2 border-brand-100 shadow-md min-w-0 md:min-w-[200px] w-full md:w-auto"
     >
-
         <div className="text-slate-800 font-bold whitespace-nowrap text-base">{title}</div>
+    </motion.div>
+);
+
+/* 운영 원칙 항목 — 구 DnaCard. 카드 껍데기와 아이콘(우상단 워터마크 + 좌측
+   아이콘 박스)을 걷어낸 텍스트 전용 조각이다(오너 결정). 아이콘을 되돌리지 말 것. */
+const PrincipleItem = ({ no, title, desc, delay }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={VIEWPORT_ONCE}
+        transition={{ duration: DUR.reveal, delay, ease: EASE_OUT }}
+        className="border-t-2 border-slate-200 pt-6"
+    >
+        <span className="text-label font-extrabold tracking-widest text-brand-accent">{no}</span>
+        <h3 className="text-subhead font-extrabold text-slate-900 mt-3 mb-3 tracking-tight">{title}</h3>
+        <p className="text-copy text-slate-600 break-keep">{desc}</p>
     </motion.div>
 );
 
@@ -79,8 +162,8 @@ const Activities = () => {
         <div className="w-full bg-white pt-32 pb-32">
             <Seo {...ROUTE_META['/activities']} />
 
-            {/* 1. Hero Section */}
-            <section className="container mx-auto px-6 mb-32 relative">
+            {/* 1. Hero — 활동 선언 + 세 축 목차 */}
+            <section className="container mx-auto px-6 mb-24 md:mb-32 relative">
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
@@ -88,111 +171,95 @@ const Activities = () => {
                     variants={staggerContainer}
                     className="max-w-4xl text-left"
                 >
-                    {/* 빈 stagger 슬롯(내용 없는 motion.div)은 h1 등장을 한 박자 늦추는
-                        데드 코드라 제거했다. */}
                     <motion.h1
                         variants={fadeInUp}
                         className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-[1.3] mb-6 break-keep"
                     >
-                        <span className="text-brand-accent">KBLs만의 일하는 방식</span>을 배웁니다
+                        KBLs는 <span className="text-brand-accent">공모전 · 자체 프로젝트 · 스터디</span><br className="hidden md:block" /> 세 축으로 활동합니다
                     </motion.h1>
                     <motion.p
                         variants={fadeInUp}
                         className="text-sm md:text-base text-slate-600 leading-relaxed font-medium break-keep max-w-3xl"
                     >
-                        치열하게 고민하고, 투명하게 공유하며, 확실한 결과물로 증명하는 <br className="hidden md:block" />KBLs의 성장 문화를 소개합니다.
+                        배우는 데서 멈추지 않습니다. 한 학기의 활동은 이 세 축으로 채워지고, <br className="hidden md:block" />각 활동은 손에 잡히는 산출물로 끝납니다.
                     </motion.p>
                 </motion.div>
+
+                {/* 세 축 스트립 = 페이지 목차. 앵커 점프는 각 축 섹션의 scroll-mt-28이
+                    받는다 — 고정 헤더(GNB) 아래로 제목이 숨지 않게 하는 값이다. */}
+                <motion.nav
+                    aria-label="활동 바로가기"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={VIEWPORT_ONCE}
+                    variants={staggerContainer}
+                    className="mt-12 grid gap-4 md:grid-cols-3"
+                >
+                    {AXES.map((axis) => (
+                        <motion.a
+                            key={axis.id}
+                            href={'#' + axis.id}
+                            variants={fadeInUp}
+                            className="group block rounded-2xl border border-slate-200 bg-white p-6 hover:border-brand-200 hover:bg-brand-50/50 transition-colors press focus-ring"
+                        >
+                            <span className="text-label font-extrabold tracking-widest text-brand-accent">{axis.no}</span>
+                            <span className="mt-3 flex items-center text-subhead font-extrabold text-slate-900">
+                                {axis.name}
+                                {/* 옆에 축 이름이 함께 있으므로 이 셰브론은 장식 — slate-400 허용 */}
+                                <ChevronRight className="ml-auto w-5 h-5 text-slate-400 group-hover:text-brand-accent group-hover:translate-x-1 transition" />
+                            </span>
+                            <p className="mt-2 text-copy text-slate-600 break-keep">{axis.line}</p>
+                        </motion.a>
+                    ))}
+                </motion.nav>
             </section>
 
-            {/* 2. Our Culture DNA */}
-            <section className="bg-slate-50 py-12 md:py-24 rounded-[3rem] mx-4 md:mx-8 mb-12 md:mb-24">
-                <div className="container mx-auto px-6 lg:px-12">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeInUp}
-                        className="mb-16 md:mb-24 text-center"
-                    >
-                        <h2 className="text-heading font-extrabold text-slate-900 mb-6">Our Culture DNA</h2>
-                        <p className="text-lg text-slate-500">KBLs를 움직이는 3가지 핵심 동력</p>
-                    </motion.div>
+            {/* 2. 축 01 — 공모전 */}
+            <section id="activity-contest" className="container mx-auto px-6 scroll-mt-28 mb-32 md:mb-48">
+                <AxisHeader
+                    no="01"
+                    name="공모전"
+                    title={<>한계를 넘는 실전 경험,<br />체계적인 공모전 완주</>}
+                    lead="실제 기업·기관이 내놓은 과제에 팀으로 참가해, 제출과 발표까지 끝내는 활동입니다."
+                />
+                <AxisProcessIntro text="KBLs의 공모전은 팀 빌딩부터 다릅니다. 전체 현황을 점검하는 랩실 임원과 실무를 이끄는 팀장의 이중 관리 시스템을 통해 중도 포기 리스크를 차단합니다." />
 
-                    <div className="grid md:grid-cols-3 gap-8">
-                        <DnaCard
-                            delay={0}
-                            icon={Share2}
-                            title="투명한 공유"
-                            desc="모든 회의록, 진행 상황, 트러블슈팅은 노션(Notion)에 투명하게 기록되고 공유됩니다."
-                        />
-                        <DnaCard
-                            delay={0.08}
-                            icon={Users}
-                            title="시스템 기반 협업"
-                            desc="개인의 의지에만 의존하지 않습니다. 임원-팀장-팀원으로 이어지는 명확한 역할 분담이 무임승차를 방지합니다."
-                        />
-                        <DnaCard
-                            delay={0.16}
-                            icon={CheckCircle}
-                            title="결과물 증명"
-                            desc="배움에서 멈추지 않고 기획서, MVP, 자격증 등 눈에 보이는 실질적인 산출물을 반드시 도출합니다."
-                        />
+                <div className="relative w-full flex items-center bg-slate-50 rounded-3xl p-8 md:h-[260px] overflow-hidden">
+                    {/* SVG Path connecting the nodes */}
+                    <AnimatedPath />
+
+                    <div className="w-full flex flex-col md:flex-row justify-between items-center gap-8 relative z-10 py-4 md:py-0">
+                        <ProcessNode title="조직적 팀 빌딩" idx={0} />
+                        <div className="md:hidden w-1 h-8 bg-brand-200" />
+                        <ProcessNode title="투명한 과정 공유" idx={1} />
+                        <div className="md:hidden w-1 h-8 bg-brand-200" />
+                        <ProcessNode title="최종 완주 & 회고" idx={2} />
                     </div>
                 </div>
+
+                <AxisOutcome
+                    items={["기획서·발표자료", "제출·발표 경험", "팀 회고 기록"]}
+                    linkLabel="공모전 산출물 보기"
+                />
             </section>
 
-            {/* 3. Culture in Action 01 - 공모전 */}
-            <section className="container mx-auto px-6 mb-32 md:mb-48">
-                <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeInUp}
-                        className="lg:w-1/3"
-                    >
-
-                        <h2 className="text-3xl font-extrabold text-slate-900 mb-6 leading-tight">한계를 넘는 실전 경험,<br />체계적인 공모전 완주</h2>
-                        <p className="text-copy text-slate-600">
-                            KBLs의 공모전은 팀 빌딩부터 다릅니다. 전체 현황을 점검하는 랩실 임원과 실무를 이끄는 팀장의 이중 관리 시스템을 통해 중도 포기 리스크를 차단합니다.
-                        </p>
-                    </motion.div>
-
-                    <div className="lg:w-2/3 w-full relative min-h-[400px] md:h-[400px] flex items-center bg-slate-50 rounded-3xl p-8 overflow-hidden">
-                        {/* SVG Path connecting the nodes */}
-                        <AnimatedPath />
-
-                        <div className="w-full flex flex-col md:flex-row justify-between items-center gap-8 relative z-10 py-8 md:py-0">
-                            <ProcessNode step="1" title="조직적 팀 빌딩" idx={0} />
-                            <div className="md:hidden w-1 h-8 bg-brand-200" />
-                            <ProcessNode step="2" title="투명한 과정 공유" idx={1} />
-                            <div className="md:hidden w-1 h-8 bg-brand-200" />
-                            <ProcessNode step="3" title="최종 완주 & 회고" idx={2} />
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 4. Culture in Action 02 - MVP */}
-            <section className="bg-slate-900 py-12 md:py-24 rounded-[3rem] mx-4 md:mx-8 mb-12 md:mb-24 text-white relative overflow-hidden">
+            {/* 3. 축 02 — 자체 프로젝트 (홈 What We Do와 같은 이름) */}
+            <section id="activity-project" className="scroll-mt-28 bg-slate-900 py-12 md:py-24 rounded-[3rem] mx-4 md:mx-8 mb-32 md:mb-48 text-white relative overflow-hidden">
                 {/* Decorative ambient background */}
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-brand-600/30 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
 
                 <div className="container mx-auto px-6 lg:px-12 relative z-10">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeInUp}
-                        className="mb-20 text-center"
-                    >
-
-                        <h2 className="text-heading font-extrabold mb-6 leading-tight">주도적 문제 해결,<br />서비스 기획 및 해커톤</h2>
-                        <p className="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                            누군가 던져준 과제가 아닌, 세상의 문제를 스스로 발굴합니다. 실제 데이터를 분석하여 근거를 찾고, 아이디어를 최소 기능 제품(MVP)으로 구현하여 실무 기획력을 기릅니다.
-                        </p>
-                    </motion.div>
+                    <AxisHeader
+                        tone="dark"
+                        no="02"
+                        name="자체 프로젝트"
+                        title={<>우리가 찾은 문제를,<br />우리 손으로 만듭니다</>}
+                        lead="누군가 던져준 과제가 아니라 우리가 직접 발굴한 문제를, 최소 기능 제품(MVP)으로 구현하는 활동입니다."
+                    />
+                    <AxisProcessIntro
+                        tone="dark"
+                        text="실제 데이터를 분석해 근거를 찾는 데서 시작합니다. 네 단계를 거치며 각 단계의 결과물이 다음 단계의 입력이 됩니다."
+                    />
 
                     {/* Stepper Design */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -236,24 +303,24 @@ const Activities = () => {
                             </motion.div>
                         ))}
                     </div>
+
+                    <AxisOutcome
+                        tone="dark"
+                        items={["문제 정의서", "Figma 프로토타입", "동작하는 MVP"]}
+                        linkLabel="프로젝트 산출물 보기"
+                    />
                 </div>
             </section>
 
-            {/* 5. Culture in Action 03 - 스터디 */}
-            <section className="container mx-auto px-6 mb-32 md:mb-48">
-                <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    variants={fadeInUp}
-                    className="text-center mb-16"
-                >
-
-                    <h2 className="text-heading font-extrabold text-slate-900 mb-6 leading-tight">성장의 뼈대를 세우는<br />체계적인 지식 공유</h2>
-                    <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                        단발성 겉핥기식 스터디를 지양합니다. 스터디는 매 학기 부원 수요조사를 통해 개설되며, 스터디 리더의 주도하에 '결과물 도출'을 목표로 밀도 있게 진행됩니다.
-                    </p>
-                </motion.div>
+            {/* 4. 축 03 — 스터디 */}
+            <section id="activity-study" className="container mx-auto px-6 scroll-mt-28 mb-32 md:mb-48">
+                <AxisHeader
+                    no="03"
+                    name="스터디"
+                    title={<>성장의 뼈대를 세우는<br />체계적인 지식 공유</>}
+                    lead="다음 활동에 필요한 역량을 부원이 직접 열고 함께 채우는 활동입니다. 단발성 겉핥기식 스터디는 지양합니다."
+                />
+                <AxisProcessIntro text="매 학기 부원 수요조사로 개설되고, 스터디 리더의 주도하에 '결과물 도출'을 목표로 밀도 있게 진행됩니다." />
 
                 {/* Custom Tab / Sliding Card Design */}
                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-8 bg-slate-50 p-4 md:p-8 rounded-[2rem] border border-slate-100">
@@ -312,6 +379,49 @@ const Activities = () => {
                         부원이 제안할 수 있는 주제 예시 — ADsP·빅데이터분석기사 자격증 대비, AI 트렌드 리포트 토의 등.
                         개설 여부는 매 학기 수요조사로 정해집니다.
                     </p>
+                </div>
+
+                <AxisOutcome
+                    className="max-w-5xl mx-auto"
+                    items={["정리 노트·학습 기록", "공유 세션 발표자료", "실습 산출물"]}
+                    linkLabel="스터디가 이어진 결과 보기"
+                />
+            </section>
+
+            {/* 5. 운영 원칙 — 구 'Our Culture DNA'. 세 축 아래로 내려온 근거 밴드다. */}
+            <section className="bg-slate-50 rounded-[3rem] mx-4 md:mx-8 py-12 md:py-20 mb-12 md:mb-24">
+                <div className="container mx-auto px-6 lg:px-12">
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={VIEWPORT_ONCE}
+                        variants={fadeInUp}
+                        className="max-w-3xl mb-12 md:mb-16"
+                    >
+                        <h2 className="text-heading font-extrabold text-slate-900 mb-4">이 활동들을 지탱하는 운영 원칙</h2>
+                        <p className="text-copy text-slate-600 break-keep">세 활동이 매 학기 같은 밀도로 굴러가는 이유입니다.</p>
+                    </motion.div>
+
+                    <div className="grid md:grid-cols-3 gap-8 md:gap-10">
+                        <PrincipleItem
+                            no="01"
+                            delay={0}
+                            title="투명한 공유"
+                            desc="모든 회의록, 진행 상황, 트러블슈팅은 노션(Notion)에 투명하게 기록되고 공유됩니다."
+                        />
+                        <PrincipleItem
+                            no="02"
+                            delay={0.08}
+                            title="시스템 기반 협업"
+                            desc="개인의 의지에만 의존하지 않습니다. 임원-팀장-팀원으로 이어지는 명확한 역할 분담이 무임승차를 방지합니다."
+                        />
+                        <PrincipleItem
+                            no="03"
+                            delay={0.16}
+                            title="결과물 증명"
+                            desc="배움에서 멈추지 않고 기획서, MVP 등 눈에 보이는 실질적인 산출물을 반드시 도출합니다."
+                        />
+                    </div>
                 </div>
             </section>
 
