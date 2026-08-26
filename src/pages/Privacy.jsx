@@ -48,7 +48,7 @@ const Privacy = () => {
                                 <li>
                                     <span className="font-semibold text-slate-800">필수 입력</span> — 이름, 학번, 학년, 학과,
                                     전화번호, 지원 동기 및 목적, 관심 분야 및 관심 직무, 공모전·프로젝트 경험,
-                                    랩실 활동 참여 여부, 하고 싶은 활동
+                                    하고 싶은 활동
                                 </li>
                                 <li>
                                     <span className="font-semibold text-slate-800">선택 입력</span> — 사용 가능한 툴

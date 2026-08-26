@@ -45,14 +45,14 @@ export default async function handler(request, response) {
     try {
         const {
             name, studentId, grade, major, phone,
-            tools, motivation, interest, experience, participation, futurePlan, agreement, privacyAgreement
+            tools, motivation, interest, experience, futurePlan, agreement, privacyAgreement
         } = request.body;
 
         // 어떤 항목이 비었는지 함께 돌려준다. 클라이언트가 화면 라벨로 바꿔 안내하므로
         // 사용자가 무엇을 고쳐야 하는지 알 수 있다. 필드명 외의 내부 정보는 싣지 않는다.
         const REQUIRED = {
             name, studentId, grade, major, phone,
-            motivation, interest, experience, participation, futurePlan,
+            motivation, interest, experience, futurePlan,
         };
         const missingFields = Object.keys(REQUIRED).filter((k) => !REQUIRED[k]);
         if (agreement === undefined) missingFields.push('agreement');
@@ -128,9 +128,6 @@ export default async function handler(request, response) {
                     },
                     "공모전·프로젝트 경험": {
                         rich_text: toRichText(experience)
-                    },
-                    "랩실 활동 참여": {
-                        select: { name: participation }
                     },
                     "하고 싶은 활동": {
                         rich_text: toRichText(futurePlan)

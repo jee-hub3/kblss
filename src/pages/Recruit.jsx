@@ -29,7 +29,6 @@ const FIELD_LABELS = {
     motivation: '지원 동기 · 목적',
     interest: '관심 분야 · 관심 직무',
     experience: '공모전·프로젝트 경험',
-    participation: '랩실 활동 참여',
     futurePlan: '하고 싶은 활동',
     agreement: '랩실 활동 참여 및 운영 규정 확인',
     privacyAgreement: '개인정보 수집·이용 동의',
@@ -215,7 +214,6 @@ const Recruit = () => {
         motivation: '',
         interest: '',
         experience: '',
-        participation: '',
         futurePlan: '',
         agreement: false,
         privacyAgreement: false
@@ -296,7 +294,7 @@ const Recruit = () => {
                 setIsSubmitted(true);
                 setFormData({
                     name: '', studentId: '', grade: '', major: '', phone: '',
-                    tools: [], motivation: '', interest: '', experience: '', participation: '', futurePlan: '',
+                    tools: [], motivation: '', interest: '', experience: '', futurePlan: '',
                     agreement: false, privacyAgreement: false
                 });
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -713,35 +711,8 @@ const Recruit = () => {
                                                     <RemainingChars value={formData.experience} />
                                                 </div>
 
-                                                <div className="space-y-3">
-                                                    {/* 6번 툴 묶음과 같은 이유 — 항목 이름이 라디오 묶음 전체를 가리킨다. */}
-                                                    <span id="apply-participation-label" className="block text-sm font-bold text-slate-700">10. 랩실 활동 참여 <span className="text-brand-accent">*</span></span>
-                                                    <p id="apply-participation-hint" className="text-xs text-slate-500 mb-2">{ORG_INFO.meeting.day} 정기 모임 및 오프라인 랩실 활동 참여가 가능하신가요?</p>
-                                                    <div
-                                                        role="radiogroup"
-                                                        aria-labelledby="apply-participation-label"
-                                                        aria-describedby="apply-participation-hint"
-                                                        className="flex space-x-6"
-                                                    >
-                                                        {['예', '어려울 것 같다'].map((opt) => (
-                                                            // 라벨 폭이 글자 수를 따라가므로 짧은 선택지("예")는 min-h-11만으로 40x44에 그친다.
-                                                            // min-w-11로 가로도 44px를 채운다.
-                                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer group min-h-11 min-w-11">
-                                                                <input
-                                                                    type="radio" name="participation" value={opt} required
-                                                                    checked={formData.participation === opt}
-                                                                    onChange={handleInputChange}
-                                                                    className="w-5 h-5 shrink-0 text-brand-500 border-slate-300 focus:ring-brand-500"
-                                                                />
-                                                                {/* 같은 폼의 툴 체크박스 라벨과 동일한 hover 피드백 */}
-                                                                <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">{opt}</span>
-                                                            </label>
-                                                        ))}
-                                                    </div>
-                                                </div>
-
                                                 <div className="space-y-2">
-                                                    <label htmlFor="apply-futurePlan" className="block text-sm font-bold text-slate-700">11. 하고 싶은 활동 <span className="text-brand-accent">*</span></label>
+                                                    <label htmlFor="apply-futurePlan" className="block text-sm font-bold text-slate-700">10. 하고 싶은 활동 <span className="text-brand-accent">*</span></label>
                                                     <p id="apply-futurePlan-hint" className="text-xs text-slate-500 mb-2">KBLs 합격 시 가장 주도적으로 참여해보고 싶은 스터디나 프로젝트 아이디어를 적어주세요.</p>
                                                     <textarea
                                                         id="apply-futurePlan"
@@ -767,7 +738,7 @@ const Recruit = () => {
                                                     />
                                                     <div className="flex-1">
                                                         <span className="block text-sm font-bold text-slate-800 mb-1">
-                                                            12. 랩실 활동 참여 및 운영 규정 확인 <span className="text-brand-accent">*</span>
+                                                            11. 랩실 활동 참여 및 운영 규정 확인 <span className="text-brand-accent">*</span>
                                                         </span>
                                                         <p className="text-sm text-slate-600 font-medium leading-relaxed">
                                                             우리 랩실은 학기당 공모전 1회, 스터디 1회 참여가 필수이며 정기 모임({ORG_INFO.meeting.day} 저녁)에 성실히 참여해야 합니다. 이를 확인하였으며 적극적으로 참여할 것을 동의합니다.
