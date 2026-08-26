@@ -154,6 +154,24 @@
   }
 }
 
+/* 가로 스크롤 스트립(탭·칩 줄)의 스크롤바를 숨긴다.
+   ★ Tailwind 기본에 없는 클래스다 — 플러그인 것을 이름만 쓰고 있어서
+   News(Blog) 필터와 Activities 스터디 탭 두 곳에서 아무 효과가 없었다.
+
+   세로 스크롤바가 오른쪽에 생기던 진짜 원인은 따로 있다: overflow-x가
+   auto면 CSS 규칙상 overflow-y의 visible이 auto로 승격된다. 그래서 자식이
+   1px만 넘쳐도 세로 스크롤바가 붙는다(실측: 버튼 44px vs 콘텐츠 박스 43px).
+   호출부에서 overflow-y-hidden을 함께 주는 이유가 이것이고, 이 유틸은
+   남는 가로 스크롤바까지 지운다. */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;   /* 구 Edge·IE */
+  scrollbar-width: none;      /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;            /* Chrome·Safari */
+  }
+}
+
 /* Activities 공모전 경로 위를 도는 점. framer의 rAF 무한 루프(cx 애니메이션)
    대신 CSS 키프레임으로 돌린다 — hero-blob과 같은 결정(TBT + reduced-motion).
    SVG 자식의 CSS transform은 user unit 기준이라 translateX(900px) = cx 50→950.

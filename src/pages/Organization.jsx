@@ -73,6 +73,18 @@ const Organization = () => {
     const location = useLocation();
     const [activeTab, setActiveTab] = useState('구성');
 
+    /* 탭을 바꾸면 맨 위로 돌려보낸다.
+       탭 스트립이 sticky라 화면에는 남지만 아래 내용은 통째로 갈리므로,
+       스크롤 위치를 그대로 두면 새 탭의 '중간'이 펼쳐진다(오너 리포트 2026-08-27).
+       즉시 이동인 이유: 두 탭의 높이 차가 커서 AnimatePresence 전환 중
+       smooth 스크롤은 문서 높이가 무너지며 취소되고 어중간한 위치에 남는다
+       (/apply 제출 화면에서 같은 원인을 겪었다). /apply 탭 전환도 즉시 이동이다.
+       버튼 onClick에서만 부른다 — ?tab=vision 딥링크는 ScrollToTop이 이미 처리한다. */
+    const selectTab = (tab) => {
+        setActiveTab(tab);
+        window.scrollTo(0, 0);
+    };
+
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const tab = queryParams.get('tab');
@@ -97,7 +109,7 @@ const Organization = () => {
             <div className="sticky top-[80px] z-30 bg-slate-50/90 backdrop-blur-sm flex justify-center mb-10 pt-4">
                 <div className="flex space-x-8">
                     <button
-                        onClick={() => setActiveTab('구성')}
+                        onClick={() => selectTab('구성')}
                         className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors press focus-ring relative ${activeTab === '구성' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                     >
                         구성
@@ -109,7 +121,7 @@ const Organization = () => {
                         )}
                     </button>
                     <button
-                        onClick={() => setActiveTab('인재상')}
+                        onClick={() => selectTab('인재상')}
                         className={`min-h-11 px-3 pb-4 font-bold text-lg md:text-xl transition-colors press focus-ring relative ${activeTab === '인재상' ? "text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
                     >
                         인재상

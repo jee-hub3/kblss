@@ -325,7 +325,7 @@ const Activities = () => {
                 {/* Custom Tab / Sliding Card Design */}
                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-8 bg-slate-50 p-4 md:p-8 rounded-[2rem] border border-slate-100">
                     {/* Tab Headers */}
-                    <div className="flex flex-row md:flex-col md:w-1/3 gap-3 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
+                    <div className="flex flex-row md:flex-col md:w-1/3 gap-3 overflow-x-auto overflow-y-hidden pb-4 md:pb-0 scrollbar-hide">
                         {studyTabs.map((tab, idx) => (
                             <button
                                 key={idx}

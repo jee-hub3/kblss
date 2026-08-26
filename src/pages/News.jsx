@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -122,6 +122,24 @@ const News = () => {
     // 복귀로 때웠는데, 이어 붙이기는 시점이 제자리인 게 올바른 동작이라
     // 문제 자체가 사라진다.
     const [visibleCount, setVisibleCount] = useState(LIST_CHUNK);
+
+    /* 태그를 바꾸면 목록 머리(탭 줄)를 화면 위로 올려 준다.
+       '전체보기'를 벗어나면 위의 추천 글 섹션이 통째로 사라져 아래 내용이
+       한 화면 가까이 위로 튄다 — 스크롤을 그대로 두면 방금 누른 탭이 시야에서
+       벗어난다(오너 리포트 2026-08-27). 탭 줄을 고정 지점으로 삼으면 그 튐이
+       '의도된 이동'이 된다.
+
+       ★ 스크롤은 반드시 렌더 이후(useEffect)에 부른다. onClick 안에서 부르면
+       추천 글이 아직 붙어 있는 '옛 레이아웃' 좌표로 스크롤한 뒤 섹션이 사라져
+       500px 넘게 어긋난다(실측). /apply 제출 화면과 같은 함정이다.
+       reduced-motion은 index.css의 전역 가드가 smooth를 auto로 바꾼다. */
+    const listSectionRef = useRef(null);
+    const didMountRef = useRef(false);
+
+    useEffect(() => {
+        if (!didMountRef.current) { didMountRef.current = true; return; }
+        listSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, [activeFilter]);
 
     const handleFilterChange = (cat) => {
         setActiveFilter(cat);
@@ -313,10 +331,12 @@ const News = () => {
                             글이 주인공인 1열 읽기 컬럼(800px): 밑줄 탭 + 구분선 행,
                             썸네일은 우측 보조(모바일에서는 위로). 카드 그리드는 폐기.
                             위 추천 글 캐러셀은 현행 유지 — 같은 결정의 나머지 반쪽이다. */}
-                        <section className="max-w-[50rem] mx-auto">
+                        <section ref={listSectionRef} className="max-w-[50rem] mx-auto scroll-mt-28">
                             {/* 밑줄 탭 — 태그별 글 수를 함께 보여준다.
                                 글 수는 슬레이트 규칙(밝은 배경 위 slate-500 이상)에 맞춘다. */}
-                            <div className="flex gap-7 border-b border-slate-200 overflow-x-auto scrollbar-hide">
+                            {/* overflow-y-hidden이 필요한 이유는 index.css의 scrollbar-hide 주석 참조 —
+                                overflow-x-auto만 주면 세로 스크롤바가 오른쪽에 딸려 온다 */}
+                            <div className="flex gap-7 border-b border-slate-200 overflow-x-auto overflow-y-hidden scrollbar-hide">
                                 {categories.map(({ name, count }) => (
                                     <button key={name} onClick={() => handleFilterChange(name)}
                                         aria-pressed={activeFilter === name}

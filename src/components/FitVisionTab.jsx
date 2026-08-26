@@ -155,8 +155,12 @@ const FitVisionTab = () => {
                                     <p className="text-base md:text-lg text-slate-500 leading-relaxed max-w-lg break-keep">{v.desc}</p>
                                 </div>
                                 <div className="w-full md:w-1/2 flex justify-center">
-                                    <div className="w-full aspect-[4/3] rounded-[2rem] overflow-hidden relative group">
-                                        <FlexibleImage baseSrc={['/image/value-action', '/image/value-problem', '/image/value-teamwork'][i]} alt={v.title} width={1280} height={698} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                                    {/* 세로 3:4 — 오너 결정(2026-08-27). 이미지 3장이 세로 구도라
+                                        기존 4:3 가로 박스에서는 위아래가 크게 잘려 나갔다.
+                                        ★ width/height는 실제 파일 크기(1080x1440)와 일치해야 한다 —
+                                        어긋나면 CLS 힌트가 틀어진다. 파일을 갈아끼울 때 함께 확인할 것. */}
+                                    <div className="w-full aspect-[3/4] rounded-[2rem] overflow-hidden relative group">
+                                        <FlexibleImage baseSrc={['/image/value-action', '/image/value-problem', '/image/value-teamwork'][i]} alt={v.title} width={1080} height={1440} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
                                     </div>
                                 </div>
                             </motion.div>
