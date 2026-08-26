@@ -1,12 +1,34 @@
-<!-- 파비콘 전용 단순화 자산.
-     kbls-logo.svg(624×689, 드롭섀도 필터 + 바별 그라데이션)를 축소하면
-     16px에서 뭉개져서, 같은 5-bar 웨이브폼 형태를 정사각 viewBox에
-     굵은 바 + 단색(brand-accent #2563eb)으로 다시 그렸다.
-     로고 원본은 GNB 데스크톱에서 계속 쓴다. -->
-<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="35" width="14" height="30" rx="7" fill="#2563eb"/>
-  <rect x="21.5" y="19" width="14" height="62" rx="7" fill="#2563eb"/>
-  <rect x="43" y="0" width="14" height="100" rx="7" fill="#2563eb"/>
-  <rect x="64.5" y="19" width="14" height="62" rx="7" fill="#2563eb"/>
-  <rect x="86" y="35" width="14" height="30" rx="7" fill="#2563eb"/>
+<!-- 파비콘 — kbls-logo.svg(624×689)에서 유래한 같은 5-bar 웨이브폼.
+     원본에서 세 가지를 바꿨고, 이유가 각각 있다(되돌리지 말 것).
+
+     1. 정사각 viewBox — 원본은 624×689라 파비콘 슬롯에서 한쪽이 남는다.
+        마크 중심(312.7, 341.5)을 기준으로 659 정사각을 잘랐다.
+        세로는 꽉 차고 좌우로만 4.9% 여백이 남는다(탭에서는 이게 낫다).
+
+     2. 드롭섀도 필터 제거 — 16px에서 blur 7.5는 0.19px이라 보이지도 않으면서
+        렌더러마다 결과가 달라진다. 원본은 GNB용이라 그대로 둔다.
+
+     3. ★ 그라데이션을 '바별'에서 '마크 전체'로 바꿨다.
+        원본은 바 하나하나가 각자 #1F559C→#21B497를 그리는데, 32px에서 바 하나는
+        4px·16px에서는 2px다. 그 폭 안의 그라데이션은 평균색 하나로 뭉개져
+        다섯 바가 전부 같은 탁한 색(#1f6e9a 부근)이 된다 — 실측으로 확인했다.
+        전체에 걸면 #1f589b→#20ad97로 다섯 단계가 또렷이 진행된다.
+        즉 이 변경은 원본을 훼손하는 게 아니라 작은 크기에서 원본의 의도를
+        유지하기 위한 것이다.
+
+     favicon-32.png / apple-touch-icon.png은 이 파일과 같은 기하·그라데이션에서
+     파생했다(픽셀 실측으로 검증). 이 마크를 고치면 두 PNG도 함께 다시 뽑을 것 —
+     한쪽만 바꾸면 탭과 iOS 홈 화면의 아이콘이 갈린다. -->
+<svg width="659" height="659" viewBox="-16.8 12 659 659" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="kblsWave" x1="15.7" y1="0" x2="609.7" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1F559C"/>
+      <stop offset="1" stop-color="#21B497"/>
+    </linearGradient>
+  </defs>
+  <rect x="15.7" y="272" width="70" height="141" rx="35" fill="url(#kblsWave)"/>
+  <rect x="146.7" y="142" width="70" height="399" rx="35" fill="url(#kblsWave)"/>
+  <rect x="277.7" y="12" width="70" height="659" rx="35" fill="url(#kblsWave)"/>
+  <rect x="408.7" y="142" width="70" height="399" rx="35" fill="url(#kblsWave)"/>
+  <rect x="539.7" y="272" width="70" height="141" rx="35" fill="url(#kblsWave)"/>
 </svg>
