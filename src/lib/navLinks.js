@@ -24,7 +24,8 @@ export const NAV_LINKS = [
     { name: 'Organization', path: '/organization', inHeader: true },
     { name: 'Activities', path: '/activities', inHeader: true },
     { name: 'Portfolio', path: '/portfolio', inHeader: true },
-    { name: 'News', path: '/news', inHeader: true },
+    // 라벨은 Blog, 경로는 /news 유지 — 기존 공유 링크·sitemap을 깨지 않기 위한 오너 결정(2026-08).
+    { name: 'Blog', path: '/news', inHeader: true },
     { name: 'FAQ', path: '/faq', inHeader: false },
 ];
 

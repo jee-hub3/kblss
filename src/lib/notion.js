@@ -41,6 +41,27 @@ export async function fetchBlockChildren(blockId) {
 }
 
 /**
+ * 자식을 품는 블록(표·토글)에 children을 붙여 돌려준다.
+ *
+ * 노션 API는 표의 행(table_row)과 토글의 본문을 최상위 children에 실어주지 않는다 —
+ * has_children인 블록마다 별도 요청이 필요하다. 상세 페이지가 blocks를 받은 직후
+ * 한 번 호출하며, 표·토글이 없는 글에서는 추가 요청이 발생하지 않는다.
+ * 토글 안의 토글까지만 따라간다(depth 2) — 그 아래는 실사용이 없고,
+ * 잘못 만든 깊은 중첩이 요청 폭주로 이어지는 것을 막는다.
+ */
+const NESTED_TYPES = ['table', 'toggle'];
+
+export async function hydrateNestedBlocks(blocks, depth = 2) {
+    if (depth <= 0) return blocks;
+    await Promise.all((blocks || []).map(async (block) => {
+        if (!block?.has_children || !NESTED_TYPES.includes(block.type)) return;
+        block.children = await fetchBlockChildren(block.id);
+        if (block.type === 'toggle') await hydrateNestedBlocks(block.children, depth - 1);
+    }));
+    return blocks;
+}
+
+/**
  * 페이지 하나의 속성을 조회한다.
  *
  * 목록을 거치지 않고 상세 URL로 바로 들어온 경우(공유 링크·새로고침)에 쓴다.
@@ -89,8 +110,9 @@ export function mapNewsPage(page) {
     return {
         id: page.id,
         title: props['이름']?.title?.[0]?.plain_text || '제목 없음',
-        tag: props['태그']?.select?.name || '소식',
-        category: props['태그']?.select?.name || '소식',
+        // 태그 기본값은 '랩실 일상' — '소식' 카테고리는 블로그 전환(2026-08)으로 폐기됐다.
+        tag: props['태그']?.select?.name || '랩실 일상',
+        category: props['태그']?.select?.name || '랩실 일상',
         summary: props['요약']?.rich_text?.[0]?.plain_text || '',
         author: props['작성자']?.rich_text?.[0]?.plain_text || 'KBLs',
         date: dateProp?.start ? dateProp.start.replace(/-/g, '.') : '',

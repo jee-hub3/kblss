@@ -231,6 +231,15 @@ const Recruit = () => {
     // 브라우저 시계는 리렌더 없이 흐르므로 화면 판정만으로는 이 순간을 잡을 수 없다.
     const [serverWindowPhase, setServerWindowPhase] = useState(null);
 
+    // 제출 성공(접수 완료 화면)과 기간 밖 거부(안내 화면)는 긴 폼이 짧은 화면으로
+    // 갈리는 순간이다. 상태 변경과 같은 틱에 부른 smooth 스크롤은 문서 높이가
+    // 무너지며 취소돼 시점이 바닥에 남는다(오너 리포트 2026-08-27) — 그래서
+    // 렌더가 끝난 뒤 즉시 스크롤로 옮긴다. 탭 전환은 URL(search)이 바뀌어
+    // ScrollToTop이 받지만, 이 두 경우는 URL이 그대로라 여기서 처리해야 한다.
+    useEffect(() => {
+        if (isSubmitted || serverWindowPhase) window.scrollTo(0, 0);
+    }, [isSubmitted, serverWindowPhase]);
+
     // 접수 기간 판정 — 사실은 recruitSchedule.js 단일 소스에서만 온다.
     const injectedNow = readInjectedNow(searchParams);
     const docPhase = serverWindowPhase ?? getDocWindowPhase(injectedNow);
@@ -297,7 +306,7 @@ const Recruit = () => {
                     tools: [], motivation: '', interest: '', experience: '', futurePlan: '',
                     agreement: false, privacyAgreement: false
                 });
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // 스크롤 복귀는 isSubmitted 이펙트가 렌더 후에 처리한다(위 주석 참조)
             } else {
                 // 서버 응답 원문은 콘솔에만 남긴다. 화면에 JSON을 그대로 띄우면
                 // 내부 구조가 드러나고, 사용자는 무엇을 고쳐야 할지 알 수 없다.
@@ -306,8 +315,8 @@ const Recruit = () => {
                 // 접수 기간 밖이라 거부된 경우 — 항목 안내가 아니라 기간 안내를
                 // 보여줘야 한다. 폼을 열어둔 채 마감을 넘긴 지원자가 여기로 온다.
                 if (data?.reason === 'doc-window') {
+                    // 스크롤 복귀는 serverWindowPhase 이펙트가 렌더 후에 처리한다
                     setServerWindowPhase(data.phase === 'before' ? 'before' : 'after');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                 }
 

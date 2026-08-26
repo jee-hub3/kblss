@@ -37,8 +37,8 @@ export const ROUTE_META = {
     },
     '/news': {
         path: '/news',
-        title: 'News | KBLs',
-        description: '공모전 수상, 스터디 결과, 활동 회고까지. KBLs 랩실의 최신 소식을 전합니다.',
+        title: 'Blog | KBLs',
+        description: '공모전·프로젝트 회고, 스터디 노트, 인사이트까지. KBLs가 성장해 온 과정의 기록입니다.',
     },
     '/apply': {
         path: '/apply',

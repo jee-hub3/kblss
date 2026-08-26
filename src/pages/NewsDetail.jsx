@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Loader2 } from 'lucide-react';
-import { fetchBlockChildren, fetchPage, mapNewsPage } from '../lib/notion';
+import { ArrowLeft, ChevronRight, ExternalLink, Loader2 } from 'lucide-react';
+import { fetchBlockChildren, fetchPage, hydrateNestedBlocks, mapNewsPage } from '../lib/notion';
 import { buildHeadingTagMap, groupNotionBlocks, headingTagFor } from '../lib/notionBlocks';
 import DataNotice from '../components/DataNotice';
 import NotFound from './NotFound';
@@ -24,6 +24,19 @@ const NewsDetail = () => {
     const [blocks, setBlocks] = useState([]);
     // 블록 하나만 봐서는 태그 레벨을 정할 수 없어 배열 전체로 한 번 계산한다.
     const headingTagMap = useMemo(() => buildHeadingTagMap(blocks), [blocks]);
+
+    // 예상 읽는 시간 — 본문 텍스트 총량 기준(한국어 약 500자/분, 최소 1분).
+    // 본문 블록을 이미 받는 상세에서만 계산한다. 목록 카드에 넣으려면 글마다
+    // 블록 요청이 필요해 노션 3rps 제한과 충돌한다 — 넣지 않기로 함(오너 승인 범위).
+    const readingMinutes = useMemo(() => {
+        const countRichText = (blockList) => (blockList || []).reduce((sum, block) => {
+            const value = block?.[block.type];
+            const own = (value?.rich_text || []).reduce((n, rt) => n + (rt.plain_text?.length || 0), 0);
+            return sum + own + countRichText(block?.children);
+        }, 0);
+        const chars = countRichText(blocks);
+        return chars ? Math.max(1, Math.round(chars / 500)) : 0;
+    }, [blocks]);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState(false);
 
@@ -52,7 +65,9 @@ const NewsDetail = () => {
         setIsLoading(true);
         setLoadError(false);
         try {
-            setBlocks(await fetchBlockChildren(id));
+            // 표의 행과 토글 본문은 별도 요청으로만 온다 — 최상위 블록을 받은 뒤
+            // 자식을 품는 블록에만 children을 붙인다(notion.js 참조).
+            setBlocks(await hydrateNestedBlocks(await fetchBlockChildren(id)));
         } catch (error) {
             console.error("Error fetching Notion blocks:", error);
             setLoadError(true);
@@ -164,10 +179,111 @@ const NewsDetail = () => {
                         {renderRichText(value.rich_text)}
                     </blockquote>
                 );
+            /* ── 블로그 전환(2026-08-27)으로 추가된 블록들 — 스터디 노트에 필수인
+               코드 블록을 포함해, 지원하지 않으면 본문에서 조용히 사라지던 타입들이다. */
+            case 'code': {
+                const codeText = (value.rich_text || []).map((rt) => rt.plain_text).join('');
+                const caption = (value.caption || []).map((c) => c.plain_text).join('');
+                return (
+                    <figure key={id} className="my-8">
+                        <div className="rounded-2xl overflow-hidden bg-slate-900 border border-slate-800">
+                            {value.language && value.language !== 'plain text' && (
+                                <div className="px-5 pt-3 text-label font-bold tracking-widest text-slate-500 uppercase select-none">{value.language}</div>
+                            )}
+                            {/* 가로로 긴 코드는 블록 안에서만 스크롤한다 — 본문 폭을 밀지 않는다 */}
+                            <pre className="p-5 overflow-x-auto text-sm leading-relaxed"><code className="font-mono text-slate-100">{codeText}</code></pre>
+                        </div>
+                        {caption && <figcaption className="mt-2 px-1 text-label text-slate-500">{caption}</figcaption>}
+                    </figure>
+                );
+            }
+            case 'divider':
+                return <hr key={id} className="my-12 border-t border-slate-200" />;
+            case 'table': {
+                // 행(table_row)은 hydrateNestedBlocks가 붙여 준 children에서 온다
+                const rows = (block.children || []).filter((row) => row.type === 'table_row');
+                if (rows.length === 0) return <div key={id} className="hidden" data-type={type}></div>;
+                const headerRow = value.has_column_header ? rows[0] : null;
+                const bodyRows = headerRow ? rows.slice(1) : rows;
+                return (
+                    <div key={id} className="my-8 overflow-x-auto rounded-2xl border border-slate-200">
+                        <table className="w-full text-sm border-collapse">
+                            {headerRow && (
+                                <thead>
+                                    <tr className="bg-slate-50">
+                                        {headerRow.table_row.cells.map((cell, i) => (
+                                            <th key={i} scope="col" className="px-4 py-3 text-left font-bold text-slate-700 border-b border-slate-200 whitespace-nowrap">{renderRichText(cell)}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                            )}
+                            <tbody>
+                                {bodyRows.map((row) => (
+                                    <tr key={row.id} className="border-b border-slate-100 last:border-0">
+                                        {row.table_row.cells.map((cell, i) => (
+                                            value.has_row_header && i === 0
+                                                ? <th key={i} scope="row" className="px-4 py-3 text-left font-bold text-slate-700 bg-slate-50/60">{renderRichText(cell)}</th>
+                                                : <td key={i} className="px-4 py-3 text-slate-600 leading-relaxed">{renderRichText(cell)}</td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                );
+            }
+            case 'toggle':
+                return (
+                    <details key={id} className="my-6 group/toggle rounded-2xl border border-slate-200 bg-slate-50/50 overflow-hidden">
+                        <summary className="cursor-pointer list-none px-6 py-4 font-bold text-slate-800 flex items-center gap-3 hover:bg-slate-50 transition-colors focus-ring">
+                            <ChevronRight className="w-4 h-4 shrink-0 text-slate-500 transition-transform duration-200 group-open/toggle:rotate-90" aria-hidden="true" />
+                            <span>{renderRichText(value.rich_text)}</span>
+                        </summary>
+                        {/* 토글 본문도 본문과 같은 규칙(목록 묶기 포함)으로 렌더한다 */}
+                        <div className="px-6 pb-5 pt-1 text-base">{renderBlockList(block.children)}</div>
+                    </details>
+                );
+            case 'bookmark': {
+                let host = '';
+                try { host = new URL(value.url).hostname.replace(/^www\./, ''); } catch { /* url이 비정상이어도 링크 자체는 살린다 */ }
+                const caption = (value.caption || []).map((c) => c.plain_text).join('');
+                return (
+                    <a
+                        key={id}
+                        href={value.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="my-8 flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-6 py-5 hover:border-brand-accent/40 hover:shadow-md transition-all group/bookmark focus-ring"
+                    >
+                        <span className="min-w-0">
+                            <span className="block font-bold text-slate-800 truncate group-hover/bookmark:text-brand-accent transition-colors">{caption || host || value.url}</span>
+                            <span className="block text-sm text-slate-500 truncate mt-1">{value.url}</span>
+                        </span>
+                        <ExternalLink className="w-5 h-5 shrink-0 text-slate-500" aria-hidden="true" />
+                    </a>
+                );
+            }
             default:
                 return <div key={id} className="hidden" data-type={type}></div>;
         }
     };
+
+    // 목록 묶기 규칙을 적용해 블록 배열을 렌더한다 — 본문과 토글 내부가 공유한다.
+    const renderBlockList = (blockList) => groupNotionBlocks(blockList || []).map((group) => {
+        if (group.kind !== 'list') return renderBlock(group.block);
+        // 목록 항목이 연속한 구간만 ul/ol로 감싼다 — 본문 전체를 감싸면
+        // h2·p가 목록의 직계 자식이 되고, 아무것도 감싸지 않으면
+        // li가 목록 부모를 잃는다.
+        const ListTag = group.tag;
+        return (
+            <ListTag key={group.key}>
+                {group.items.map(({ block, mt, mb }) => {
+                    const content = renderBlock(block);
+                    return React.cloneElement(content, { className: `${content.props.className} ${mt} ${mb}` });
+                })}
+            </ListTag>
+        );
+    });
 
     return (
         <div className="min-h-screen bg-white relative">
@@ -175,7 +291,7 @@ const NewsDetail = () => {
                 type="article"
                 path={`/news/${id}`}
                 title={`${post.title} | KBLs`}
-                description={post.summary || `KBLs 소식 — ${post.title}`}
+                description={post.summary || `KBLs 블로그 — ${post.title}`}
             />
 
             {/* 뒤로가기는 PortfolioDetail과 같은 알약형으로 통일 — 형제 상세 페이지의
@@ -191,9 +307,9 @@ const NewsDetail = () => {
             {/* 헤더 영역 (수직 Flex) */}
             <section className="pt-32 pb-12">
                 <div className="container mx-auto px-6 max-w-3xl flex flex-col items-start gap-y-6">
-                    {/* [1] tag 뱃지 */}
+                    {/* [1] tag 뱃지 — 기본값은 mapNewsPage와 동일('소식'은 블로그 전환으로 폐기) */}
                     <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 font-bold rounded-full text-label tracking-wider">
-                        {post.tag || "소식"}
+                        {post.tag || "랩실 일상"}
                     </span>
 
                     {/* [2] 아주 크고 굵은 title */}
@@ -201,11 +317,18 @@ const NewsDetail = () => {
                         {post.title}
                     </h1>
 
-                    {/* [3] 연한 회색(text-gray-500 text-sm)의 date와 author */}
+                    {/* [3] 연한 회색(text-gray-500 text-sm)의 date와 author.
+                        읽는 시간은 본문 블록이 도착한 뒤에만 붙는다 — 0분을 표시하지 않는다. */}
                     <div className="flex items-center gap-4 text-sm text-gray-500 font-medium">
                         <span>{post.date}</span>
                         <span className="w-1 h-1 rounded-full bg-slate-300" />
                         <span>{post.author}</span>
+                        {readingMinutes > 0 && (
+                            <>
+                                <span className="w-1 h-1 rounded-full bg-slate-300" />
+                                <span>{readingMinutes}분 읽기</span>
+                            </>
+                        )}
                     </div>
                 </div>
             </section>
@@ -233,21 +356,7 @@ const NewsDetail = () => {
                     ) : (
                         <div className="notion-renderer text-lg">
                             <div className="space-y-1">
-                                {groupNotionBlocks(blocks).map((group) => {
-                                    if (group.kind !== 'list') return renderBlock(group.block);
-                                    // 목록 항목이 연속한 구간만 ul/ol로 감싼다 — 본문 전체를 감싸면
-                                    // h2·p가 목록의 직계 자식이 되고, 아무것도 감싸지 않으면
-                                    // li가 목록 부모를 잃는다.
-                                    const ListTag = group.tag;
-                                    return (
-                                        <ListTag key={group.key}>
-                                            {group.items.map(({ block, mt, mb }) => {
-                                                const content = renderBlock(block);
-                                                return React.cloneElement(content, { className: `${content.props.className} ${mt} ${mb}` });
-                                            })}
-                                        </ListTag>
-                                    );
-                                })}
+                                {renderBlockList(blocks)}
                             </div>
                         </div>
                     )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
 import { useNavigate } from 'react-router-dom';
@@ -166,6 +166,15 @@ const Portfolio = () => {
         setCurrentPage(1);
     };
 
+    // 페이지네이션은 라우트가 안 바뀌어 ScrollToTop이 못 받는다 — 콘텐츠는 위에서
+    // 갈리는데 시점은 하단 버튼에 남는 문제(오너 리포트 2026-08-27). 페이지를 넘길 때
+    // 갤러리 머리로 시점을 되돌린다. News(Blog)의 goToPage와 같은 패턴.
+    const gallerySectionRef = useRef(null);
+    const goToPage = (next) => {
+        setCurrentPage(next);
+        gallerySectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     return (
         <div className="w-full bg-slate-50 min-h-screen pt-24 pb-16 md:pt-32 md:pb-32">
             <Seo {...ROUTE_META['/portfolio']} />
@@ -247,8 +256,9 @@ const Portfolio = () => {
                     </div>
                 </section>
 
-                {/* 3. Project Outputs Gallery */}
-                <section>
+                {/* 3. Project Outputs Gallery — scroll-mt-28은 페이지 넘김 복귀 시
+                    고정 헤더(GNB) 아래로 제목이 숨지 않게 하는 값 */}
+                <section ref={gallerySectionRef} className="scroll-mt-28">
                     <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
                         <h2 className="text-2xl font-bold text-slate-900">Featured Work</h2>
 
@@ -346,18 +356,18 @@ const Portfolio = () => {
                     {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="flex items-center justify-center gap-2 mt-16">
-                            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
+                            <button onClick={() => goToPage(Math.max(1, currentPage - 1))} disabled={currentPage === 1}
                                 aria-label="이전 페이지"
                                 className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
                                 <ChevronLeft className="w-4 h-4" />
                             </button>
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                <button key={page} onClick={() => setCurrentPage(page)}
+                                <button key={page} onClick={() => goToPage(page)}
                                     className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold transition-all press focus-ring ${currentPage === page ? 'bg-slate-900 text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
                                     {page}
                                 </button>
                             ))}
-                            <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
+                            <button onClick={() => goToPage(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages}
                                 aria-label="다음 페이지"
                                 className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all press focus-ring">
                                 <ChevronRight className="w-4 h-4" />
@@ -379,7 +389,7 @@ const Portfolio = () => {
                             onClick={() => navigate('/news')}
                             className="group inline-flex items-center bg-brand-accent hover:bg-brand-accent-hover text-white font-bold px-10 py-5 rounded-full text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 press focus-ring"
                         >
-                            KBLs의 새로운 소식을 확인해보세요
+                            활동 뒤에 남은 기록, 블로그에서 읽어보세요
                         </button>
                     </motion.div>
                 </section>
