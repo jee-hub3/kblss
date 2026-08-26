@@ -204,14 +204,15 @@ const Home = () => {
                         animate="visible"
                         className="text-display font-extrabold text-slate-900 mb-8"
                     >
-                        {/* 강조어 밑줄 스윕 — 스테이징이 끝난 뒤 왼→오로 그어진다
-                            (transform 전용, 1회. 딜레이·키프레임은 index.css hero-underline).
-                            버튼이 빠진 히어로에서 카피가 연출을 이어받는 장치다. */}
+                        {/* 강조어 밑줄 스윕은 2026-08-27 오너 지시로 제거했다 —
+                            강조는 색(brand-accent) + 굵기(font-black)만으로 한다.
+                            index.css의 .hero-underline 규칙·키프레임도 함께 지웠으니
+                            되살리려면 양쪽을 같이 복원해야 한다. */}
                         <motion.span variants={heroFadeInUp} className="block">
-                            아이디어를 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">실행</span><span aria-hidden="true" className="hero-underline hero-underline-1 absolute left-0 right-0 bottom-[0.08em] h-[0.14em] rounded-full bg-brand-accent/25 origin-left" /></span>으로
+                            아이디어를 <span className="font-black text-brand-accent">실행</span>으로
                         </motion.span>
                         <motion.span variants={heroFadeInUp} className="block mt-2">
-                            사람을 <span className="relative inline-block"><span className="relative z-10 font-black text-brand-accent">연결</span><span aria-hidden="true" className="hero-underline hero-underline-2 absolute left-0 right-0 bottom-[0.08em] h-[0.14em] rounded-full bg-brand-accent/25 origin-left" /></span>로
+                            사람을 <span className="font-black text-brand-accent">연결</span>로
                         </motion.span>
                         <motion.span variants={heroFadeInUp} className="block mt-6 text-xl md:text-2xl text-slate-900 font-bold">
                             우리가 함께 성장을 증명하는 곳
@@ -260,7 +261,7 @@ const Home = () => {
             {/* peek 장치(Numbers에서 이관): 히어로 바로 다음 섹션만 상단 패딩을
                 48px로 고정해 첫 화면 하단에 제목이 실제로 걸치게 한다(false bottom
                 방지). 배경은 래퍼의 home-flow-bg 연속 그라디언트가 담당한다. */}
-            <section className="pt-12 pb-12 md:pb-24">
+            <section className="pt-12 pb-16 md:pb-32">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -283,7 +284,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 3. Bridge — 서사 2장 '팀이 된다' 계속 (Pretendard + Split Layout)
             ═══════════════════════════════════════════ */}
-            <section className="relative py-12 md:py-24">
+            <section className="relative py-16 md:py-32">
                 {/* 중간 대역의 앰비언트 글로우 — 히어로·Numbers만 장식이 있고 이
                     구간이 플랫 화이트라 위아래와 단절돼 보였다. 히어로 blob과 같은
                     어휘의 옅은 빛을 이어 페이지 전체를 한 대기로 묶는다.
@@ -370,7 +371,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 4. What We Do — 서사 3장 '만든다'
             ═══════════════════════════════════════════ */}
-            <section className="py-12 md:py-24">
+            <section className="py-16 md:py-32">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial="hidden"
@@ -426,7 +427,7 @@ const Home = () => {
             {/* ═══════════════════════════════════════════
                 5. Featured Portfolio — 서사 3장 '만든다' (산출물)
             ═══════════════════════════════════════════ */}
-            <section className="relative py-12 md:py-24">
+            <section className="relative py-16 md:py-32">
                 {/* 중간 대역 앰비언트 글로우 ② — Bridge의 것과 좌우 교차로 이어진다 */}
                 <div aria-hidden="true" className="absolute top-1/3 -left-32 w-[420px] h-[420px] rounded-full bg-teal-100/40 blur-[110px] pointer-events-none" />
                 <div className="container mx-auto px-6">
@@ -526,7 +527,7 @@ const Home = () => {
                 (장식 blur 원 2개는 섹션에 남긴다). */}
             {/* overflow-hidden 없음 — 아래 장식 원(-10%)이 병합 섹션으로 번져
                 Numbers → 마지막 섹션의 경계를 잇는다(히어로와 같은 결정) */}
-            <section className="py-12 md:py-24 relative">
+            <section className="py-16 md:py-32 relative">
                 <div className="absolute top-0 right-[-10%] w-[40%] aspect-square bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-[-10%] left-[-5%] w-[30%] aspect-square bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
 
@@ -624,7 +625,7 @@ const Home = () => {
                 GA4 apply_cta_click location은 'home_bottom' 유지 — 병합 후에도
                 홈 최하단 CTA라는 의미가 같아 기존 데이터와 연속 비교 가능하다.
                 배경은 래퍼의 home-flow-bg가 brand-50으로 닫아 준다. */}
-            <section id="fit-section" className="py-12 md:py-24">
+            <section id="fit-section" className="py-16 md:py-32">
                 <div className="container mx-auto px-6 text-center">
                     <motion.div
                         initial="hidden"

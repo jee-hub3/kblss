@@ -251,17 +251,8 @@
 
 /* 카피 강조어(실행·연결) 밑줄 스윕 — 히어로 스테이징(h1 stagger 0.15×3 +
    0.8s)이 끝나는 시점 뒤에 왼→오로 1회 그어진다. transform 전용. */
-.hero-underline {
-  transform: scaleX(0);
-  animation: hero-underline 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.hero-underline-1 { animation-delay: 1.15s; }
-.hero-underline-2 { animation-delay: 1.4s; }
-
-@keyframes hero-underline {
-  to { transform: scaleX(1); }
-}
+/* .hero-underline(강조어 밑줄 스윕)은 2026-08-27 오너 지시로 제거했다.
+   Home.jsx의 마크업도 함께 지웠다 — 되살리려면 양쪽을 같이 복원할 것. */
 
 /* Home 히어로 blob. framer-motion의 무한 rAF 루프 대신 CSS 키프레임으로
    컴포지터에서만 돌린다(transform 전용 + will-change로 레이어 승격).
