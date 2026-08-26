@@ -14,7 +14,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, CalendarClock, CalendarX2, CheckCircle2, ChevronDown, Loader2, Mail, Phone } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
-import { ORG_INFO, getLeadsByTier } from '../lib/orgInfo';
+import { ORG_INFO, getLeadsByTier, getMeetingLabel } from '../lib/orgInfo';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { tabPanel, ACCORDION_TRANSITION } from '../lib/motion';
 
@@ -419,7 +419,7 @@ const Recruit = () => {
                                     <section>
                                         <h2 className="text-subhead font-bold text-slate-900 mb-5 tracking-tight">정기 활동 시간</h2>
                                         <ul className="list-disc pl-6 space-y-3 text-slate-700 font-medium text-copy">
-                                            <li>정기 회의 — 매주 {ORG_INFO.meeting.day} {ORG_INFO.meeting.time}</li>
+                                            <li>정기 회의 — {getMeetingLabel()} <span className="text-slate-500">(요일 추후 공지)</span></li>
                                             <li>스터디·공모전 팀 회의 — 팀원 일정에 맞춰 자율 진행</li>
                                         </ul>
                                     </section>
@@ -468,25 +468,13 @@ const Recruit = () => {
                                     {/* 핵심 의무 한 줄은 아코디언 밖에 상시 노출한다.
                                         조건 공개는 지원자를 줄이는 대신 완주율을 올린다. */}
                                     <p className="text-copy text-slate-700 font-medium mb-5 break-keep">
-                                        모든 회원은 <span className="font-bold text-slate-900">학기당 공모전 1회·스터디 1회 참여가 필수</span>이며, {ORG_INFO.meeting.day} 정기 모임에 참여합니다.
+                                        모든 회원은 <span className="font-bold text-slate-900">학기당 공모전 1회·스터디 1회 참여가 필수</span>이며, {getMeetingLabel()} 정기 모임에 참여합니다.
                                     </p>
                                     <div className="space-y-4">
+                                        {/* '경고 규정' 항목은 2026-08-27 오너 지시로 제거했다
+                                            (FAQ의 같은 문항, orgInfo.warning도 함께 삭제). 복원하지 말 것. */}
                                         {[
-                                            { title: "활동 의무", content: `학기당 공모전/스터디 1회 필수, ${ORG_INFO.meeting.day} 정기 모임` },
-                                            {
-                                                // 경고 사유는 ORG_INFO.warning이 단일 소스 — FAQ 답변과 같은 문장이어야 한다
-                                                title: "경고 규정", content: (
-                                                    <div className="space-y-4">
-                                                        <p className="font-bold text-slate-800">다음의 경우 {ORG_INFO.warning.method}</p>
-                                                        <ul className="list-inside list-disc pl-2 space-y-2 text-slate-600">
-                                                            {ORG_INFO.warning.reasons.map((reason) => (
-                                                                <li key={reason}>{reason}</li>
-                                                            ))}
-                                                        </ul>
-                                                        <p className="pt-2 text-sm text-slate-500">상세 내용이 궁금하시면 문의 부탁드립니다.</p>
-                                                    </div>
-                                                )
-                                            }
+                                            { title: "활동 의무", content: `학기당 공모전/스터디 1회 필수, ${getMeetingLabel()} 정기 모임 (요일 추후 공지)` },
                                         ].map((rule, i) => (
                                             <div key={i} className="border border-slate-200 rounded-2xl bg-white overflow-hidden">
                                                 <button
@@ -750,7 +738,7 @@ const Recruit = () => {
                                                             11. 랩실 활동 참여 및 운영 규정 확인 <span className="text-brand-accent">*</span>
                                                         </span>
                                                         <p className="text-sm text-slate-600 font-medium leading-relaxed">
-                                                            우리 랩실은 학기당 공모전 1회, 스터디 1회 참여가 필수이며 정기 모임({ORG_INFO.meeting.day} 저녁)에 성실히 참여해야 합니다. 이를 확인하였으며 적극적으로 참여할 것을 동의합니다.
+                                                            우리 랩실은 학기당 공모전 1회, 스터디 1회 참여가 필수이며 {getMeetingLabel()} 정기 모임에 성실히 참여해야 합니다. 정기 모임 요일은 추후 별도 공지됩니다. 이를 확인하였으며 적극적으로 참여할 것을 동의합니다.
                                                         </p>
                                                     </div>
                                                 </label>

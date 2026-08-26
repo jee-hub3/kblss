@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { queryDatabase, NOTION_DB } from '../lib/notion';
 import DataNotice from '../components/DataNotice';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
-import { fadeInUp, staggerContainer, gridItem, VIEWPORT_ONCE } from '../lib/motion';
+import { fadeInUp, staggerContainer, tabPanelDirectional, VIEWPORT_ONCE } from '../lib/motion';
 
 /* ── 블로그 전환 (오너 결정 2026-08-27) ─────────────────────────────
    이 페이지는 '소식(News)'이 아니라 '블로그'다. 공지성 글은 더 쓰지 않고
@@ -123,25 +123,36 @@ const News = () => {
     // 문제 자체가 사라진다.
     const [visibleCount, setVisibleCount] = useState(LIST_CHUNK);
 
-    /* 태그를 바꾸면 목록 머리(탭 줄)를 화면 위로 올려 준다.
-       '전체보기'를 벗어나면 위의 추천 글 섹션이 통째로 사라져 아래 내용이
-       한 화면 가까이 위로 튄다 — 스크롤을 그대로 두면 방금 누른 탭이 시야에서
-       벗어난다(오너 리포트 2026-08-27). 탭 줄을 고정 지점으로 삼으면 그 튐이
-       '의도된 이동'이 된다.
+    /* 탭 전환 방향 — 오른쪽 탭으로 가면 목록이 오른쪽에서, 왼쪽 탭으로 가면
+       왼쪽에서 들어온다(motion.js의 tabPanel). 방향을 안 주면 어느 탭을 눌러도
+       같은 쪽에서 들어와 '옆으로 넘어가는' 느낌이 나지 않는다. */
+    const [slideDir, setSlideDir] = useState(1);
+
+    /* 탭 줄이 헤더 위로 밀려 올라가 있을 때만 목록 머리로 되돌린다.
+       추천 글 섹션이 항상 남아 있어(오너 결정 2026-08-27) 예전처럼 화면이
+       통째로 튀지는 않는다. 다만 긴 탭에서 짧은 탭으로 가면 문서가 짧아져
+       브라우저가 스크롤을 강제로 당기므로, 그때는 탭 줄을 다시 보여준다.
+       이미 보이는 상태라면 아무것도 하지 않는다 — 불필요한 이동을 만들지 않는다.
 
        ★ 스크롤은 반드시 렌더 이후(useEffect)에 부른다. onClick 안에서 부르면
-       추천 글이 아직 붙어 있는 '옛 레이아웃' 좌표로 스크롤한 뒤 섹션이 사라져
-       500px 넘게 어긋난다(실측). /apply 제출 화면과 같은 함정이다.
-       reduced-motion은 index.css의 전역 가드가 smooth를 auto로 바꾼다. */
+       목록이 갈리기 전 좌표로 스크롤한다(/apply 제출 화면과 같은 함정). */
     const listSectionRef = useRef(null);
     const didMountRef = useRef(false);
 
     useEffect(() => {
         if (!didMountRef.current) { didMountRef.current = true; return; }
-        listSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const el = listSectionRef.current;
+        if (!el) return;
+        // 헤더(약 76px) + 여유. scroll-mt-28(112px)과 짝을 이룬다.
+        if (el.getBoundingClientRect().top < 90) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }, [activeFilter]);
 
     const handleFilterChange = (cat) => {
+        const from = categories.findIndex((c) => c.name === activeFilter);
+        const to = categories.findIndex((c) => c.name === cat);
+        setSlideDir(to >= from ? 1 : -1);
         setActiveFilter(cat);
         setVisibleCount(LIST_CHUNK);
     };
@@ -229,8 +240,12 @@ const News = () => {
                 ) : (
                     <>
                         {/* 2. 추천 글 — 슬라이드는 통째로 링크, 컨트롤(점·일시정지)은
-                            스트립 밖 형제 요소라 링크 안에 버튼이 중첩되지 않는다 */}
-                        {activeFilter === "전체보기" && featuredPosts.length > 0 && (
+                            스트립 밖 형제 요소라 링크 안에 버튼이 중첩되지 않는다.
+                            ★ 태그 필터와 무관하게 항상 남는다(오너 결정 2026-08-27) —
+                            전에는 '전체보기'에서만 보여서 탭을 누를 때마다 한 화면이
+                            통째로 사라졌다 나타났다 했다. 추천 글은 태그가 아니라
+                            '메인 지정' 체크박스가 고르는 것이라 필터와 축이 다르다. */}
+                        {featuredPosts.length > 0 && (
                             <motion.section
                                 initial="hidden"
                                 whileInView="visible"
@@ -348,11 +363,24 @@ const News = () => {
                                 ))}
                             </div>
 
-                            <motion.div layout className="flex flex-col">
-                                <AnimatePresence mode="popLayout">
+                            {/* 목록은 '패널 하나'로 묶어 탭처럼 옆으로 전환한다(오너 결정 2026-08-27).
+                                행마다 개별 등장/퇴장을 주면 태그를 바꿀 때 여러 줄이 제각기
+                                흩어졌다 모이는 것처럼 보인다 — 탭 전환은 한 덩어리가 미끄러지는
+                                게 맞다. mode="wait": 나간 뒤 들어와야 두 목록이 겹치지 않는다.
+                                key가 activeFilter라 '글 더 보기'로 이어 붙일 때는 재생되지 않는다. */}
+                            <AnimatePresence mode="wait" initial={false} custom={slideDir}>
+                                <motion.div
+                                    key={activeFilter}
+                                    custom={slideDir}
+                                    variants={tabPanelDirectional}
+                                    initial="enter"
+                                    animate="center"
+                                    exit="exit"
+                                    className="flex flex-col"
+                                >
                                     {visibleNews.map((post) => (
                                         /* 행은 div+onClick이 아니라 Link — 키보드로 열 수 있어야 한다 */
-                                        <motion.div key={post.id} layout {...gridItem} className="border-b border-slate-100">
+                                        <div key={post.id} className="border-b border-slate-100">
                                             <Link
                                                 to={`/news/${post.id}`}
                                                 state={{ post }}
@@ -378,10 +406,10 @@ const News = () => {
                                                     imgClassName="group-hover:scale-105 transition-transform duration-700"
                                                 />
                                             </Link>
-                                        </motion.div>
+                                        </div>
                                     ))}
-                                </AnimatePresence>
-                            </motion.div>
+                                </motion.div>
+                            </AnimatePresence>
 
                             {filteredNews.length === 0 && (
                                 /* 데이터 0건은 위에서 이미 처리했으므로 여기는 필터 결과 0건이다 */

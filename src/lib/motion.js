@@ -70,6 +70,24 @@ export const tabPanel = (dir = 1) => ({
     transition: { duration: DUR.base, ease: EASE_OUT },
 })
 
+/**
+ * 방향이 바뀌는 탭 패널 전환 — AnimatePresence의 custom으로 방향을 넘긴다.
+ * variants이므로 initial="enter" animate="center" exit="exit"로 쓴다.
+ *
+ * 위 tabPanel(dir)과 시각 결과는 같지만, 스프레드 방식은 방향을 '바꿔 가며'
+ * 쓸 수 없다: AnimatePresence는 자식이 사라질 때 직전 렌더의 엘리먼트를
+ * 캐시해 퇴장을 재생하므로, 나가는 쪽만 옛 방향으로 움직인다(실측 — 왼쪽
+ * 탭으로 갈 때 나가는 패널이 계속 왼쪽으로 빠져 두 패널이 같은 방향으로
+ * 겹쳐 보였다). custom은 나가는 자식에게도 현재 값이 전달돼 양쪽이 맞는다.
+ *
+ * 방향이 고정인 곳(Activities 스터디 탭 등)은 tabPanel을 그대로 쓰면 된다.
+ */
+export const tabPanelDirectional = {
+    enter: (dir = 1) => ({ opacity: 0, x: 20 * dir }),
+    center: { opacity: 1, x: 0, transition: { duration: DUR.base, ease: EASE_OUT } },
+    exit: (dir = 1) => ({ opacity: 0, x: -20 * dir, transition: { duration: DUR.base, ease: EASE_OUT } }),
+}
+
 /** 아코디언 height:auto 전환. 셰브론 회전은 CSS transition-transform duration-200 */
 export const ACCORDION_TRANSITION = { duration: DUR.base, ease: EASE_OUT }
 

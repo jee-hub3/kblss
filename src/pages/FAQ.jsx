@@ -3,7 +3,7 @@ import Seo from '../components/Seo';
 import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
 import { trackEvent } from '../lib/analytics';
-import { ORG_INFO } from '../lib/orgInfo';
+import { ORG_INFO, getMeetingLabel } from '../lib/orgInfo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, MessageCircleQuestion } from 'lucide-react';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
@@ -25,7 +25,8 @@ const faqs = [
     },
     {
         question: "Q. 정기 회의 및 주요 활동 시간은 언제인가요?",
-        answer: `랩실 정기 회의는 주로 ${ORG_INFO.meeting.day} ${ORG_INFO.meeting.time}에 진행됩니다. 그 외 스터디나 공모전 팀 회의는 각 팀원들의 일정에 맞춰 자율적으로 진행됩니다.`
+        // 요일 미정 안내(meeting.note)는 확정되면 orgInfo에서 비우기만 하면 사라진다.
+        answer: `랩실 정기 회의는 ${getMeetingLabel()} 진행됩니다. ${ORG_INFO.meeting.note} 그 외 스터디나 공모전 팀 회의는 각 팀원들의 일정에 맞춰 자율적으로 진행됩니다.`
     },
     {
         question: "Q. 활동하면서 반드시 지켜야 할 의무가 있나요?",
@@ -42,12 +43,8 @@ const faqs = [
         question: "Q. 학년별로 권장하는 활동 가이드라인이 있나요?",
         answer: "네, 1학년은 랩실 적응과 공모전 완주 경험을, 2학년은 공모전 실전 경험과 학업 향상을 권장합니다. 3학년은 진로 관련 공모전과 자격증 취득, 4학년은 취업 대비 실질적 포트폴리오 확보를 추천하고 있습니다."
     },
-    {
-        question: "Q. 활동 참여도가 저조하면 불이익이 있나요?",
-        // 경고 사유는 ORG_INFO.warning이 단일 소스 — /apply 경고 규정과 같은 문장이어야 한다.
-        // 여기 없는 조건(기여도 기준, 경고 누적 시 조치 등)은 실제 규정이 아니므로 쓰지 않는다.
-        answer: `${ORG_INFO.warning.reasons.join(', ')}에는 ${ORG_INFO.warning.method}합니다.`
-    }
+    // '활동 참여도가 저조하면 불이익이 있나요?' 문항은 2026-08-27 오너 지시로
+    // 경고 규정과 함께 삭제했다(/apply의 같은 항목도 함께 제거).
 ];
 
 const FAQ = () => {
