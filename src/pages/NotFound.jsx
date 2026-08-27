@@ -6,6 +6,7 @@ import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { fadeInUp } from '../lib/motion';
+import { trackEvent } from '../lib/analytics';
 
 const NotFound = () => {
     return (
@@ -32,6 +33,7 @@ const NotFound = () => {
                     </Link>
                     <Link
                         to="/apply"
+                        onClick={() => trackEvent('apply_cta_click', { location: 'notfound' })}
                         className="inline-flex items-center justify-center min-h-11 w-full sm:w-auto px-6 py-3 rounded-full bg-brand-accent hover:bg-brand-accent-hover text-white text-sm font-semibold transition-all press focus-ring shadow-md"
                     >
                         지원하기

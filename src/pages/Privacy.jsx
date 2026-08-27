@@ -3,6 +3,7 @@ import { ORG_INFO } from '../lib/orgInfo';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
 import { ROUTE_META } from '../lib/routeMeta';
+import { trackEvent } from '../lib/analytics';
 
 /**
  * 개인정보처리방침. 지원 폼이 개인정보를 수집하므로 공개 고지가 필요하다.
@@ -132,6 +133,7 @@ const Privacy = () => {
                             hover 배경을 slate-50으로 바꿔 실제 피드백을 준다. */}
                         <Link
                             to="/apply"
+                            onClick={() => trackEvent('apply_cta_click', { location: 'privacy' })}
                             className="inline-flex items-center justify-center min-h-11 px-5 py-2.5 rounded-full border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-colors press focus-ring"
                         >
                             지원 페이지로 돌아가기

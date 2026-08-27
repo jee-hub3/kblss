@@ -243,6 +243,7 @@ const Home = () => {
                         연도는 쓰지 않는다 — 모집 중인 시즌이라 맥락으로 명확하다. */}
                     <Link
                         to="/apply"
+                        onClick={() => trackEvent('apply_cta_click', { location: 'home_deadline' })}
                         className="mt-10 inline-flex items-center text-sm font-medium text-slate-500 hover:text-brand-accent transition-colors group focus-ring rounded-md"
                     >
                         서류 마감 {getDocDeadlineLabel()} · 전형 일정 보기
