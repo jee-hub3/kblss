@@ -25,8 +25,9 @@ const faqs = [
     },
     {
         question: "Q. 정기 회의 및 주요 활동 시간은 언제인가요?",
-        // 요일 미정 안내(meeting.note)는 확정되면 orgInfo에서 비우기만 하면 사라진다.
-        answer: `랩실 정기 회의는 ${getMeetingLabel()} 진행됩니다. ${ORG_INFO.meeting.note} 그 외 스터디나 공모전 팀 회의는 각 팀원들의 일정에 맞춰 자율적으로 진행됩니다.`
+        // 미정 안내(meeting.note)는 값이 있을 때만 붙인다 — 비어 있으면 앞뒤 공백까지
+        // 함께 사라져야 한다(그냥 끼워 넣으면 '진행됩니다.  그 외'처럼 두 칸이 남는다).
+        answer: `랩실 정기 회의는 ${getMeetingLabel()}에 진행됩니다.${ORG_INFO.meeting.note ? ` ${ORG_INFO.meeting.note}` : ''} 그 외 스터디나 공모전 팀 회의는 각 팀원들의 일정에 맞춰 자율적으로 진행됩니다.`
     },
     {
         question: "Q. 활동하면서 반드시 지켜야 할 의무가 있나요?",

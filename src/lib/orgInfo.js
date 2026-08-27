@@ -28,20 +28,19 @@ export const ORG_INFO = {
     /**
      * 정기 회의 — ★ 매 학기 확인 대상.
      *
-     * 2026-08-27 오너 확정: 이번 학기는 '주 1회'만 확정됐고 요일·시간은
-     * 아직 정해지지 않았다(추후 별도 공지). 정해지지 않은 요일을 화면에
-     * 적어 두면 지원자가 그 요일을 기준으로 판단하게 되므로, 확정 전에는
-     * 빈도만 말하고 미정임을 함께 알린다.
+     * 2026-08-27 오너 확정: 매주 수요일 19시. (그 전에는 '주 1회'만 확정되고
+     * 요일이 미정이라 day/time을 비우고 note로 미정임을 알렸다.)
      *
-     * ★ 요일·시간이 확정되면 day/time을 채우기만 하면 된다 —
-     *   getMeetingLabel()이 자동으로 "매주 화요일 오후 6시 이후" 형태로 바뀌고,
-     *   note를 비우면 미정 안내가 화면에서 사라진다. 호출부는 손댈 필요 없다.
+     * ★ 다시 미정 상태가 되면 day/time을 null로 되돌리고 note를 채우면 된다 —
+     *   getMeetingLabel()이 "주 1회"로 돌아가고 미정 안내가 다시 붙는다.
+     *   호출부(FAQ 답변, /apply 활동 안내·Rules & Duties, 지원서 동의 문구)는
+     *   note가 비어 있으면 알아서 생략하므로 손댈 필요 없다.
      */
     meeting: {
         frequency: '주 1회',
-        day: null,
-        time: null,
-        note: '정확한 요일은 아직 정해지지 않았습니다. 추후 별도 공지 예정입니다.',
+        day: '수요일',
+        time: '19시',
+        note: '',
     },
 
     professor: { role: '지도교수', name: '이상곤' },
@@ -102,7 +101,7 @@ export const getLeadsByTier = (tier) => ORG_INFO.leads.filter((lead) => lead.tie
  * (경고 규정이 FAQ·/apply에서 갈렸던 것과 같은 실패). 문구는 여기서만 만든다.
  *
  *   요일 미정: '주 1회'
- *   요일 확정: '매주 화요일 오후 6시 이후'
+ *   요일 확정: '매주 수요일 19시'
  */
 export const getMeetingLabel = () => {
     const { frequency, day, time } = ORG_INFO.meeting;
