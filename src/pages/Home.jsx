@@ -332,35 +332,33 @@ const Home = () => {
                             transition={{ duration: DUR.reveal, delay: 0.08, ease: EASE_OUT }}
                             className="relative lg:pl-8"
                         >
-                            <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border border-slate-100 p-8 md:p-12 overflow-hidden">
-                                {/* 장식 배경 이니셜 — 읽히지 않는 순수 장식 */}
-                                <span aria-hidden="true" className="absolute -top-4 right-2 text-[110px] md:text-[150px] font-black leading-none text-brand-accent/5 select-none pointer-events-none">B</span>
-
+                            {/* 장식 이니셜 'B'와 하단 'The Bridge We Build' 캡션은
+                                2026-08-27 오너 지시로 제거했다. 카드 안에는 3단 다이어그램만
+                                남으므로 overflow-hidden(‘B’ 삐짐을 자르던 용도)도 함께 걷었다. */}
+                            <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border border-slate-100 p-8 md:p-12">
                                 {/* '연결의 다리' — 아이디어에서 성장까지를 잇는 타이포 다이어그램 */}
                                 <ol className="relative">
                                     <li>
                                         <div className="flex items-baseline gap-4">
-                                            <span className="text-label font-bold text-slate-500 tracking-widest">01</span>
+                                            <span className="text-label font-bold text-slate-500 tracking-widest tabular-nums">01</span>
                                             <span className="text-heading font-extrabold text-slate-900">아이디어</span>
                                         </div>
                                         <div aria-hidden="true" className="ml-2.5 h-10 w-px bg-gradient-to-b from-brand-accent/60 to-brand-accent/15 my-2" />
                                     </li>
                                     <li>
                                         <div className="flex items-baseline gap-4">
-                                            <span className="text-label font-bold text-slate-500 tracking-widest">02</span>
+                                            <span className="text-label font-bold text-slate-500 tracking-widest tabular-nums">02</span>
                                             <span className="text-heading font-extrabold text-brand-accent">실행</span>
                                         </div>
                                         <div aria-hidden="true" className="ml-2.5 h-10 w-px bg-gradient-to-b from-brand-accent/60 to-brand-accent/15 my-2" />
                                     </li>
                                     <li>
                                         <div className="flex items-baseline gap-4">
-                                            <span className="text-label font-bold text-slate-500 tracking-widest">03</span>
+                                            <span className="text-label font-bold text-slate-500 tracking-widest tabular-nums">03</span>
                                             <span className="text-heading font-extrabold text-slate-900">성장</span>
                                         </div>
                                     </li>
                                 </ol>
-
-                                <p className="mt-10 text-label font-semibold text-slate-500 tracking-wider uppercase">The Bridge We Build</p>
                             </div>
                         </motion.div>
 
