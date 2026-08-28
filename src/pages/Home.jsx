@@ -39,9 +39,16 @@ const Home = () => {
                 const valueStr = props['수치']?.rich_text?.[0]?.plain_text || '0';
                 const order = props['순서']?.number || 0;
 
-                const numMatch = valueStr.match(/\d+/);
-                const num = numMatch ? parseInt(numMatch[0]) : 0;
-                const suffix = valueStr.replace(/\d+/g, '');
+                // 수치는 "96%", "23건", "3.7개"처럼 숫자+단위로 들어온다.
+                // \d+ 로 잡고 replace(/\d+/g)로 단위를 뽑으면 소수에서 깨진다 —
+                // "3.7개"가 정수부만 남고 소수부는 지워져 "3.개"로 나갔다.
+                // 매칭 구간을 기준으로 앞뒤를 잘라내면 소수·접두어가 모두 보존된다.
+                const numMatch = valueStr.match(/\d+(?:\.\d+)?/);
+                const num = numMatch ? parseFloat(numMatch[0]) : 0;
+                // 카운트업이 소수 자릿수를 알아야 3.7을 4로 반올림하지 않는다.
+                const decimals = numMatch?.[0].includes('.') ? numMatch[0].split('.')[1].length : 0;
+                const prefix = numMatch ? valueStr.slice(0, numMatch.index) : '';
+                const suffix = numMatch ? valueStr.slice(numMatch.index + numMatch[0].length) : valueStr;
 
                 // '산출 기준'·'기준일'은 나중에 추가된 속성이라 없을 수 있다.
                 // 옵셔널 체이닝으로 읽고 없으면 빈 값 → 렌더 단계에서 생략한다.
@@ -53,6 +60,8 @@ const Home = () => {
                     title,
                     value: valueStr,
                     num,
+                    decimals,
+                    prefix,
                     suffix,
                     order,
                     basis,
@@ -568,9 +577,10 @@ const Home = () => {
                                     className="text-center"
                                 >
                                     <div className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-indigo-500 mb-4 inline-flex items-center">
+                                        {stat.prefix && <span>{stat.prefix}</span>}
                                         {prefersReducedMotion
-                                            ? <span>{stat.num}</span>
-                                            : <CountUp end={stat.num} duration={2.5} enableScrollSpy scrollSpyOnce />}
+                                            ? <span>{stat.num.toFixed(stat.decimals)}</span>
+                                            : <CountUp end={stat.num} decimals={stat.decimals} duration={2.5} enableScrollSpy scrollSpyOnce />}
                                         <span>{stat.suffix}</span>
                                     </div>
                                     <div className="text-base text-slate-500 font-medium">{stat.title}</div>
