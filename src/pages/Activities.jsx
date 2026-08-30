@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Search, LineChart, LayoutTemplate, Rocket, Check, ChevronRight, Wrench, Sparkles } from 'lucide-react';
+import { Search, LineChart, LayoutTemplate, Rocket, Check, ChevronRight, Wrench, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
+import Button from '../components/Button';
 import { ROUTE_META } from '../lib/routeMeta';
+import { trackEvent } from '../lib/analytics';
 // 모션 값은 src/lib/motion.js 단일 소스에서 온다.
 import { fadeInUp, staggerContainer, tabPanel, DUR, EASE_OUT, VIEWPORT_ONCE } from '../lib/motion';
 
@@ -11,9 +13,13 @@ import { fadeInUp, staggerContainer, tabPanel, DUR, EASE_OUT, VIEWPORT_ONCE } fr
    여기는 "문화 소개"가 아니라 "활동 소개"다. 공모전·자체 프로젝트·스터디
    세 축이 주인공이고, 세 축은 모두 같은 순서로 답한다:
      ① 무엇인가(정의) → ② 어떻게 진행되나(시각물) → ③ 무엇이 남나(산출물)
-     → ④ 증거(Portfolio)
    축마다 레이아웃(밝은/어두운, 1단/탭)은 달라도 AxisHeader·AxisProcessIntro·
    AxisOutcome 세 조각은 공유한다. 축이 늘면 이 세 조각을 같은 순서로 채울 것.
+
+   ④ 증거(Portfolio)는 축 안에 두지 않고 페이지 하단 CTA 한 곳으로 모았다
+   (2026-08-28). 세 축이 전부 같은 /portfolio로 보내 같은 버튼이 네 번
+   반복됐기 때문이다. 축마다 링크를 되살리려면 목적지를 축별로 다르게
+   (예: 카테고리 필터) 만든 뒤에 할 것 — 같은 곳이면 반복만 늘어난다.
 
    문화(구 'Our Culture DNA')는 세 축 아래 '운영 원칙' 밴드로 내려갔다 —
    활동의 근거로는 남되 헤드라인 자리는 활동에 내준다. 카드 껍데기와 아이콘을
@@ -61,16 +67,20 @@ const AxisProcessIntro = ({ text, tone = 'light' }) => (
     </motion.div>
 );
 
-/* ③ 산출물 + ④ 증거 — 축마다 이 줄로 닫는다.
+/* ③ 산출물 — 축마다 이 줄로 닫는다.
    칩 문구에는 "약속할 수 있는 것"만 적는다. 자격증처럼 개설·취득이 보장되지
-   않는 항목은 넣지 않는다(아래 스터디 '주제 예시' 안내와 같은 기준). */
-const AxisOutcome = ({ items, linkLabel, tone = 'light', className = '' }) => (
+   않는 항목은 넣지 않는다(아래 스터디 '주제 예시' 안내와 같은 기준).
+
+   ④ 증거(Portfolio)로 가는 링크는 여기 두지 않는다 — 세 축이 모두 같은
+   /portfolio로 보내 같은 버튼이 네 번 반복됐다(오너 결정 2026-08-28).
+   증거는 페이지 하단 CTA에서 한 번만 제공한다. */
+const AxisOutcome = ({ items, tone = 'light', className = '' }) => (
     <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={VIEWPORT_ONCE}
         variants={fadeInUp}
-        className={'mt-12 pt-8 border-t flex flex-col gap-6 md:flex-row md:items-center md:justify-between '
+        className={'mt-12 pt-8 border-t '
             + (tone === 'dark' ? 'border-slate-700 ' : 'border-slate-200 ') + className}
     >
         <div className="flex flex-wrap items-center gap-2.5">
@@ -85,14 +95,6 @@ const AxisOutcome = ({ items, linkLabel, tone = 'light', className = '' }) => (
                 </span>
             ))}
         </div>
-        <Link
-            to="/portfolio"
-            className={'group inline-flex items-center shrink-0 font-bold press focus-ring rounded-lg transition-colors '
-                + (tone === 'dark' ? 'text-brand-accent-on-dark hover:text-blue-300' : 'text-brand-accent hover:text-brand-accent-hover')}
-        >
-            {linkLabel}
-            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </Link>
     </motion.div>
 );
 
@@ -239,7 +241,6 @@ const Activities = () => {
 
                 <AxisOutcome
                     items={["기획서·발표자료", "제출·발표 경험", "팀 회고 기록"]}
-                    linkLabel="공모전 산출물 보기"
                 />
             </section>
 
@@ -307,7 +308,6 @@ const Activities = () => {
                     <AxisOutcome
                         tone="dark"
                         items={["문제 정의서", "Figma 프로토타입", "동작하는 MVP"]}
-                        linkLabel="프로젝트 산출물 보기"
                     />
                 </div>
             </section>
@@ -384,7 +384,6 @@ const Activities = () => {
                 <AxisOutcome
                     className="max-w-5xl mx-auto"
                     items={["정리 노트·학습 기록", "공유 세션 발표자료", "실습 산출물"]}
-                    linkLabel="스터디가 이어진 결과 보기"
                 />
             </section>
 
@@ -438,13 +437,33 @@ const Activities = () => {
                         <h2 className="text-2xl md:text-4xl font-extrabold mb-10 leading-snug text-slate-900">
                             이러한 문화 속에서 우리는<br />어떤 결과를 만들어 냈을까요?
                         </h2>
-                        {/* hover 색은 하드코딩(blue-700) 대신 브랜드 토큰 — Button.jsx와 동일 */}
-                        <Link
-                            to="/portfolio"
-                            className="inline-flex items-center bg-brand-accent hover:bg-brand-accent-hover text-white px-8 py-4 rounded-full text-base font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 press focus-ring"
-                        >
-                            KBLs 산출물 확인하기
-                        </Link>
+                        {/* 산출물 보기가 주(primary), 지원하기가 보조(secondary) — 오너 결정 2026-08-28.
+                            축마다 있던 /portfolio 링크 3개를 걷어내고 증거는 여기 한 곳으로 모았다.
+                            지원 동선은 이 페이지에 전혀 없었어서(GNB 고정 버튼 제외) 함께 넣는다. */}
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                            {/* hover 색은 하드코딩(blue-700) 대신 브랜드 토큰 — Button.jsx와 동일.
+                                border-transparent: 보조 버튼(secondary)에는 1px 테두리가 있어
+                                그게 없으면 나란히 놓았을 때 높이가 2px 어긋난다. */}
+                            <Link
+                                to="/portfolio"
+                                className="inline-flex items-center justify-center w-full sm:w-auto bg-brand-accent hover:bg-brand-accent-hover text-white border border-transparent px-8 py-4 rounded-full text-base font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 press focus-ring"
+                            >
+                                KBLs 산출물 확인하기
+                            </Link>
+                            {/* location은 신설 값 — 이 페이지의 지원 전환을 처음으로 계측한다.
+                                GA4 맞춤 측정기준 'CTA 위치'에 그대로 잡힌다.
+                                !text-base: size="lg"의 text-lg를 그대로 두면 주 버튼(text-base)보다
+                                6px 커져 나란히 놓았을 때 보조가 더 커 보인다. */}
+                            <Button
+                                to="/apply"
+                                variant="secondary"
+                                size="lg"
+                                className="w-full sm:w-auto !text-base"
+                                onClick={() => trackEvent('apply_cta_click', { location: 'activities_bottom' })}
+                            >
+                                지원하기
+                            </Button>
+                        </div>
                     </motion.div>
                 </div>
             </section>
